@@ -1,0 +1,154 @@
+{
+  "permissionMode": "auto",
+  "dangerouslySkipPermissions": true,
+  "permissions": {
+    "allow": [
+      "*",
+      "Bash(npm *)",
+      "Bash(git *)",
+      "Bash(node *)",
+      "Bash(python *)",
+      "Bash(docker *)",
+      "WebFetch(*)",
+      "Bash(grep:*)",
+      "Bash(/Users/ashleytower/.claude/scripts/update-agents-with-state.sh:*)",
+      "Bash(wc:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(ls:*)",
+      "Bash(crontab:*)",
+      "Bash(~/.claude/scripts/verify-hooks.sh)",
+      "Bash(test:*)",
+      "Bash(gh auth status:*)",
+      "Bash(curl:*)",
+      "mcp__rube__RUBE_SEARCH_TOOLS",
+      "mcp__rube__RUBE_MULTI_EXECUTE_TOOL",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(sudo:*)",
+      "Bash(chmod 777:*)",
+      "Bash(dd:*)"
+    ]
+  },
+  "hooks": {
+    "StartSession": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Check for Claude Code updates",
+            "command": "~/.claude/scripts/check-updates.sh &"
+          },
+          {
+            "type": "prompt",
+            "comment": "Show agent state from previous session",
+            "prompt": "AGENT COORDINATION:\n\nCheck for previous agent state:\n  ~/.claude/scripts/agent-state.sh read\n\nIf state exists:\n- Review what the previous agent did\n- Check next_steps from previous agent\n- Continue seamlessly from their work\n\nThis enables multi-agent coordination."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": {
+          "tools": [
+            "Write",
+            "Edit"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "ALWAYS check for available skills",
+            "command": "~/.claude/scripts/check-skills.sh"
+          },
+          {
+            "type": "prompt",
+            "comment": "ABSOLUTE MANDATE: Cannot be bypassed",
+            "prompt": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🚨 MANDATORY PRE-CODE CHECKLIST - CANNOT BE BYPASSED 🚨\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nBefore ANY Write or Edit operation, you MUST:\n\n1. ✓ READ official documentation (WebFetch or /research)\n   └─ NO exceptions. NO assumptions. NO memory.\n\n2. ✓ CHECK existing codebase patterns (Grep + Read)\n   └─ Search for similar implementations first.\n\n3. ✓ CHECK available skills (shown above if detected)\n   └─ Read ~/.claude/skills/[name].md for copy-paste code.\n\n4. ✓ VERIFY approach in CLAUDE.md and project docs\n   └─ Ensure consistency with established patterns.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nIF YOU SKIP ANY STEP: You will write incorrect code.\nIF YOU GUESS: You will introduce bugs.\nIF YOU IGNORE SKILLS: You waste time rebuilding.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nThis is NOT optional. This is NOT negotiable.\nThis is MANDATORY system behavior.\n\nProceed ONLY after completing ALL checks."
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tools": [
+            "AskUserQuestion"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Voice alert: Claude needs your decision",
+            "command": "~/.claude/scripts/speak.sh 'Need input' &"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": {
+          "tools": [
+            "Write",
+            "Edit"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Auto-validate files after modification",
+            "command": "~/.claude/scripts/validate-files.sh ~/.claude/agents/*.md ~/.claude/skills/*.md ~/.claude/commands/*.md ~/.claude/settings.local.json 2>/dev/null || true"
+          },
+          {
+            "type": "prompt",
+            "comment": "Remind to update agent state",
+            "prompt": "If you are an agent working as part of a multi-agent workflow:\n\nUpdate agent state for the next agent:\n  Use TodoWrite or document your progress\n  \nIf this is a major milestone, write state:\n  ~/.claude/scripts/agent-state.sh write '@agent-name' 'status' 'message' '[]' '[\"next step 1\", \"next step 2\"]'\n\nThis helps subsequent agents continue your work."
+          }
+        ]
+      },
+      {
+        "matcher": {
+          "tools": [
+            "Bash"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Auto-commit after risky bash operations",
+            "command": "cd ~/.claude && git add -A && git commit -m 'Auto-checkpoint: After bash operation' --allow-empty 2>/dev/null &"
+          },
+          {
+            "type": "prompt",
+            "comment": "Remind to update agent state",
+            "prompt": "If you are an agent working as part of a multi-agent workflow:\n\nUpdate agent state for the next agent:\n  Use TodoWrite or document your progress\n  \nIf this is a major milestone, write state:\n  ~/.claude/scripts/agent-state.sh write '@agent-name' 'status' 'message' '[]' '[\"next step 1\", \"next step 2\"]'\n\nThis helps subsequent agents continue your work."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "comment": "Write final agent state",
+            "prompt": "BEFORE STOPPING:\n\nIf you completed work for a multi-agent workflow:\n1. Write final agent state with next steps\n2. Update TodoWrite with completion status\n3. Save any critical context for next agent\n\nThis ensures seamless handoff to next agent or session."
+          },
+          {
+            "type": "command",
+            "comment": "Voice: Session done",
+            "command": "~/.claude/scripts/speak.sh 'Done' &"
+          }
+        ]
+      }
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "slack"
+  ],
+  "includeCoAuthoredBy": true
+}

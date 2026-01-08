@@ -1,0 +1,29 @@
+# Sensitive files
+.env
+.env.local
+
+# API Keys and tokens
+*_API_KEY
+*_TOKEN
+*.pem
+*.key
+
+# User-specific files
+debug/
+file-history/
+history.jsonl
+projects/
+paste-cache/
+shell-snapshots/
+todos/
+transcripts/
+ide/
+statsig/
+cache/
+
+# Backups (too large)
+backups/
+
+# Logs
+logs/
+*.log
