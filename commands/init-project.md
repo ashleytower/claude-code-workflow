@@ -7,90 +7,117 @@ description: Generate project CLAUDE.md by exploring codebase
 
 Explore the codebase and generate a project-specific CLAUDE.md.
 
-## Process
+Works for both **new projects** and **existing codebases**.
 
-### Step 1: Detect Project Type
+## Usage
 
-Check for project markers:
-- `package.json` → Node.js / React / Next.js
-- `requirements.txt` or `pyproject.toml` → Python
-- `Cargo.toml` → Rust
-- `go.mod` → Go
-- `pubspec.yaml` → Flutter/Dart
-
-### Step 2: Read Dependencies
-
-From package.json or equivalent, identify:
-- Framework (Next.js, React Native, FastAPI, etc.)
-- Database (Supabase, Prisma, Drizzle, etc.)
-- Auth (Clerk, Supabase Auth, NextAuth, etc.)
-- UI library (Tailwind, shadcn, etc.)
-- Key integrations (Stripe, Resend, etc.)
-
-### Step 3: Explore Structure
-
-Find key directories:
 ```bash
-# Common patterns
-ls -la src/ app/ lib/ components/ pages/ api/ server/ 2>/dev/null
+/init-project           # Explore and generate CLAUDE.md
+/init-project --force   # Overwrite existing CLAUDE.md
 ```
 
-### Step 4: Check Existing Docs
+## Process
 
-Look for:
-- Existing CLAUDE.md
-- README.md
-- PRD.md
-- .env.example (for required env vars)
+### Step 1: Check What Exists
 
-### Step 5: Generate CLAUDE.md
+**New project (empty/minimal)?**
+- Ask what you're building
+- Ask about planned tech stack
+- Generate starter CLAUDE.md
 
-Create project CLAUDE.md with discovered info:
+**Existing project (has code)?**
+- Explore the codebase first
+- Read package.json, requirements.txt, etc.
+- Detect what's actually there
+
+### Step 2: Explore (Existing Projects)
+
+Read these files to understand the project:
+
+```bash
+# Package manager files
+cat package.json
+cat requirements.txt
+cat pyproject.toml
+
+# Existing docs
+cat README.md
+cat .env.example
+
+# Directory structure
+ls -la src/ app/ lib/ components/ pages/ api/ server/
+```
+
+### Step 3: Detect Tech Stack
+
+From dependencies, identify:
+- **Framework**: Next.js, React Native, FastAPI, etc.
+- **Database**: Supabase, Prisma, Drizzle, etc.
+- **Auth**: Clerk, Supabase Auth, NextAuth, etc.
+- **UI**: Tailwind, shadcn, etc.
+- **Integrations**: Stripe, Resend, etc.
+
+### Step 4: Generate CLAUDE.md
 
 ```markdown
-# [Project Name from package.json]
+# [Project Name]
 
 ## Tech Stack
-- **Framework**: [detected]
-- **Database**: [detected]
-- **Auth**: [detected]
-- **UI**: [detected]
+- **Framework**: [detected or planned]
+- **Database**: [detected or planned]
+- **Auth**: [detected or planned]
+- **UI**: [detected or planned]
 
 ## Structure
 ```
-[discovered directory structure]
+[actual directory structure]
 ```
 
 ## Key Files
-- [important files discovered]
+- `src/app/` - [description]
+- `src/lib/` - [description]
 
 ## Environment Variables
-- [from .env.example]
+[from .env.example or ask user]
 
 ## Patterns
-- [leave empty for user to fill]
+[ask user or leave for them to fill]
 
 ## Known Issues
-- [leave empty - add when Claude makes mistakes]
+[empty - add when Claude makes mistakes]
 ```
 
-### Step 6: Confirm with User
+### Step 5: Confirm
 
-Show generated CLAUDE.md and ask:
+Show the generated CLAUDE.md and ask:
 - Is this accurate?
-- Anything to add?
-- Any specific patterns to document?
+- Anything to add or change?
+- Any patterns I should know about?
+
+## Examples
+
+**New Next.js project:**
+```
+User: /init-project
+Claude: I see this is a new/empty project. What are you building?
+User: A SaaS app with Supabase and Stripe
+Claude: [Generates CLAUDE.md with Next.js + Supabase + Stripe]
+```
+
+**Existing React Native app:**
+```
+User: /init-project
+Claude: [Reads package.json, explores src/]
+Claude: I found:
+- React Native with Expo SDK 52
+- Supabase for auth and database
+- React Navigation
+- [Shows generated CLAUDE.md]
+Is this accurate?
+```
 
 ## Output
 
 Creates `./CLAUDE.md` in the project root.
 
-## Usage
-
-```bash
-/init-project
-# Explores codebase and generates CLAUDE.md
-
-/init-project --force
-# Overwrites existing CLAUDE.md
-```
+After this, run `/guide` to start building.
