@@ -1,0 +1,28 @@
+#!/bin/bash
+# Pre-planning validation script
+# Ensures codebase has been explored before planning/documentation
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "⚠️  BEFORE PLANNING OR DOCUMENTATION:"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "1. Have you run Task(Explore) to examine the codebase?"
+echo "   □ Yes - I've explored with Task tool"
+echo "   □ No - I need to explore first"
+echo ""
+echo "2. Have you read actual implementation files?"
+echo "   □ Yes - I've read key files"
+echo "   □ No - I need to read code"
+echo ""
+echo "3. Can you cite specific files you examined?"
+echo "   □ Yes - e.g., package.json:18, server/routes.ts:45"
+echo "   □ No - I'm making assumptions"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "If ANY answer is NO:"
+echo "  ⛔ STOP"
+echo "  ⛔ Use Task(Explore) to examine codebase"
+echo "  ⛔ Read actual files"
+echo "  ⛔ Mark complete: ~/.claude/scripts/agent-state.sh mark-explored"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""

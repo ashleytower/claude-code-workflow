@@ -3,8 +3,39 @@
 > Universal rules and workflows that apply to ALL projects
 > Project-specific details belong in each project's ./CLAUDE.md file
 
+## CRITICAL: Exploration-First Rule (NEVER VIOLATE)
+
+**BEFORE any planning, documentation, assumptions, or questions about existing projects:**
+
+1. **MANDATORY**: Use Task(Explore) or Read to examine actual files
+2. **MANDATORY**: Cite specific files/lines you examined
+3. **FORBIDDEN**: Make assumptions about:
+   - Tech stack (frameworks, libraries, versions)
+   - Features (what's implemented vs planned)
+   - Architecture (file structure, patterns)
+   - LLM/AI services (GPT-4o vs Gemini vs other)
+4. **FORBIDDEN**: Suggest solutions without reading implementation
+
+**Violations (examples):**
+- ❌ "This uses GPT-4o" (without reading import statements)
+- ❌ "Create CLAUDE.md with React..." (without examining code)
+- ❌ "The architecture is client-server" (without reading files)
+- ❌ "This needs a PRD" (without checking if one exists)
+
+**Correct approach (examples):**
+- ✅ Task(Explore) → Read package.json:18 → "Uses @google/genai per package.json:18"
+- ✅ Read server/routes.ts:45 → "API uses tRPC per routes.ts:45"
+- ✅ Glob("*.md") → Read PRD.md → "PRD exists, reviewed requirements"
+
+**Mark exploration complete:** `~/.claude/scripts/agent-state.sh mark-explored`
+
+**This rule is enforced by hooks and cannot be bypassed.**
+
+---
+
 ## Quick Obligations (Non-Negotiable)
 
+- **ALWAYS** explore codebase FIRST before any planning (enforced by hook above)
 - **ALWAYS** check docs BEFORE any Write/Edit (enforced by hook - use /research or Grep/Read)
 - **ALWAYS** verify approach exists in official docs (NO GUESSING)
 - **ALWAYS** search existing codebase for patterns (Grep before Write)

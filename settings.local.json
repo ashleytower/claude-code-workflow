@@ -25,7 +25,11 @@
       "mcp__rube__RUBE_SEARCH_TOOLS",
       "mcp__rube__RUBE_MULTI_EXECUTE_TOOL",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(~/.claude/scripts/speak.sh:*)",
+      "Bash(echo:*)",
+      "Bash(cat:*)",
+      "Bash(afplay:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -53,6 +57,27 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": {
+          "tools": [
+            "Write",
+            "Edit",
+            "AskUserQuestion"
+          ]
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "comment": "Check if codebase has been explored",
+            "command": "~/.claude/scripts/check-explored.sh || true"
+          },
+          {
+            "type": "prompt",
+            "comment": "NUCLEAR: Exploration-first enforcement",
+            "prompt": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🚨 EXPLORATION-FIRST MANDATE - CANNOT BE BYPASSED 🚨\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nBEFORE any Write, Edit, or AskUserQuestion:\n\n1. Have you used Task(Explore) or Read to examine the ACTUAL codebase?\n2. Can you cite SPECIFIC files/lines you've read?\n3. Are you making ANY assumptions about:\n   - Tech stack (frameworks, libraries, versions)?\n   - Features (what's implemented vs not)?\n   - Architecture (how code is organized)?\n\nIF YOU HAVE NOT EXPLORED THE CODE:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⛔ STOP IMMEDIATELY\n⛔ Use Task tool with subagent_type=Explore\n⛔ Read actual implementation files\n⛔ Mark exploration complete: ~/.claude/scripts/agent-state.sh mark-explored\n⛔ THEN proceed\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nNO ASSUMPTIONS. NO GUESSING. READ FIRST.\n\nExamples of VIOLATIONS:\n❌ \"This uses GPT-4o\" (without reading imports)\n❌ \"Create CLAUDE.md with...\" (without reading code)\n❌ \"The architecture is...\" (without examining files)\n\nExamples of CORRECT:\n✅ Task(Explore) → Read package.json:18 → \"Uses @google/genai\"\n✅ Read server/routes.ts:45 → \"API uses tRPC\"\n\nProceed ONLY after exploration is COMPLETE."
+          }
+        ]
+      },
       {
         "matcher": {
           "tools": [

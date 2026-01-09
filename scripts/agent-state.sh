@@ -103,6 +103,47 @@ clear_state() {
   echo "Agent state cleared"
 }
 
+# Function: Mark exploration as complete
+mark_explored() {
+  local exploration_file="/tmp/claude_exploration_${PWD//\//_}"
+  local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+  echo "{\"explored\": true, \"timestamp\": \"$timestamp\", \"directory\": \"$PWD\"}" > "$exploration_file"
+  echo "✅ Exploration marked complete for: $(basename $PWD)"
+  echo "   Timestamp: $timestamp"
+}
+
+# Function: Check if exploration is complete
+check_explored() {
+  local exploration_file="/tmp/claude_exploration_${PWD//\//_}"
+
+  if [ -f "$exploration_file" ]; then
+    echo "✅ Codebase explored"
+    cat "$exploration_file"
+    exit 0
+  else
+    echo "❌ Codebase NOT explored yet"
+    echo ""
+    echo "Required actions:"
+    echo "  1. Use Task(Explore) to examine codebase"
+    echo "  2. Read actual implementation files"
+    echo "  3. Run: ~/.claude/scripts/agent-state.sh mark-explored"
+    exit 1
+  fi
+}
+
+# Function: Clear exploration state (useful for testing)
+clear_explored() {
+  local exploration_file="/tmp/claude_exploration_${PWD//\//_}"
+
+  if [ -f "$exploration_file" ]; then
+    rm "$exploration_file"
+    echo "✅ Exploration state cleared for: $(basename $PWD)"
+  else
+    echo "No exploration state to clear"
+  fi
+}
+
 # Main command handler
 case "$1" in
   read)
@@ -120,15 +161,29 @@ case "$1" in
   clear)
     clear_state
     ;;
+  mark-explored)
+    mark_explored
+    ;;
+  check-explored)
+    check_explored
+    ;;
+  clear-explored)
+    clear_explored
+    ;;
   *)
-    echo "Usage: agent-state.sh {read|write|last|next|clear}"
+    echo "Usage: agent-state.sh {read|write|last|next|clear|mark-explored|check-explored|clear-explored}"
     echo ""
-    echo "Examples:"
+    echo "Agent State Commands:"
     echo "  agent-state.sh read                           # Read current state"
     echo "  agent-state.sh last                           # Get last agent name"
     echo "  agent-state.sh next                           # Get next steps"
     echo "  agent-state.sh write '@frontend' 'completed' 'UI done' '[]' '[]'"
     echo "  agent-state.sh clear                          # Clear state"
+    echo ""
+    echo "Exploration Commands:"
+    echo "  agent-state.sh mark-explored                  # Mark codebase as explored"
+    echo "  agent-state.sh check-explored                 # Check if explored"
+    echo "  agent-state.sh clear-explored                 # Clear exploration state"
     exit 1
     ;;
 esac

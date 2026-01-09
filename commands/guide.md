@@ -25,6 +25,54 @@ The guide maintains state in `.claude/guide-state.json` to track:
 
 ## Complete Workflow
 
+### Phase 0: Mandatory Codebase Exploration (CANNOT SKIP)
+
+```
+🔍 GUIDED BUILD - Phase 0: Codebase Exploration
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⛔ CRITICAL: This phase CANNOT be skipped for existing projects
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BEFORE anything else:
+
+IF this is an existing project with code:
+
+  1. ⛔ STOP: Do NOT make assumptions
+  2. 🔍 EXPLORE: Use Task(Explore) to examine codebase
+  3. 📖 READ: Examine key files identified
+  4. ✅ VERIFY: Can you cite specific files/lines?
+
+INVOKE: Task tool with subagent_type=Explore
+
+Example:
+  Task(Explore, "Thoroughly explore codebase:
+  - What LLM/AI services are used?
+  - What's the actual tech stack?
+  - What features are implemented?
+  - What's the architecture?
+  medium thoroughness")
+
+[Exploration completes]
+
+✓ Exploration Results:
+  - Tech stack: [actual frameworks found]
+  - LLM: [actual service: Gemini/OpenAI/etc]
+  - Features: [actually implemented]
+  - Architecture: [actual structure]
+
+MARK EXPLORATION COMPLETE:
+  ~/.claude/scripts/agent-state.sh mark-explored
+
+[Voice: "Exploration complete"]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IF new project (no code): Skip Phase 0, proceed to Phase 1
+IF existing project: Phase 0 is MANDATORY before Phase 1
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Next: Continue to Phase 1 (Project Detection)
+```
+
 ### Phase 1: Project Detection & Initialization
 
 ```
