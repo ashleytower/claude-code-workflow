@@ -1,258 +1,86 @@
-# Global Claude Code Workflow System
+# Claude Code Workflow
 
-**Created**: 2026-01-08
-**Philosophy**: Boris's vanilla approach + Top 1% Agentic Engineering + Latest Claude Code 2025 features
+A clean, simple workflow for Claude Code based on Boris's approach + Manus-style file planning.
 
-## ✅ What's Been Built (Core Infrastructure)
-
-### Configuration Files
-- ✅ `CLAUDE.md` - Global rules (192 lines - under 200 limit!)
-- ✅ `settings.local.json` - YOLO mode + comprehensive hooks + voice notifications
-- ✅ `scripts/speak.sh` - ElevenLabs TTS voice notifications
-
-### Commands (8/12 Complete)
-- ✅ `/create-prd` - Create product requirements document
-- ✅ `/research` - Consult docs, find boilerplates (prevents hallucination!)
-- ✅ `/code-review` - Ruthless senior dev code review
-- ✅ `/commit-push-pr` - Automated git workflow with bash pre-computation
-- ✅ `/ui-design` - Design mockups before implementation
-- ✅ `/guide` - Step-by-step workflow coordinator (YOUR MAIN COMMAND!)
-- ✅ `/prime` - Load context for planning sessions
-- ⏳ `/plan` - Create structured execution plans (TODO)
-- ⏳ `/execute` - Execute plans in fresh context (TODO)
-- ⏳ `/parallel-branches` - Multi-branch parallel work (TODO)
-- ⏳ `/superpowers` - Multi-repo orchestration (TODO)
-- ⏳ `/verify-app` - E2E testing (TODO)
-- ⏳ `/system-evolve` - Capture learnings from bugs (TODO)
-
-### Subagents (2/7 Complete)
-- ✅ `orchestrator` - Quality check coordinator (auto-invoked by Stop-Hook!)
-- ✅ `frontend` - UI-first enforcement with design approval checks
-- ⏳ `research-ui-patterns` - Deep UI research (YouTube, GitHub, Reddit, X) (TODO)
-- ⏳ `verify-app` - Comprehensive E2E verification (TODO)
-- ⏳ `code-simplifier` - Post-implementation cleanup (TODO)
-- ⏳ `react-native-expert` - RN specialized expertise (TODO)
-- ⏳ `bash-runner` - Long-running bash with notifications (TODO)
-
-### Directories Created
-- ✅ `~/.claude/scripts/` - Voice notification scripts
-- ✅ `~/.claude/commands/` - Slash command workflows
-- ✅ `~/.claude/agents/` - Specialized subagents
-- ✅ `~/.claude/skills/` - Skills (ui-design to be added)
-- ✅ `~/.claude/reference/` - Task-specific context docs (to be populated)
-
-## 🎯 Core Workflow (Ready to Use NOW!)
-
-Even though not everything is complete, you can start using the core workflow:
-
-### Guided Development (Recommended)
+## Quick Start
 
 ```bash
-# Start guided workflow
-claude /guide
+# New project or feature
+/guide "Build my app"
 
-# Guides you through:
-# 1. Create PRD (if needed)
-# 2. Research (consult docs, find boilerplates)
-# 3. UI design (approve mockups)
-# 4. Plan (with /prime)
-# 5. Execute
-# 6. Verify
-# 7. Commit
-# 8. Learn
+# Autonomous overnight work
+/ralph-loop "Large migration task"
 ```
 
-### Manual Development (If You Prefer)
+## Core Commands
 
-```bash
-# 1. Research first (prevents hallucination!)
-claude /research "topic"
+| Command | Purpose |
+|---------|---------|
+| `/guide` | Step-by-step workflow (start here) |
+| `/research` | Check docs before coding |
+| `/learn` | Save implementation as reusable skill |
+| `/verify-app` | Run tests before commit |
+| `/commit-push-pr` | Ship it |
+| `/ralph-loop` | Autonomous until complete |
 
-# 2. UI design (if UI feature)
-claude /ui-design "component"
+## Planning Pattern
 
-# 3. Prime for planning
-claude /prime
+For complex tasks (3+ steps), create these files in your project:
 
-# 4. Build feature
-# [implementation happens]
-
-# 5. Review
-claude /code-review
-
-# 6. Commit
-claude /commit-push-pr
+```
+task_plan.md   -> Phases, progress, decisions
+findings.md    -> Research, discoveries, errors
+progress.md    -> Session log, test results
 ```
 
-## 🔑 Key Features Working NOW
+Copy templates: `cp templates/*.md ./`
 
-### YOLO Mode
-- `dangerouslySkipPermissions: true` in settings.local.json
-- Most operations run autonomously
-- Voice alerts when you need to provide input
+## Agents
 
-### Voice Notifications (ElevenLabs)
-- "Starting agent task" - when agent begins
-- "Agent task completed" - when agent finishes
-- "ATTENTION. Claude needs your input NOW" - when you must respond
-- "Session complete" - when workflow ends
+| Agent | Use For |
+|-------|---------|
+| `@frontend` | UI development |
+| `@backend` | API development |
+| `@verify-app` | Run all tests |
 
-### Auto Quality Checks (Orchestrator)
-- Automatically runs when Claude finishes
-- Analyzes git changes
-- Invokes appropriate quality agents
-- Reports issues before you commit
+## Skills
 
-### UI-First Enforcement (Frontend Agent)
-- Hook prevents UI code without approved design
-- Enforces mockup approval workflow
-- Compares implementation to approved design
+Check `skills/` before implementing integrations:
+- `auth.md` - Authentication patterns
+- `planning.md` - File-based planning
+- More added via `/learn` after successful implementations
 
-### Self-Learning
-- PostToolUse hook asks: "Was this fixing a struggle?"
-- Stop hook reminds: "Run /system-evolve to capture learnings"
-- Institutional knowledge grows over time
+## Notifications
 
-## 📋 API Keys & Environment Variables
+- **Voice** (ElevenLabs): Alerts when Claude needs input or finishes
+- **macOS notifications**: Visual alerts
 
-Copy `.env.example` to `.env` and fill in your API keys:
+Setup: Set `ELEVENLABS_API_KEY` in environment, or fallback to macOS `say` command.
 
-```bash
-cp ~/.claude/.env.example ~/.claude/.env
-# Edit ~/.claude/.env with your actual API keys
+## Philosophy
+
+```
+Plan -> Research -> Execute -> Verify -> Learn
 ```
 
-Then source in your shell:
+1. **Plan first** - Create task_plan.md before complex work
+2. **Research first** - Read docs before writing code
+3. **Test first** - Run /verify-app before commit
+4. **Learn always** - Run /learn after new integrations
 
-```bash
-echo "source ~/.claude/.env" >> ~/.zshrc  # or ~/.bashrc
-source ~/.zshrc
+## Structure
+
+```
+├── CLAUDE.md          # Rules (read this)
+├── settings.json      # Hooks configuration
+├── commands/          # Slash commands
+├── agents/            # Specialized agents
+├── skills/            # Copy-paste code
+├── templates/         # Planning file templates
+├── scripts/           # Helper scripts
+└── archive/           # Archived files (not deleted)
 ```
 
-Required API keys (see `.env.example` for details):
-- `OPENROUTER_API_KEY`: For LLM Council multi-model access
-- `ELEVENLABS_API_KEY`: For voice notifications (optional)
-- `GITHUB_TOKEN`: For git operations and PR creation
-- `COMPOSIO_API_KEY`: For integrations (optional)
-- `RUBE_API_KEY`: For workflow automation (optional)
+## Archive
 
-## 🚀 Quick Start
-
-### For a New Project
-
-```bash
-# 1. Start guided workflow
-claude /guide
-
-# Guides you through PRD creation, research, and first feature
-
-# 2. Follow the prompts!
-# Guide tells you exactly what to do at each step
-```
-
-### For an Existing Project
-
-```bash
-# 1. Create PRD documenting current state + what's next
-claude /create-prd PRD.md
-
-# 2. Start guided workflow for next feature
-claude /guide
-```
-
-## ⏳ What Still Needs to Be Created
-
-### Commands (5 remaining)
-- `/plan` - Create structured execution plans
-- `/execute` - Execute plans in fresh context
-- `/parallel-branches` - Work on multiple branches simultaneously
-- `/superpowers` - Multi-repo orchestration
-- `/verify-app` - E2E testing
-- `/system-evolve` - Capture learnings, improve system
-
-### Subagents (5 remaining)
-- `research-ui-patterns` - Deep UI research across platforms
-- `verify-app` - Comprehensive E2E verification
-- `code-simplifier` - Post-implementation cleanup
-- `react-native-expert` - RN specialized expertise
-- `bash-runner` - Long-running bash workflows
-
-### Reference Docs (6 docs)
-- `api-development.md` - API patterns, validation, security
-- `frontend-components.md` - Component patterns, state management
-- `mobile-patterns.md` - React Native specifics, performance
-- `database-schema.md` - Supabase/PostgreSQL, RLS policies
-- `testing-strategy.md` - Testing patterns, coverage
-- `deployment.md` - CI/CD, builds, releases
-
-### Skills (1 skill)
-- `ui-design.md` - UI design workflow (consider using community version)
-
-## 🎓 Next Steps
-
-### This Session
-Continue creating remaining commands and subagents
-
-### Future Sessions
-1. Populate reference docs with project learnings
-2. Add institutional knowledge to CLAUDE.md as bugs are encountered
-3. Install Ralph Wiggum plugin for autonomous long-running tasks
-4. Configure MCP servers (Rube already in settings)
-5. Test complete workflows end-to-end
-
-## 📊 System Capabilities (When Complete)
-
-### Multi-Terminal Parallel Execution
-- Terminal 1: Main orchestration
-- Terminals 2-5: Parallel agents (@frontend, @backend, @testing, @bash)
-- Voice notifications coordinate work
-
-### LLM Council (Multiple Models)
-- Gemini Flash: Fast, cheap iterations
-- Claude Opus 4.5: Complex planning
-- GPT-4o: General development
-- Grok Vision: UI/screenshot analysis
-
-### Autonomous Long-Running Work (Ralph Wiggum)
-- Multi-hour/multi-day execution
-- Clear completion criteria
-- Progress tracking
-- Cost controls (max iterations)
-
-### Intelligent Quality Checks (Orchestrator)
-- Analyzes changes automatically
-- Invokes relevant quality agents
-- Parallel execution of checks
-- Blocks commits if issues found
-
-## 📖 Documentation
-
-- **Plan**: `/Users/ashleytower/.claude/plans/peppy-strolling-prism.md` - Full implementation plan
-- **This README**: Overview and status
-- **Global Rules**: `CLAUDE.md` - Universal rules (<200 lines)
-- **Commands**: Individual command documentation in `commands/`
-- **Agents**: Individual agent configuration in `agents/`
-
-## 🎤 Voice Notifications
-
-Voice will alert you for:
-- Agent starting/completing
-- Need for user input
-- Session completion
-- Quality check results
-
-Even when away from desk, you'll know when to return!
-
-## 🔒 Safety
-
-Even in YOLO mode:
-- Destructive commands blocked (`rm -rf /`, `sudo`, `chmod 777`)
-- Voice alerts for critical decisions
-- Quality checks before commits
-- Design approval before UI implementation
-
----
-
-**Status**: Core infrastructure complete and working!
-**Ready to use**: `/guide`, `/research`, `/ui-design`, `/code-review`, `/commit-push-pr`, `/prime`
-**Next**: Create remaining commands/agents and test end-to-end workflow
+Extra commands, agents, and docs moved to `archive/` - not deleted, just out of the way.

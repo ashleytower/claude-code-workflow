@@ -1,0 +1,57 @@
+{
+  "permissions": {
+    "allow": ["*"],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(sudo:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat task_plan.md 2>/dev/null | head -40 || true"
+          }
+        ]
+      },
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/speak.sh 'I need your input' &"
+          },
+          {
+            "type": "command",
+            "command": "scripts/notify.sh 'Claude needs your input' 'Claude Code' &"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/check-complete.sh 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "scripts/speak.sh 'Done' &"
+          },
+          {
+            "type": "command",
+            "command": "scripts/notify.sh 'Task complete' 'Claude Code' &"
+          }
+        ]
+      }
+    ]
+  }
+}
