@@ -2,6 +2,24 @@
 
 Based on Boris's approach (creator of Claude Code).
 
+## CRITICAL RULE: NO CODE WITHOUT DOCS
+
+**Before ANY Write or Edit:**
+
+1. Check docs using Context7 MCP:
+   - `mcp__context7__resolve-library-id` (find library)
+   - `mcp__context7__query-docs` (get docs)
+
+2. Or use `/research "topic"`
+
+3. Or use WebFetch on official docs
+
+**You must be able to cite your source.**
+
+This is enforced by hook. No exceptions.
+
+---
+
 ## Boris's Setup (What This Follows)
 
 1. **5 Claudes in parallel** - Numbered tabs 1-5, system notifications
@@ -29,22 +47,35 @@ Based on Boris's approach (creator of Claude Code).
 1. Plan mode (shift+tab twice)
    -> Go back and forth until plan is right
 
-2. Research (if needed)
-   -> /research "topic"
+2. Research ALWAYS
+   -> /research "topic" OR Context7 MCP
+   -> NO CODE WITHOUT DOCS
 
 3. Execute
    -> Auto-accept mode, let Claude work
 
-4. Verify
+4. Simplify (optional)
+   -> @code-simplifier to clean up
+
+5. Verify
    -> Tests, type check, build
    -> This 2-3x's quality
 
-5. Commit
+6. Commit
    -> /commit-push-pr
 
-6. Learn (optional)
+7. Learn (optional)
    -> /learn "integration-name"
 ```
+
+## Agents
+
+| Agent | Use For |
+|-------|---------|
+| `@frontend` | UI work |
+| `@backend` | API work |
+| `@verify-app` | Run all tests |
+| `@code-simplifier` | Clean up after implementation |
 
 ## Planning Files (For Complex Tasks)
 
@@ -54,34 +85,16 @@ findings.md    -> Research, discoveries, errors
 progress.md    -> Session log, test results
 ```
 
-Templates in `templates/`. Hook auto-reads task_plan.md before Write/Edit.
-
-## Agents
-
-| Agent | Use For |
-|-------|---------|
-| `@frontend` | UI work |
-| `@backend` | API work |
-| `@verify-app` | Run all tests |
-
 ## Skills
 
 Check `skills/` before implementing. Copy-paste code for common integrations.
 
 ## Rules
 
-1. **Plan first** - Good plan = 1-shot implementation
-2. **Research first** - Check docs, prevents hallucination
+1. **DOCS FIRST** - No code without checking documentation
+2. **Plan first** - Good plan = 1-shot implementation
 3. **Verify always** - Give Claude feedback loop
 4. **Update CLAUDE.md** - When Claude does something wrong
-
-## Ralph Loop
-
-For long-running autonomous tasks:
-
-```bash
-/ralph-loop "Large migration task"
-```
 
 ## Notifications
 
