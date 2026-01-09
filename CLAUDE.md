@@ -4,19 +4,33 @@ Based on Boris's approach (creator of Claude Code).
 
 ## CRITICAL RULE: NO CODE WITHOUT DOCS
 
-**Before ANY Write or Edit:**
+**Before ANY Write or Edit, you MUST use one of these:**
 
-1. Check docs using Context7 MCP:
-   - `mcp__context7__resolve-library-id` (find library)
-   - `mcp__context7__query-docs` (get docs)
+| Tool | When to Use |
+|------|-------------|
+| `Skill(research)` | General research, any topic |
+| `Skill(auth)` | Authentication implementation |
+| `Skill(planning)` | Complex task planning |
+| `mcp__context7__resolve-library-id` | Find library in Context7 |
+| `mcp__context7__query-docs` | Get docs from Context7 |
+| `WebFetch` | Official docs URL |
 
-2. Or use `/research "topic"`
+**You must cite your source.** This is enforced by hook. No exceptions.
 
-3. Or use WebFetch on official docs
+---
 
-**You must be able to cite your source.**
+## Callable Skills (Use Skill Tool)
 
-This is enforced by hook. No exceptions.
+| Skill | Purpose | When to Call |
+|-------|---------|--------------|
+| `Skill(research)` | Check docs, find patterns | Before any new code |
+| `Skill(auth)` | Authentication patterns | Adding auth to any framework |
+| `Skill(planning)` | Manus-style file planning | Complex multi-step tasks |
+| `Skill(guide)` | Step-by-step workflow | Starting a feature |
+| `Skill(learn)` | Save implementation | After successful build |
+| `Skill(verify-app)` | Run all tests | Before commit |
+| `Skill(commit-push-pr)` | Git workflow | Ship the code |
+| `Skill(ralph-loop)` | Autonomous execution | Long-running tasks |
 
 ---
 
@@ -30,25 +44,14 @@ This is enforced by hook. No exceptions.
 6. **Slash commands** - /commit-push-pr dozens of times daily
 7. **Shared CLAUDE.md** - Update when Claude does something wrong
 
-## Core Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/guide` | Step-by-step workflow guidance |
-| `/research` | Check docs before coding |
-| `/learn` | Save implementation as skill |
-| `/verify-app` | Test before commit |
-| `/commit-push-pr` | Ship it |
-| `/ralph-loop` | Autonomous until complete |
-
 ## The Workflow
 
 ```
 1. Plan mode (shift+tab twice)
    -> Go back and forth until plan is right
 
-2. Research ALWAYS
-   -> /research "topic" OR Context7 MCP
+2. Research ALWAYS (mandatory)
+   -> Skill(research) OR Context7 MCP
    -> NO CODE WITHOUT DOCS
 
 3. Execute
@@ -58,14 +61,14 @@ This is enforced by hook. No exceptions.
    -> @code-simplifier to clean up
 
 5. Verify
-   -> Tests, type check, build
+   -> Skill(verify-app)
    -> This 2-3x's quality
 
 6. Commit
-   -> /commit-push-pr
+   -> Skill(commit-push-pr)
 
 7. Learn (optional)
-   -> /learn "integration-name"
+   -> Skill(learn) to save for next time
 ```
 
 ## Agents
@@ -85,13 +88,9 @@ findings.md    -> Research, discoveries, errors
 progress.md    -> Session log, test results
 ```
 
-## Skills
-
-Check `skills/` before implementing. Copy-paste code for common integrations.
-
 ## Rules
 
-1. **DOCS FIRST** - No code without checking documentation
+1. **DOCS FIRST** - Call Skill(research) or Context7 before code
 2. **Plan first** - Good plan = 1-shot implementation
 3. **Verify always** - Give Claude feedback loop
 4. **Update CLAUDE.md** - When Claude does something wrong
@@ -106,6 +105,9 @@ Check `skills/` before implementing. Copy-paste code for common integrations.
 
 ```bash
 # Start guided workflow
+Skill(guide) "Build my feature"
+
+# Or use slash command
 /guide "Build my feature"
 
 # Or just use Plan mode

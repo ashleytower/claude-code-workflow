@@ -20,7 +20,7 @@
           },
           {
             "type": "prompt",
-            "prompt": "STOP. Before writing code:\n\n1. Did you check docs? (Context7 MCP, WebFetch, or /research)\n2. Can you cite the source?\n\nIf NO: Use mcp__context7__resolve-library-id and mcp__context7__query-docs FIRST.\n\nNO CODE WITHOUT DOCS."
+            "prompt": "STOP. Before writing code:\n\n1. Did you check docs using ONE of these tools?\n   - Skill(research) - for general research\n   - Skill(auth) - for authentication\n   - mcp__context7__resolve-library-id + mcp__context7__query-docs\n   - WebFetch on official docs\n\n2. Can you cite the source?\n\nIf NO: Call Skill or Context7 MCP FIRST.\n\nNO CODE WITHOUT DOCS. This is mandatory."
           }
         ]
       },
