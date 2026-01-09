@@ -1,7 +1,11 @@
 #!/bin/bash
 # ElevenLabs TTS Voice Notification Script
 # Speaks messages immediately without saving to disk
-# Requires: ELEVENLABS_API_KEY environment variable
+
+# Source env file if API key not already set
+if [ -z "$ELEVENLABS_API_KEY" ] && [ -f ~/.claude/.env ]; then
+    source ~/.claude/.env
+fi
 
 speak() {
     local message="$1"
