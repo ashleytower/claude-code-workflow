@@ -29,7 +29,9 @@
       "Bash(~/.claude/scripts/speak.sh:*)",
       "Bash(echo:*)",
       "Bash(cat:*)",
-      "Bash(afplay:*)"
+      "Bash(afplay:*)",
+      "Bash(~/.claude/scripts/agent-state.sh:*)",
+      "Skill(*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
