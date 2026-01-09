@@ -31,6 +31,7 @@ Based on Boris's approach (creator of Claude Code).
 | `Skill(verify-app)` | Run all tests | Before commit |
 | `Skill(commit-push-pr)` | Git workflow | Ship the code |
 | `Skill(ralph-loop)` | Autonomous execution | Long-running tasks |
+| `Skill(init-project)` | Generate project CLAUDE.md | New project setup |
 
 ---
 
@@ -104,10 +105,10 @@ progress.md    -> Session log, test results
 ## Quick Start
 
 ```bash
-# Start guided workflow
-Skill(guide) "Build my feature"
+# New project? Generate CLAUDE.md first
+/init-project
 
-# Or use slash command
+# Then start guided workflow
 /guide "Build my feature"
 
 # Or just use Plan mode

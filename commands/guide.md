@@ -18,6 +18,17 @@ Interactive workflow guidance based on Boris's approach.
 
 ## The Steps
 
+### Step 0: Project Setup (First Time Only)
+
+```
+If no CLAUDE.md exists in this project:
+
+/init-project
+
+This explores the codebase and generates a project CLAUDE.md
+with tech stack, structure, and key files.
+```
+
 ### Step 1: Plan Mode
 
 ```
@@ -33,15 +44,17 @@ Questions to answer:
 - What could go wrong?
 ```
 
-### Step 2: Research (If Needed)
+### Step 2: Research (Mandatory for New Code)
 
 ```
-Before writing code for new integrations:
+Before writing code:
 
+Skill(research) "topic"
+# or
 /research "topic"
 
 This checks official docs and finds boilerplates.
-Prevents hallucination.
+NO CODE WITHOUT DOCS.
 ```
 
 ### Step 3: Execute
@@ -102,6 +115,7 @@ Use system notifications to know when Claude needs input.
 
 ## When to Use This
 
+- Starting a new project → runs /init-project first
 - Starting a new feature
 - Not sure what to do next
 - Want step-by-step guidance
