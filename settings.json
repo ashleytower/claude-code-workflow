@@ -29,11 +29,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "scripts/speak.sh 'I need your input' &"
+            "command": "~/.claude/scripts/speak.sh 'I need your input' &"
           },
           {
             "type": "command",
-            "command": "scripts/notify.sh 'Claude needs your input' 'Claude Code' &"
+            "command": "~/.claude/scripts/notify.sh 'Claude needs your input' 'Claude Code' &"
           }
         ]
       }
@@ -44,15 +44,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "scripts/check-complete.sh 2>/dev/null || true"
+            "command": "cat task_plan.md 2>/dev/null | grep -c 'pending\\|in_progress' || true"
           },
           {
             "type": "command",
-            "command": "scripts/speak.sh 'Done' &"
+            "command": "~/.claude/scripts/speak.sh 'Done' &"
           },
           {
             "type": "command",
-            "command": "scripts/notify.sh 'Task complete' 'Claude Code' &"
+            "command": "~/.claude/scripts/notify.sh 'Task complete' 'Claude Code' &"
           }
         ]
       }

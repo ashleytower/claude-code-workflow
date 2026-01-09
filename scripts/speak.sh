@@ -13,11 +13,13 @@ speak() {
       -d "{\"text\": \"$message\", \"model_id\": \"eleven_monolingual_v1\"}" \
       -o "$temp_file" 2>/dev/null
 
-    # Play audio and clean up
-    if [ -f "$temp_file" ]; then
-        afplay "$temp_file" 2>/dev/null &
-        sleep 0.5  # Give afplay time to start
+    # Play audio and clean up after it finishes
+    if [ -f "$temp_file" ] && [ -s "$temp_file" ]; then
+        afplay "$temp_file" 2>/dev/null
         rm -f "$temp_file"
+    else
+        # Fallback to macOS say if ElevenLabs fails
+        say "$message" &
     fi
 }
 
