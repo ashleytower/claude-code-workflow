@@ -1,19 +1,52 @@
 # Claude Code Workflow
 
+Based on Boris's approach (creator of Claude Code).
+
+## Boris's Setup (What This Follows)
+
+1. **5 Claudes in parallel** - Numbered tabs 1-5, system notifications
+2. **Opus 4.5 with thinking** - Best model, less steering
+3. **Plan mode first** - shift+tab twice, get plan right
+4. **Auto-accept mode** - Let Claude 1-shot it
+5. **Verify the work** - Most important thing for quality
+6. **Slash commands** - /commit-push-pr dozens of times daily
+7. **Shared CLAUDE.md** - Update when Claude does something wrong
+
 ## Core Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/guide` | Step-by-step workflow (start here) |
+| `/guide` | Step-by-step workflow guidance |
 | `/research` | Check docs before coding |
 | `/learn` | Save implementation as skill |
 | `/verify-app` | Test before commit |
 | `/commit-push-pr` | Ship it |
 | `/ralph-loop` | Autonomous until complete |
 
-## Planning Pattern (Manus-style)
+## The Workflow
 
-For complex tasks (3+ steps), create these files in your project:
+```
+1. Plan mode (shift+tab twice)
+   -> Go back and forth until plan is right
+
+2. Research (if needed)
+   -> /research "topic"
+
+3. Execute
+   -> Auto-accept mode, let Claude work
+
+4. Verify
+   -> Tests, type check, build
+   -> This 2-3x's quality
+
+5. Commit
+   -> /commit-push-pr
+
+6. Learn (optional)
+   -> /learn "integration-name"
+```
+
+## Planning Files (For Complex Tasks)
 
 ```
 task_plan.md   -> Phases, progress, decisions
@@ -21,59 +54,47 @@ findings.md    -> Research, discoveries, errors
 progress.md    -> Session log, test results
 ```
 
-Templates: `templates/` | Auto-read before Write/Edit via hook.
+Templates in `templates/`. Hook auto-reads task_plan.md before Write/Edit.
 
 ## Agents
 
 | Agent | Use For |
 |-------|---------|
-| `@frontend` | UI work (requires design first) |
-| `@backend` | API work (security enforced) |
+| `@frontend` | UI work |
+| `@backend` | API work |
 | `@verify-app` | Run all tests |
+
+## Skills
+
+Check `skills/` before implementing. Copy-paste code for common integrations.
 
 ## Rules
 
-1. **Plan first** - Create task_plan.md before complex work
-2. **Research first** - Read docs before writing code
-3. **Test first** - Run /verify-app before commit
-4. **Learn always** - Run /learn after new integrations
+1. **Plan first** - Good plan = 1-shot implementation
+2. **Research first** - Check docs, prevents hallucination
+3. **Verify always** - Give Claude feedback loop
+4. **Update CLAUDE.md** - When Claude does something wrong
 
-## Skills (Copy-Paste Code)
+## Ralph Loop
 
-Check `skills/` before implementing integrations.
-
-## The 3-Strike Rule
-
-```
-Attempt 1: Fix the error
-Attempt 2: Try different approach
-Attempt 3: Rethink assumptions
-After 3: Ask user for help
-```
-
-## Ralph Loop (Autonomous)
-
-For large tasks that should run until actually complete:
+For long-running autonomous tasks:
 
 ```bash
-/ralph-loop "Migrate all components to TypeScript"
+/ralph-loop "Large migration task"
 ```
 
-Safety: Max 10 iterations, $100 cost limit. Voice notifies on complete.
+## Notifications
 
-## Quick Reference
+- Voice alert when Claude needs input
+- Voice alert when task complete
+- macOS notification popup
+
+## Quick Start
 
 ```bash
-# New project
-/guide "Build my app"
+# Start guided workflow
+/guide "Build my feature"
 
-# New feature
-/guide "Add payments"
-
-# Autonomous overnight
-/ralph-loop "Large refactor task"
+# Or just use Plan mode
+# shift+tab twice -> plan -> execute
 ```
-
----
-
-**Philosophy**: Plan -> Research -> Execute -> Verify -> Learn
