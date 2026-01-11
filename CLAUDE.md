@@ -251,17 +251,49 @@ Required API keys (see `.env.example` for details):
 - `COMPOSIO_API_KEY`: For integrations (optional)
 - `RUBE_API_KEY`: For workflow automation (optional)
 
+## Voice & Notifications (Global)
+
+**Setup (2026-01-09):**
+- ✅ ElevenLabs voice: `~/.claude/scripts/speak.sh` (all projects)
+- ✅ Visual notifications: `~/.claude/scripts/notify.sh` (all projects)
+- ✅ WhisperFlow: Voice input (user has installed)
+
+**When agent needs input:**
+- 🔊 Speaks: "I need your input"
+- 📱 Shows: macOS notification
+
+## Permissions (Global)
+
+**Strategy:** Auto-approve 95% of operations, block dangerous 5%
+
+**Always asks before:**
+- Stripe/payment operations
+- Sending emails (Resend)
+- Production deploys (`vercel --prod`)
+- Force pushes (`git push --force`)
+- Database resets (`supabase db reset`)
+- Recursive deletes (`rm -rf`)
+
+**Auto-approves:**
+- Read/Write/Edit files
+- Tests, builds, dev
+- Normal git operations
+- Installing packages
+- All MCP tools (except blocked ones)
+
+**See:** `~/.claude/settings.local.json` for full list (154 allow, 22 deny rules)
+
 ## Notes
 
 - All config committed to git for team sharing
 - CLAUDE.md updated whenever Claude makes mistakes (institutional learning)
 - Use Opus 4.5 (thinking enabled) for best results
-- Voice notifications keep you informed even when away from desk
-- YOLO mode enabled (--dangerously-skip-permissions) for autonomous execution
+- Voice + visual notifications keep you informed
+- Permission system protects money, emails, production
 
 ---
 
-**Last Updated**: 2026-01-08
+**Last Updated**: 2026-01-09
 **Philosophy**: Boris's approach + Autonomous execution + Mandatory research before code + No fluff
 
 **Critical Rules**:

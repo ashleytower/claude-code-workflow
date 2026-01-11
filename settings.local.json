@@ -1,6 +1,5 @@
 {
-  "permissionMode": "auto",
-  "dangerouslySkipPermissions": true,
+  "includeCoAuthoredBy": true,
   "permissions": {
     "allow": [
       "*",
@@ -9,7 +8,7 @@
       "Bash(node *)",
       "Bash(python *)",
       "Bash(docker *)",
-      "WebFetch(*)",
+      "WebFetch(domain:*)",
       "Bash(grep:*)",
       "Bash(/Users/ashleytower/.claude/scripts/update-agents-with-state.sh:*)",
       "Bash(wc:*)",
@@ -31,28 +30,121 @@
       "Bash(cat:*)",
       "Bash(afplay:*)",
       "Bash(~/.claude/scripts/agent-state.sh:*)",
-      "Skill(*)"
+      "Skill(*)",
+      "Skill(ralph-loop)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm install:*)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(nslookup:*)",
+      "Bash(host:*)",
+      "Bash(ping:*)",
+      "Bash(sudo dscacheutil:*)",
+      "Bash(sudo killall:*)",
+      "Bash(dig:*)",
+      "Bash(node -e:*)",
+      "Bash(npx tsx:*)",
+      "Bash(done)",
+      "Bash(npm run check:*)",
+      "Bash(npx vercel:*)",
+      "Bash(while IFS='=' read -r key value)",
+      "Bash(do [ -n \"$key\" ])",
+      "Bash(vercel:*)",
+      "mcp__rube__RUBE_GET_TOOL_SCHEMAS",
+      "Bash(npm run build:*)",
+      "Bash(xargs cat:*)",
+      "Bash(npm test:*)",
+      "Bash(claude --teleport session_01PxU8tjAqVbE3Q4TpmedBpw)",
+      "Bash(claude --resume:*)",
+      "Bash(python3 -m json.tool:*)",
+      "WebSearch",
+      "WebFetch(domain:claudelog.com)",
+      "WebFetch(domain:www.eesel.ai)",
+      "WebFetch(domain:github.com)",
+      "mcp__rube__RUBE_REMOTE_WORKBENCH",
+      "mcp__rube__RUBE_REMOTE_BASH_TOOL",
+      "mcp__rube__RUBE_MANAGE_CONNECTIONS",
+      "mcp__rube__RUBE_CREATE_PLAN",
+      "mcp__rube__RUBE_EXECUTE_RECIPE",
+      "mcp__rube__RUBE_FIND_RECIPE",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "mcp__github__*",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Task(subagent_type:*)",
+      "Task(subagent_type:Explore)",
+      "Task(subagent_type:Plan)",
+      "Task(subagent_type:frontend)",
+      "Task(subagent_type:backend)",
+      "Task(subagent_type:verify-app)",
+      "Task(subagent_type:bash)",
+      "Edit(**)",
+      "Write(**)",
+      "Read(**)",
+      "Glob(**)",
+      "Grep(**)",
+      "AskUserQuestion",
+      "TodoWrite",
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "Bash(~/.claude/scripts/*)",
+      "Bash(./.claude/hooks/*)",
+      "Bash(supabase:*)",
+      "Bash(vercel deploy:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh issue create:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
       "Bash(rm -rf ~)",
       "Bash(sudo:*)",
       "Bash(chmod 777:*)",
-      "Bash(dd:*)"
+      "Bash(dd:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(vercel deploy --prod:*)",
+      "Bash(vercel --prod:*)",
+      "Bash(npm publish:*)",
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "mcp__rube__*STRIPE*",
+      "mcp__rube__*stripe*",
+      "Bash(stripe:*)",
+      "Bash(curl *stripe.com*)",
+      "Bash(curl *api/send-email*)",
+      "Bash(curl *resend.com*)",
+      "mcp__rube__*RESEND*",
+      "mcp__rube__*resend*",
+      "mcp__rube__*EMAIL*SEND*",
+      "Bash(supabase db reset:*)",
+      "Bash(supabase db dump:*)",
+      "Bash(git reset --hard:*)"
     ]
   },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "slack",
+    "rube"
+  ],
   "hooks": {
-    "StartSession": [
+    "SessionStart": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "comment": "Check for Claude Code updates",
             "command": "~/.claude/scripts/check-updates.sh &"
           },
           {
+            "type": "command",
+            "command": "~/.claude/scripts/notify.sh 'Claude Code session started' 'Claude Code' &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/speak.sh 'Ready to build' &"
+          },
+          {
             "type": "prompt",
-            "comment": "Show agent state from previous session",
             "prompt": "AGENT COORDINATION:\n\nCheck for previous agent state:\n  ~/.claude/scripts/agent-state.sh read\n\nIf state exists:\n- Review what the previous agent did\n- Check next_steps from previous agent\n- Continue seamlessly from their work\n\nThis enables multi-agent coordination."
           }
         ]
@@ -60,97 +152,68 @@
     ],
     "PreToolUse": [
       {
-        "matcher": {
-          "tools": [
-            "Write",
-            "Edit",
-            "AskUserQuestion"
-          ]
-        },
+        "matcher": "Write|Edit|AskUserQuestion",
         "hooks": [
           {
             "type": "command",
-            "comment": "Check if codebase has been explored",
             "command": "~/.claude/scripts/check-explored.sh || true"
           },
           {
             "type": "prompt",
-            "comment": "NUCLEAR: Exploration-first enforcement",
             "prompt": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🚨 EXPLORATION-FIRST MANDATE - CANNOT BE BYPASSED 🚨\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nBEFORE any Write, Edit, or AskUserQuestion:\n\n1. Have you used Task(Explore) or Read to examine the ACTUAL codebase?\n2. Can you cite SPECIFIC files/lines you've read?\n3. Are you making ANY assumptions about:\n   - Tech stack (frameworks, libraries, versions)?\n   - Features (what's implemented vs not)?\n   - Architecture (how code is organized)?\n\nIF YOU HAVE NOT EXPLORED THE CODE:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⛔ STOP IMMEDIATELY\n⛔ Use Task tool with subagent_type=Explore\n⛔ Read actual implementation files\n⛔ Mark exploration complete: ~/.claude/scripts/agent-state.sh mark-explored\n⛔ THEN proceed\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nNO ASSUMPTIONS. NO GUESSING. READ FIRST.\n\nExamples of VIOLATIONS:\n❌ \"This uses GPT-4o\" (without reading imports)\n❌ \"Create CLAUDE.md with...\" (without reading code)\n❌ \"The architecture is...\" (without examining files)\n\nExamples of CORRECT:\n✅ Task(Explore) → Read package.json:18 → \"Uses @google/genai\"\n✅ Read server/routes.ts:45 → \"API uses tRPC\"\n\nProceed ONLY after exploration is COMPLETE."
           }
         ]
       },
       {
-        "matcher": {
-          "tools": [
-            "Write",
-            "Edit"
-          ]
-        },
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "comment": "ALWAYS check for available skills",
             "command": "~/.claude/scripts/check-skills.sh"
           },
           {
             "type": "prompt",
-            "comment": "ABSOLUTE MANDATE: Cannot be bypassed",
             "prompt": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🚨 MANDATORY PRE-CODE CHECKLIST - CANNOT BE BYPASSED 🚨\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nBefore ANY Write or Edit operation, you MUST:\n\n1. ✓ READ official documentation (WebFetch or /research)\n   └─ NO exceptions. NO assumptions. NO memory.\n\n2. ✓ CHECK existing codebase patterns (Grep + Read)\n   └─ Search for similar implementations first.\n\n3. ✓ CHECK available skills (shown above if detected)\n   └─ Read ~/.claude/skills/[name].md for copy-paste code.\n\n4. ✓ VERIFY approach in CLAUDE.md and project docs\n   └─ Ensure consistency with established patterns.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nIF YOU SKIP ANY STEP: You will write incorrect code.\nIF YOU GUESS: You will introduce bugs.\nIF YOU IGNORE SKILLS: You waste time rebuilding.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nThis is NOT optional. This is NOT negotiable.\nThis is MANDATORY system behavior.\n\nProceed ONLY after completing ALL checks."
           }
         ]
       },
       {
-        "matcher": {
-          "tools": [
-            "AskUserQuestion"
-          ]
-        },
+        "matcher": "AskUserQuestion",
         "hooks": [
           {
             "type": "command",
-            "comment": "Voice alert: Claude needs your decision",
-            "command": "~/.claude/scripts/speak.sh 'Need input' &"
+            "command": "~/.claude/scripts/notify.sh 'Agent asking a question' 'Claude Code' &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/speak.sh 'I have a question for you' &"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": {
-          "tools": [
-            "Write",
-            "Edit"
-          ]
-        },
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "comment": "Auto-validate files after modification",
             "command": "~/.claude/scripts/validate-files.sh ~/.claude/agents/*.md ~/.claude/skills/*.md ~/.claude/commands/*.md ~/.claude/settings.local.json 2>/dev/null || true"
           },
           {
             "type": "prompt",
-            "comment": "Remind to update agent state",
             "prompt": "If you are an agent working as part of a multi-agent workflow:\n\nUpdate agent state for the next agent:\n  Use TodoWrite or document your progress\n  \nIf this is a major milestone, write state:\n  ~/.claude/scripts/agent-state.sh write '@agent-name' 'status' 'message' '[]' '[\"next step 1\", \"next step 2\"]'\n\nThis helps subsequent agents continue your work."
           }
         ]
       },
       {
-        "matcher": {
-          "tools": [
-            "Bash"
-          ]
-        },
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "comment": "Auto-commit after risky bash operations",
             "command": "cd ~/.claude && git add -A && git commit -m 'Auto-checkpoint: After bash operation' --allow-empty 2>/dev/null &"
           },
           {
             "type": "prompt",
-            "comment": "Remind to update agent state",
             "prompt": "If you are an agent working as part of a multi-agent workflow:\n\nUpdate agent state for the next agent:\n  Use TodoWrite or document your progress\n  \nIf this is a major milestone, write state:\n  ~/.claude/scripts/agent-state.sh write '@agent-name' 'status' 'message' '[]' '[\"next step 1\", \"next step 2\"]'\n\nThis helps subsequent agents continue your work."
           }
         ]
@@ -158,24 +221,24 @@
     ],
     "Stop": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "prompt",
-            "comment": "Write final agent state",
             "prompt": "BEFORE STOPPING:\n\nIf you completed work for a multi-agent workflow:\n1. Write final agent state with next steps\n2. Update TodoWrite with completion status\n3. Save any critical context for next agent\n\nThis ensures seamless handoff to next agent or session."
           },
           {
             "type": "command",
-            "comment": "Voice: Session done",
-            "command": "~/.claude/scripts/speak.sh 'Done' &"
+            "command": "~/.claude/scripts/notify.sh 'Agent needs your input' 'Claude Code' &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/speak.sh 'I need your input' &"
           }
         ]
       }
     ]
   },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "slack"
-  ],
-  "includeCoAuthoredBy": true
+  "permissionMode": "auto",
+  "dangerouslySkipPermissions": true
 }

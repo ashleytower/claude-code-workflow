@@ -1,0 +1,44 @@
+{
+  "project": "Project Name",
+  "description": "Brief description of what we're building",
+  "created": "2026-01-09",
+  "stories": [
+    {
+      "id": "1",
+      "story": "As a user, I can sign up with my email and password",
+      "acceptance_criteria": [
+        "Signup form with email and password fields",
+        "Password must be at least 8 characters",
+        "Email validation shows error for invalid format",
+        "Successful signup redirects to dashboard",
+        "User receives confirmation email"
+      ],
+      "priority": 1,
+      "passes": false
+    },
+    {
+      "id": "2",
+      "story": "As a user, I can log in to my account",
+      "acceptance_criteria": [
+        "Login form with email and password",
+        "Invalid credentials show error message",
+        "Successful login redirects to dashboard",
+        "Session persists on page refresh"
+      ],
+      "priority": 2,
+      "passes": false
+    },
+    {
+      "id": "3",
+      "story": "As a user, I can reset my password",
+      "acceptance_criteria": [
+        "Forgot password link on login page",
+        "Enter email to receive reset link",
+        "Reset link expires after 1 hour",
+        "Can set new password via reset link"
+      ],
+      "priority": 3,
+      "passes": false
+    }
+  ]
+}
