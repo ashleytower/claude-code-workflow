@@ -95,7 +95,8 @@
       "Bash(gh issue create:*)",
       "Bash(mkdir:*)",
       "Bash(touch:*)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
