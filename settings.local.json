@@ -158,10 +158,6 @@
           {
             "type": "command",
             "command": "~/.claude/scripts/check-explored.sh || true"
-          },
-          {
-            "type": "prompt",
-            "prompt": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🚨 EXPLORATION-FIRST MANDATE - CANNOT BE BYPASSED 🚨\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nBEFORE any Write, Edit, or AskUserQuestion:\n\n1. Have you used Task(Explore) or Read to examine the ACTUAL codebase?\n2. Can you cite SPECIFIC files/lines you've read?\n3. Are you making ANY assumptions about:\n   - Tech stack (frameworks, libraries, versions)?\n   - Features (what's implemented vs not)?\n   - Architecture (how code is organized)?\n\nIF YOU HAVE NOT EXPLORED THE CODE:\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⛔ STOP IMMEDIATELY\n⛔ Use Task tool with subagent_type=Explore\n⛔ Read actual implementation files\n⛔ Mark exploration complete: ~/.claude/scripts/agent-state.sh mark-explored\n⛔ THEN proceed\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nNO ASSUMPTIONS. NO GUESSING. READ FIRST.\n\nExamples of VIOLATIONS:\n❌ \"This uses GPT-4o\" (without reading imports)\n❌ \"Create CLAUDE.md with...\" (without reading code)\n❌ \"The architecture is...\" (without examining files)\n\nExamples of CORRECT:\n✅ Task(Explore) → Read package.json:18 → \"Uses @google/genai\"\n✅ Read server/routes.ts:45 → \"API uses tRPC\"\n\nProceed ONLY after exploration is COMPLETE."
           }
         ]
       },
@@ -171,10 +167,6 @@
           {
             "type": "command",
             "command": "~/.claude/scripts/check-skills.sh"
-          },
-          {
-            "type": "prompt",
-            "prompt": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🚨 MANDATORY PRE-CODE CHECKLIST - CANNOT BE BYPASSED 🚨\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nBefore ANY Write or Edit operation, you MUST:\n\n1. ✓ READ official documentation (WebFetch or /research)\n   └─ NO exceptions. NO assumptions. NO memory.\n\n2. ✓ CHECK existing codebase patterns (Grep + Read)\n   └─ Search for similar implementations first.\n\n3. ✓ CHECK available skills (shown above if detected)\n   └─ Read ~/.claude/skills/[name].md for copy-paste code.\n\n4. ✓ VERIFY approach in CLAUDE.md and project docs\n   └─ Ensure consistency with established patterns.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nIF YOU SKIP ANY STEP: You will write incorrect code.\nIF YOU GUESS: You will introduce bugs.\nIF YOU IGNORE SKILLS: You waste time rebuilding.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nThis is NOT optional. This is NOT negotiable.\nThis is MANDATORY system behavior.\n\nProceed ONLY after completing ALL checks."
           }
         ]
       },
