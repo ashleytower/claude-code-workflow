@@ -1,40 +1,37 @@
 ---
 name: ralph-loop
-description: Run autonomous loop until task complete
+description: Run autonomous loop with pass@k evaluation
 model: sonnet
 ---
 
-# Ralph Loop - Autonomous Task Completion
+# Ralph Loop - Autonomous Task Completion with pass@k
 
-Run this task in an autonomous loop until it's actually complete.
+Run tasks autonomously with Anthropic's agent evaluation methodology.
 
-## How Ralph Loop Works
+Based on: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
 
-**Named after Ralph Wiggum** from The Simpsons - persistent, keeps going until done.
+## How pass@k Works
 
-**Two loops**:
-- **Inner loop**: Standard Claude tool loop
-- **Outer loop**: Ralph verification loop that restarts if not complete
+**Pass@k** measures the likelihood an agent succeeds in k attempts. If ANY attempt passes, the story passes. After k failures, the story is marked failed.
+
+- `pass@1`: Must succeed first try (strict)
+- `pass@3`: 3 attempts to succeed (default, recommended)
+- `pass@5`: 5 attempts (lenient)
 
 ## Process
 
-1. **Execute**: Run Claude with the task
-2. **Verify**: Check if task is actually complete
-3. **Decide**: If not complete, loop again
-4. **Safety**: Stop at max iterations or cost
+1. **Execute**: Run Claude with story
+2. **Verify**: Run tests / check markers
+3. **Pass?**: Mark complete, commit, move to next
+4. **Fail?**: Revert changes, retry (up to k times)
+5. **Exceeded k?**: Mark story FAILED, move to next
 
-## Completion Verification
-
-Automatic checks:
-- Git status (no uncommitted changes)
-- Tests passing
-- Explicit completion markers
-
-## Safety Limits
+## Configuration
 
 ```bash
-export RALPH_MAX_ITERATIONS=10  # Default: 10
+export RALPH_MAX_ITERATIONS=50  # Default: 50
 export RALPH_MAX_COST=100       # Default: $100
+export RALPH_PASS_K=3           # Default: 3 attempts per story
 ```
 
 ## Usage
