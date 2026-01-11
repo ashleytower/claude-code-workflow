@@ -46,10 +46,33 @@
 - **ALWAYS** plan before implementing (Plan mode or `/plan`)
 - **ALWAYS** verify after implementation (run `/verify-app`)
 - **ALWAYS** treat bugs as system evolution opportunities (run `/system-evolve`)
+- **ALWAYS** use Rube MCP for external services (Supabase, Vercel, Google, etc.)
 - **NEVER** write code without checking docs first (hook enforces this)
 - **NEVER** use outdated patterns or dependencies
 - **NEVER** commit without passing tests
 - **NEVER** celebrate or use emojis (facts only)
+- **NEVER** use direct CLI for external services (use Rube MCP instead)
+
+## External Services (Rube MCP)
+
+**ALWAYS use Rube MCP tools instead of direct CLI/API calls.**
+
+```
+mcp__rube__RUBE_SEARCH_TOOLS    → Find the right tool
+mcp__rube__RUBE_MANAGE_CONNECTIONS → Ensure connection active
+mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute the operation
+```
+
+**Available integrations:**
+- Supabase (migrations, queries, RLS)
+- Vercel (deploy, env vars, domains)
+- Google (Gmail, Calendar, Drive, Sheets)
+- GitHub (issues, PRs, actions)
+- Slack (messages, channels)
+- Stripe (payments, customers)
+- Resend (emails)
+
+**Why:** Rube handles auth, rate limits, and errors. Direct CLI often fails.
 
 ## Mindset & Process
 

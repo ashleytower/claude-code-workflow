@@ -130,6 +130,36 @@ These bash workarounds trigger false-positive security detection and stop the lo
 Write(file_path: "path/to/file.ts", content: "...")
 ```
 
+## CRITICAL: External Service Integration
+
+**ALWAYS use Rube MCP tools for external services. NEVER use direct CLI/API calls.**
+
+Available via `mcp__rube__RUBE_SEARCH_TOOLS`:
+- **Supabase**: Database operations, migrations, RLS policies
+- **Vercel**: Deployments, environment variables, domains
+- **Google**: Gmail, Calendar, Drive, Sheets
+- **GitHub**: Issues, PRs, repos, actions
+- **Slack**: Messages, channels, users
+- **Stripe**: Payments, customers, subscriptions
+- **Resend**: Email sending
+
+**Workflow:**
+1. `mcp__rube__RUBE_SEARCH_TOOLS` - Find the right tool
+2. `mcp__rube__RUBE_MANAGE_CONNECTIONS` - Ensure connection active
+3. `mcp__rube__RUBE_MULTI_EXECUTE_TOOL` - Execute the operation
+
+**Example - Supabase migration:**
+```
+# DON'T: supabase db push
+# DO: Use RUBE_SEARCH_TOOLS to find Supabase migration tools
+```
+
+**Example - Vercel deploy:**
+```
+# DON'T: vercel deploy
+# DO: Use RUBE_SEARCH_TOOLS to find Vercel deployment tools
+```
+
 ## Notes
 
 - Runs in main context (uses your tokens)
