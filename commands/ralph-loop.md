@@ -115,6 +115,21 @@ Or let auto-detection handle it:
 - Clean git status
 - All tests passing
 
+## CRITICAL: File Writing Rules
+
+**ALWAYS use the Write tool for file creation. NEVER use:**
+- `cat > file << 'EOF'`
+- `node -e "fs.writeFileSync(...)"`
+- `echo ... > file`
+- `python -c "open(...).write(...)"`
+
+These bash workarounds trigger false-positive security detection and stop the loop.
+
+**Correct approach:**
+```
+Write(file_path: "path/to/file.ts", content: "...")
+```
+
 ## Notes
 
 - Runs in main context (uses your tokens)
@@ -122,6 +137,7 @@ Or let auto-detection handle it:
 - Can run overnight on large tasks
 - Saves hours of manual iteration
 - Cost-conscious with limits
+- Uses Write tool for all file creation (no bash workarounds)
 
 ---
 
