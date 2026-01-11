@@ -94,7 +94,8 @@
       "Bash(gh pr merge:*)",
       "Bash(gh issue create:*)",
       "Bash(mkdir:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(npx vitest:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
