@@ -144,33 +144,11 @@
           {
             "type": "command",
             "command": "~/.claude/scripts/speak.sh 'Ready to build' &"
-          },
-          {
-            "type": "prompt",
-            "prompt": "AGENT COORDINATION:\n\nCheck for previous agent state:\n  ~/.claude/scripts/agent-state.sh read\n\nIf state exists:\n- Review what the previous agent did\n- Check next_steps from previous agent\n- Continue seamlessly from their work\n\nThis enables multi-agent coordination."
           }
         ]
       }
     ],
     "PreToolUse": [
-      {
-        "matcher": "Write|Edit|AskUserQuestion",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/scripts/check-explored.sh || true"
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/scripts/check-skills.sh"
-          }
-        ]
-      },
       {
         "matcher": "AskUserQuestion",
         "hooks": [
@@ -192,10 +170,6 @@
           {
             "type": "command",
             "command": "~/.claude/scripts/validate-files.sh ~/.claude/agents/*.md ~/.claude/skills/*.md ~/.claude/commands/*.md ~/.claude/settings.local.json 2>/dev/null || true"
-          },
-          {
-            "type": "prompt",
-            "prompt": "If you are an agent working as part of a multi-agent workflow:\n\nUpdate agent state for the next agent:\n  Use TodoWrite or document your progress\n  \nIf this is a major milestone, write state:\n  ~/.claude/scripts/agent-state.sh write '@agent-name' 'status' 'message' '[]' '[\"next step 1\", \"next step 2\"]'\n\nThis helps subsequent agents continue your work."
           }
         ]
       },
@@ -205,10 +179,6 @@
           {
             "type": "command",
             "command": "cd ~/.claude && git add -A && git commit -m 'Auto-checkpoint: After bash operation' --allow-empty 2>/dev/null &"
-          },
-          {
-            "type": "prompt",
-            "prompt": "If you are an agent working as part of a multi-agent workflow:\n\nUpdate agent state for the next agent:\n  Use TodoWrite or document your progress\n  \nIf this is a major milestone, write state:\n  ~/.claude/scripts/agent-state.sh write '@agent-name' 'status' 'message' '[]' '[\"next step 1\", \"next step 2\"]'\n\nThis helps subsequent agents continue your work."
           }
         ]
       }
@@ -217,10 +187,6 @@
       {
         "matcher": "*",
         "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "BEFORE STOPPING:\n\nIf you completed work for a multi-agent workflow:\n1. Write final agent state with next steps\n2. Update TodoWrite with completion status\n3. Save any critical context for next agent\n\nThis ensures seamless handoff to next agent or session."
-          },
           {
             "type": "command",
             "command": "~/.claude/scripts/notify.sh 'Agent needs your input' 'Claude Code' &"
