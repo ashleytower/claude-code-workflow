@@ -92,7 +92,8 @@
       "Bash(vercel deploy:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr merge:*)",
-      "Bash(gh issue create:*)"
+      "Bash(gh issue create:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
