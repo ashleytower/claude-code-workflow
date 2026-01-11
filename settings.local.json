@@ -93,7 +93,8 @@
       "Bash(gh pr create:*)",
       "Bash(gh pr merge:*)",
       "Bash(gh issue create:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(touch:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
