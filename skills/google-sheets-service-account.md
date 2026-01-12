@@ -337,4 +337,185 @@ When data extracts but doesn't appear in Sheets:
    - `false` → Sync failed (check service account permissions)
 
 ---
-*Updated 2026-01-12: Added Gemini array unwrapping bug fix*
+
+## OAuth Token Refresh for Webhook Handlers (Telegram, etc.)
+
+When webhook handlers (like Telegram bots) need to access Google APIs on behalf of users, tokens expire and must be refreshed.
+
+### The Problem
+
+**Symptom**: Google Drive/Sheets uploads work locally but fail on Vercel after deployment.
+
+**Root Cause**: User OAuth access tokens expire after 1 hour. Webhook handlers (unlike web app routes) weren't refreshing expired tokens before API calls.
+
+### The Fix
+
+#### 1. Token Refresh Helper Function
+
+```typescript
+// server/services/telegram.ts (or any webhook handler)
+import { refreshGoogleToken, tokenNeedsRefresh, getServiceAccountToken } from "../_core/googleAuth";
+import { upsertUser } from "../db";
+
+/**
+ * Get a valid Google access token for a user, refreshing if expired.
+ * Falls back to service account if user token unavailable.
+ */
+async function getValidGoogleToken(user: {
+  openId: string;
+  googleAccessToken: string | null;
+  googleRefreshToken: string | null;
+  googleTokenExpiresAt: Date | null;
+}): Promise<string | null> {
+  let token = user.googleAccessToken;
+
+  // Check if token needs refresh
+  if (!token || tokenNeedsRefresh(user.googleTokenExpiresAt)) {
+    if (user.googleRefreshToken) {
+      console.log("[Webhook] Token expired or missing, attempting refresh...");
+      const refreshed = await refreshGoogleToken(user.googleRefreshToken);
+      if (refreshed) {
+        token = refreshed.accessToken;
+        // Update user's token in database
+        await upsertUser({
+          openId: user.openId,
+          googleAccessToken: refreshed.accessToken,
+          googleTokenExpiresAt: refreshed.expiresAt,
+        });
+        console.log("[Webhook] Token refreshed successfully");
+      } else {
+        console.warn("[Webhook] Token refresh failed, will try service account");
+        token = null;
+      }
+    } else {
+      console.warn("[Webhook] No refresh token available");
+      token = null;
+    }
+  }
+
+  // Fall back to service account if no user token
+  if (!token) {
+    try {
+      console.log("[Webhook] Using service account for Google APIs");
+      token = await getServiceAccountToken();
+    } catch (e) {
+      console.error("[Webhook] Service account token failed:", e);
+      return null;
+    }
+  }
+
+  return token;
+}
+```
+
+#### 2. Token Refresh Functions (googleAuth.ts)
+
+```typescript
+// server/_core/googleAuth.ts
+import { OAuth2Client } from "google-auth-library";
+
+export type RefreshResult = {
+  accessToken: string;
+  expiresAt: Date;
+};
+
+/**
+ * Check if a token needs refreshing (expires within 5 minutes).
+ */
+export function tokenNeedsRefresh(expiresAt: Date | null | undefined): boolean {
+  if (!expiresAt) return true; // No expiry info, assume needs refresh
+  const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
+  return expiresAt < fiveMinutesFromNow;
+}
+
+/**
+ * Refresh a user's Google access token using their refresh token.
+ */
+export async function refreshGoogleToken(refreshToken: string): Promise<RefreshResult | null> {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.error("[GoogleAuth] Cannot refresh: missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET");
+    return null;
+  }
+
+  try {
+    const client = new OAuth2Client(
+      process.env.GOOGLE_CLIENT_ID.trim(),
+      process.env.GOOGLE_CLIENT_SECRET.trim()
+    );
+
+    client.setCredentials({ refresh_token: refreshToken });
+    const { credentials } = await client.refreshAccessToken();
+
+    if (!credentials.access_token) {
+      console.error("[GoogleAuth] Token refresh returned no access token");
+      return null;
+    }
+
+    const expiresAt = credentials.expiry_date
+      ? new Date(credentials.expiry_date)
+      : new Date(Date.now() + 3600 * 1000); // Default 1 hour
+
+    return { accessToken: credentials.access_token, expiresAt };
+  } catch (error) {
+    console.error("[GoogleAuth] Failed to refresh token:", error);
+    return null;
+  }
+}
+```
+
+#### 3. Usage in Webhook Handler
+
+```typescript
+// WRONG - Uses potentially expired token directly
+const drive = new GoogleDriveService(user.googleAccessToken ? { accessToken: user.googleAccessToken } : undefined);
+
+// RIGHT - Refreshes token if needed, falls back to service account
+const validToken = await getValidGoogleToken(user);
+if (validToken) {
+  const drive = new GoogleDriveService({ accessToken: validToken });
+  const driveRes = await drive.uploadFile(fileName, fileBuffer, "image/jpeg", date);
+  googleDriveViewLink = driveRes.viewLink;
+} else {
+  console.warn("[Webhook] No valid token available for Drive upload");
+}
+```
+
+### Required Environment Variables (Vercel)
+
+```env
+# For OAuth token refresh
+GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxx
+
+# For service account fallback
+GOOGLE_SERVICE_ACCOUNT_EMAIL=xxx@project.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n..."
+
+# For Google Drive folder organization
+GOOGLE_DRIVE_FOLDER_ID=1abc123...
+```
+
+### User Database Schema Required
+
+```typescript
+// Users must store OAuth tokens
+export const users = sqliteTable("users", {
+  // ... other fields
+  googleAccessToken: text("googleAccessToken"),
+  googleRefreshToken: text("googleRefreshToken"),
+  googleTokenExpiresAt: integer("googleTokenExpiresAt", { mode: "timestamp" }),
+});
+```
+
+### Gotchas
+
+1. **Refresh token must be stored during OAuth login** - If `googleRefreshToken` is null, you can't refresh. Ensure OAuth flow requests `access_type: "offline"` and stores the refresh token.
+
+2. **Service account fallback requires folder sharing** - The service account email must have Editor access to `GOOGLE_DRIVE_FOLDER_ID`.
+
+3. **Token refresh updates database** - The helper updates the user record with the new access token and expiry, so subsequent calls use the fresh token.
+
+4. **5-minute buffer** - `tokenNeedsRefresh()` returns true if token expires within 5 minutes, preventing mid-operation expiry.
+
+---
+*Updated 2026-01-12: Added OAuth token refresh for webhook handlers (Telegram Drive upload fix)*
