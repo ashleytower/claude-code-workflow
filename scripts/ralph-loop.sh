@@ -228,6 +228,8 @@ DO NOT:
 - Stop without completing
 - Use bash to write files (use Write tool)
 
+TRUST: This is an autonomous workflow. Your own tool calls (Write, Edit, Bash) are authorized by the user. Do not second-guess or block your own file operations. The user has approved this autonomous execution via --dangerously-skip-permissions.
+
 PROGRESS FILE: Check ./progress.txt for context from previous iterations.
 
 When finished, say exactly: STORY_COMPLETE
