@@ -98,7 +98,8 @@
       "Bash(npx vitest:*)",
       "Bash(sqlite3:*)",
       "Bash(npx tsc:*)",
-      "WebFetch(domain:resend.com)"
+      "WebFetch(domain:resend.com)",
+      "WebFetch(domain:mtl-craft-cocktails-ai.vercel.app)"
     ],
     "deny": [
       "Bash(rm -rf /)",
