@@ -278,3 +278,63 @@ await sheetsService.appendRows(sheetId, "Items", rows);
   - Discovered Vercel env var newline escaping issue
   - Documented service account sharing requirement
   - Added silent failure debugging checklist
+
+## Gemini PDF Extraction Integration
+
+When using Gemini 2.0 Flash for PDF extraction that syncs to Sheets:
+
+### Environment Variable Name
+```env
+# WRONG - won't work
+GEMINI_API_KEY=xxx
+
+# RIGHT
+GOOGLE_API_KEY=xxx
+```
+
+### CRITICAL: Array Response Bug
+
+**THE BUG**: Gemini returns `[{...}]` (array) instead of `{...}` (object).
+
+**SYMPTOMS**:
+- Extraction shows "complete" but all fields are null
+- `rawResponse` contains correct data but parsed fields are empty
+- `sheetsSynced: true` but data columns are empty
+
+**ROOT FIX** - Unwrap arrays at end of your JSON parser:
+
+```typescript
+// Unwrap single-element arrays (Gemini sometimes returns [{...}] instead of {...})
+if (Array.isArray(result) && result.length > 0) {
+  return result[0];
+}
+return result ?? {};
+```
+
+**WRONG** (bandaid fixes scattered everywhere):
+```typescript
+// DON'T do this - patches at multiple locations
+if (Array.isArray(parsed)) parsed = parsed[0]; // Line 100
+if (Array.isArray(result)) result = result[0]; // Line 200
+```
+
+**RIGHT**: One unwrap at the end of parser function.
+
+### Debugging Extraction + Sheets Sync
+
+When data extracts but doesn't appear in Sheets:
+
+1. Check `rawExtractionData.rawResponse` in database
+   - Starts with `[` → Array unwrapping bug
+   - Starts with `{` → Different parsing issue
+   - Empty → Gemini API issue (check GOOGLE_API_KEY)
+
+2. Check parsed fields (institution, date, etc.)
+   - All null but rawResponse has data → Parser not unwrapping
+
+3. Check `sheetsSynced` flag
+   - `true` but empty sheet → Extraction failed before sync
+   - `false` → Sync failed (check service account permissions)
+
+---
+*Updated 2026-01-12: Added Gemini array unwrapping bug fix*
