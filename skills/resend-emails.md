@@ -154,11 +154,19 @@ const BLOCKED_DOMAINS = [
 
 // Allowed noreply senders (leads + payments)
 const ALLOWED_NOREPLY = [
-  'dubsado.com',      // Lead notifications
+  'dubsado.com',      // Lead notifications (ONLY "New Lead:" emails)
   'stripe.com',       // Payment notifications
   'square.com',       // Payment notifications
   'interac.ca',       // E-transfers
 ];
+
+// CRITICAL: Dubsado sends many admin emails (reminders, approvals, etc.)
+// Only process emails with "New Lead:" in subject
+if (domain.includes('dubsado.com')) {
+  if (!subjectLower.includes('new lead:')) {
+    return { process: false, reason: 'dubsado_not_new_lead' };
+  }
+}
 
 function shouldProcessEmail(fromEmail, subject, bodyText) {
   const domain = fromEmail.match(/@([a-z0-9.-]+)/i)?.[1] || '';
@@ -318,3 +326,4 @@ curl https://your-app.vercel.app/api/email/sync
 - 2026-01-12: Added email filtering (spam, newsletters, system notifications)
 - 2026-01-12: Added array handling for reply-to header
 - 2026-01-12: Added original sender extraction for forwarded emails
+- 2026-01-12: Dubsado filtering - ONLY allow "New Lead:" emails, block admin/reminder emails
