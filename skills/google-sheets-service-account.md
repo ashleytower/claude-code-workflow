@@ -2,8 +2,8 @@
 name: google-sheets-service-account
 category: integration
 frameworks: [nextjs, node, vercel]
-last_updated: 2026-01-11
-version: Google Sheets API v4
+last_updated: 2026-01-12
+version: Google Sheets API v4 + Drive API v3
 ---
 
 # Google Sheets Service Account Integration
@@ -344,62 +344,70 @@ When webhook handlers (like Telegram bots) need to access Google APIs on behalf 
 
 ### The Problem
 
-**Symptom**: Google Drive/Sheets uploads work locally but fail on Vercel after deployment.
+**Symptom**: Google Drive uploads fail with 403 "Service Accounts do not have storage quota" or tokens expire after 1 hour.
 
-**Root Cause**: User OAuth access tokens expire after 1 hour. Webhook handlers (unlike web app routes) weren't refreshing expired tokens before API calls.
+**Root Causes**:
+1. OAuth flow missing `prompt: "consent"` - Google only returns refresh_token on FIRST authorization
+2. Service account fallback used for Drive - service accounts CAN'T upload to personal Drive
+3. Webhook handlers not refreshing expired tokens before API calls
 
-### The Fix
+### Root Fix 1: OAuth Must Force Consent
 
-#### 1. Token Refresh Helper Function
+**CRITICAL**: Add `prompt: "consent"` to OAuth flow. Without it, Google only returns refresh_token the first time a user authorizes.
 
 ```typescript
-// server/services/telegram.ts (or any webhook handler)
-import { refreshGoogleToken, tokenNeedsRefresh, getServiceAccountToken } from "../_core/googleAuth";
-import { upsertUser } from "../db";
+// server/_core/oauth.ts
+const url = client.generateAuthUrl({
+  access_type: "offline",
+  prompt: "consent", // CRITICAL: Forces refresh_token on every login
+  scope: [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.file",
+  ],
+});
+```
 
+### Root Fix 2: Service Account Fallback - Sheets Only, NOT Drive
+
+**CRITICAL**: Service accounts CAN write to shared Google Sheets but CANNOT upload to Google Drive (no storage quota).
+
+```typescript
 /**
  * Get a valid Google access token for a user, refreshing if expired.
- * Falls back to service account if user token unavailable.
+ * @param allowServiceAccountFallback - true for Sheets, false for Drive
  */
-async function getValidGoogleToken(user: {
-  openId: string;
-  googleAccessToken: string | null;
-  googleRefreshToken: string | null;
-  googleTokenExpiresAt: Date | null;
-}): Promise<string | null> {
+async function getValidGoogleToken(
+  user: { openId: string; googleAccessToken: string | null; googleRefreshToken: string | null; googleTokenExpiresAt: Date | null },
+  allowServiceAccountFallback: boolean = false
+): Promise<string | null> {
   let token = user.googleAccessToken;
 
   // Check if token needs refresh
   if (!token || tokenNeedsRefresh(user.googleTokenExpiresAt)) {
     if (user.googleRefreshToken) {
-      console.log("[Webhook] Token expired or missing, attempting refresh...");
       const refreshed = await refreshGoogleToken(user.googleRefreshToken);
       if (refreshed) {
         token = refreshed.accessToken;
-        // Update user's token in database
         await upsertUser({
           openId: user.openId,
           googleAccessToken: refreshed.accessToken,
           googleTokenExpiresAt: refreshed.expiresAt,
         });
-        console.log("[Webhook] Token refreshed successfully");
       } else {
-        console.warn("[Webhook] Token refresh failed, will try service account");
         token = null;
       }
     } else {
-      console.warn("[Webhook] No refresh token available");
       token = null;
     }
   }
 
-  // Fall back to service account if no user token
-  if (!token) {
+  // Service account fallback ONLY for Sheets, NEVER for Drive
+  if (!token && allowServiceAccountFallback) {
     try {
-      console.log("[Webhook] Using service account for Google APIs");
       token = await getServiceAccountToken();
     } catch (e) {
-      console.error("[Webhook] Service account token failed:", e);
       return null;
     }
   }
@@ -408,114 +416,456 @@ async function getValidGoogleToken(user: {
 }
 ```
 
-#### 2. Token Refresh Functions (googleAuth.ts)
+### Usage
+
+```typescript
+// For Google Drive - NO service account fallback (will fail with 403)
+const driveToken = await getValidGoogleToken(user, false);
+if (driveToken) {
+  const drive = new GoogleDriveService({ accessToken: driveToken });
+  await drive.uploadFile(fileName, fileBuffer, "image/jpeg", date);
+}
+
+// For Google Sheets - service account fallback OK
+const sheetsToken = await getValidGoogleToken(user, true);
+if (sheetsToken) {
+  const sheets = new GoogleSheetsService({ accessToken: sheetsToken });
+  await sheets.syncInvoice(sheetId, "Invoices", invoice);
+}
+```
+
+### Root Fix 3: Telegram Account Linking via OAuth State
+
+When users access via Telegram, they need to link their Telegram account to their Google OAuth account.
+
+```typescript
+// Telegram /start command - provide linking URL
+bot.start(async (ctx) => {
+  const telegramId = ctx.from.id.toString();
+  const user = await getUserByTelegramId(telegramId);
+
+  if (user) {
+    await ctx.reply(`Welcome back! Send me a receipt photo.`);
+  } else {
+    const baseUrl = process.env.OAUTH_SERVER_URL || "https://your-app.vercel.app";
+    const linkingUrl = `${baseUrl}/api/auth/google?telegramId=${telegramId}`;
+    await ctx.reply(`Click to link your account:\n\n${linkingUrl}`);
+  }
+});
+
+// OAuth login route - pass telegramId through state
+app.get("/api/auth/google", (req, res) => {
+  const telegramId = req.query.telegramId;
+  let state: string | undefined;
+  if (telegramId) {
+    state = Buffer.from(JSON.stringify({ telegramId })).toString("base64");
+  }
+
+  const url = client.generateAuthUrl({
+    access_type: "offline",
+    prompt: "consent",
+    scope: [...],
+    state,
+  });
+  res.redirect(url);
+});
+
+// OAuth callback - extract telegramId and link account
+app.get("/api/oauth/callback", async (req, res) => {
+  const state = req.query.state;
+  let telegramId: string | undefined;
+  if (state) {
+    try {
+      const stateData = JSON.parse(Buffer.from(state, "base64").toString());
+      telegramId = stateData.telegramId;
+    } catch {}
+  }
+
+  // ... token exchange ...
+
+  const userData = {
+    openId: payload.sub,
+    email: payload.email,
+    googleAccessToken: tokens.access_token,
+    googleRefreshToken: tokens.refresh_token,
+    googleTokenExpiresAt: tokenExpiresAt,
+  };
+
+  // Link Telegram account if telegramId was passed
+  if (telegramId) {
+    userData.telegramId = telegramId;
+  }
+
+  await db.upsertUser(userData);
+});
+```
+
+### Token Refresh Functions
 
 ```typescript
 // server/_core/googleAuth.ts
-import { OAuth2Client } from "google-auth-library";
-
-export type RefreshResult = {
-  accessToken: string;
-  expiresAt: Date;
-};
-
-/**
- * Check if a token needs refreshing (expires within 5 minutes).
- */
 export function tokenNeedsRefresh(expiresAt: Date | null | undefined): boolean {
-  if (!expiresAt) return true; // No expiry info, assume needs refresh
+  if (!expiresAt) return true;
   const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
   return expiresAt < fiveMinutesFromNow;
 }
 
-/**
- * Refresh a user's Google access token using their refresh token.
- */
-export async function refreshGoogleToken(refreshToken: string): Promise<RefreshResult | null> {
-  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-    console.error("[GoogleAuth] Cannot refresh: missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET");
-    return null;
-  }
+export async function refreshGoogleToken(refreshToken: string): Promise<{ accessToken: string; expiresAt: Date } | null> {
+  const client = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET
+  );
+  client.setCredentials({ refresh_token: refreshToken });
+  const { credentials } = await client.refreshAccessToken();
 
-  try {
-    const client = new OAuth2Client(
-      process.env.GOOGLE_CLIENT_ID.trim(),
-      process.env.GOOGLE_CLIENT_SECRET.trim()
-    );
+  if (!credentials.access_token) return null;
 
-    client.setCredentials({ refresh_token: refreshToken });
-    const { credentials } = await client.refreshAccessToken();
-
-    if (!credentials.access_token) {
-      console.error("[GoogleAuth] Token refresh returned no access token");
-      return null;
-    }
-
-    const expiresAt = credentials.expiry_date
-      ? new Date(credentials.expiry_date)
-      : new Date(Date.now() + 3600 * 1000); // Default 1 hour
-
-    return { accessToken: credentials.access_token, expiresAt };
-  } catch (error) {
-    console.error("[GoogleAuth] Failed to refresh token:", error);
-    return null;
-  }
+  return {
+    accessToken: credentials.access_token,
+    expiresAt: credentials.expiry_date ? new Date(credentials.expiry_date) : new Date(Date.now() + 3600000)
+  };
 }
 ```
 
-#### 3. Usage in Webhook Handler
-
-```typescript
-// WRONG - Uses potentially expired token directly
-const drive = new GoogleDriveService(user.googleAccessToken ? { accessToken: user.googleAccessToken } : undefined);
-
-// RIGHT - Refreshes token if needed, falls back to service account
-const validToken = await getValidGoogleToken(user);
-if (validToken) {
-  const drive = new GoogleDriveService({ accessToken: validToken });
-  const driveRes = await drive.uploadFile(fileName, fileBuffer, "image/jpeg", date);
-  googleDriveViewLink = driveRes.viewLink;
-} else {
-  console.warn("[Webhook] No valid token available for Drive upload");
-}
-```
-
-### Required Environment Variables (Vercel)
+### Required Environment Variables
 
 ```env
-# For OAuth token refresh
 GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=xxx
-
-# For service account fallback
-GOOGLE_SERVICE_ACCOUNT_EMAIL=xxx@project.iam.gserviceaccount.com
-GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n..."
-
-# For Google Drive folder organization
-GOOGLE_DRIVE_FOLDER_ID=1abc123...
-```
-
-### User Database Schema Required
-
-```typescript
-// Users must store OAuth tokens
-export const users = sqliteTable("users", {
-  // ... other fields
-  googleAccessToken: text("googleAccessToken"),
-  googleRefreshToken: text("googleRefreshToken"),
-  googleTokenExpiresAt: integer("googleTokenExpiresAt", { mode: "timestamp" }),
-});
+OAUTH_SERVER_URL=https://your-app.vercel.app
 ```
 
 ### Gotchas
 
-1. **Refresh token must be stored during OAuth login** - If `googleRefreshToken` is null, you can't refresh. Ensure OAuth flow requests `access_type: "offline"` and stores the refresh token.
+1. **`prompt: "consent"` is REQUIRED** - Without it, Google only returns refresh_token on first auth. Users will get stuck with expired tokens.
 
-2. **Service account fallback requires folder sharing** - The service account email must have Editor access to `GOOGLE_DRIVE_FOLDER_ID`.
+2. **Service accounts CANNOT upload to Drive** - They have no storage quota. Only use for Sheets.
 
-3. **Token refresh updates database** - The helper updates the user record with the new access token and expiry, so subsequent calls use the fresh token.
+3. **Two user accounts problem** - If Telegram creates separate users, link via OAuth state parameter, not manual DB updates.
 
-4. **5-minute buffer** - `tokenNeedsRefresh()` returns true if token expires within 5 minutes, preventing mid-operation expiry.
+4. **Token refresh saves to database** - The helper updates the user record so subsequent calls use the fresh token.
 
 ---
-*Updated 2026-01-12: Added OAuth token refresh for webhook handlers (Telegram Drive upload fix)*
+
+## Complete Working Example: Telegram Bot with Drive + Sheets
+
+Full working code for a Telegram bot that receives photos, uploads to Drive, and syncs to Sheets.
+
+### Database Schema (Drizzle ORM)
+
+```typescript
+// drizzle/schema.ts
+import { pgTable, serial, text, timestamp, integer } from "drizzle-orm/pg-core";
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  openId: text("openId").notNull().unique(),
+  email: text("email"),
+  name: text("name"),
+  telegramId: text("telegramId").unique(),
+  googleAccessToken: text("googleAccessToken"),
+  googleRefreshToken: text("googleRefreshToken"),
+  googleTokenExpiresAt: timestamp("googleTokenExpiresAt"),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").defaultNow(),
+});
+
+export const settings = pgTable("settings", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().references(() => users.id),
+  invoiceSheetId: text("invoiceSheetId"),
+  invoiceSheetName: text("invoiceSheetName").default("Invoices"),
+});
+```
+
+### Complete Telegram Handler
+
+```typescript
+// server/services/telegram.ts
+import { Telegraf } from "telegraf";
+import { message } from "telegraf/filters";
+import { getUserByTelegramId, upsertUser, getOrCreateSettings } from "../db";
+import { refreshGoogleToken, tokenNeedsRefresh, getServiceAccountToken } from "../_core/googleAuth";
+import { GoogleDriveService } from "./googleDrive";
+import { GoogleSheetsService } from "./googleSheets";
+
+const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+
+/**
+ * Get valid Google token with automatic refresh.
+ * @param allowServiceAccountFallback - true for Sheets, false for Drive
+ */
+async function getValidGoogleToken(
+  user: {
+    openId: string;
+    googleAccessToken: string | null;
+    googleRefreshToken: string | null;
+    googleTokenExpiresAt: Date | null;
+  },
+  allowServiceAccountFallback: boolean = false
+): Promise<string | null> {
+  let token = user.googleAccessToken;
+
+  if (!token || tokenNeedsRefresh(user.googleTokenExpiresAt)) {
+    if (user.googleRefreshToken) {
+      console.log("[Telegram] Refreshing expired token...");
+      const refreshed = await refreshGoogleToken(user.googleRefreshToken);
+      if (refreshed) {
+        token = refreshed.accessToken;
+        await upsertUser({
+          openId: user.openId,
+          googleAccessToken: refreshed.accessToken,
+          googleTokenExpiresAt: refreshed.expiresAt,
+        });
+        console.log("[Telegram] Token refreshed successfully");
+      } else {
+        console.warn("[Telegram] Token refresh failed");
+        token = null;
+      }
+    } else {
+      console.warn("[Telegram] No refresh token - user needs to re-login");
+      token = null;
+    }
+  }
+
+  // Service account fallback ONLY for Sheets
+  if (!token && allowServiceAccountFallback) {
+    try {
+      console.log("[Telegram] Using service account for Sheets");
+      token = await getServiceAccountToken();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  return token;
+}
+
+export function setupTelegramBot() {
+  if (!BOT_TOKEN) return null;
+  const bot = new Telegraf(BOT_TOKEN);
+
+  // /start - Provide linking URL for new users
+  bot.start(async (ctx) => {
+    const telegramId = ctx.from.id.toString();
+    const user = await getUserByTelegramId(telegramId);
+
+    if (user) {
+      await ctx.reply("Welcome back! Send me a receipt photo.");
+    } else {
+      const baseUrl = process.env.OAUTH_SERVER_URL || "https://your-app.vercel.app";
+      const linkingUrl = `${baseUrl}/api/auth/google?telegramId=${telegramId}`;
+      await ctx.reply(
+        `To link your account, click this link and sign in with Google:\n\n${linkingUrl}`
+      );
+    }
+  });
+
+  // Handle photo messages
+  bot.on(message("photo"), async (ctx) => {
+    const telegramId = ctx.from.id.toString();
+    const user = await getUserByTelegramId(telegramId);
+
+    if (!user) {
+      await ctx.reply("Your account is not linked. Type /start to get linking instructions.");
+      return;
+    }
+
+    await ctx.reply("Processing your receipt...");
+
+    try {
+      // Download photo from Telegram
+      const photos = ctx.message.photo;
+      const largestPhoto = photos[photos.length - 1];
+      const file = await ctx.telegram.getFile(largestPhoto.file_id);
+      const fileUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${file.file_path}`;
+      const fileRes = await fetch(fileUrl);
+      const fileBuffer = Buffer.from(await fileRes.arrayBuffer());
+      const fileName = `receipt-${Date.now()}.jpg`;
+
+      // 1. Upload to Google Drive (NO service account fallback)
+      let googleDriveViewLink: string | null = null;
+      const driveToken = await getValidGoogleToken(user, false);
+      if (driveToken) {
+        try {
+          const drive = new GoogleDriveService({ accessToken: driveToken });
+          const driveRes = await drive.uploadFile(fileName, fileBuffer, "image/jpeg", new Date());
+          googleDriveViewLink = driveRes.viewLink;
+          console.log("[Telegram] Drive upload success:", googleDriveViewLink);
+        } catch (e) {
+          console.error("[Telegram] Drive upload failed:", e);
+        }
+      } else {
+        console.warn("[Telegram] No valid token for Drive upload");
+      }
+
+      // 2. Extract data from receipt (your extraction logic here)
+      const extractedData = {
+        store: "Example Store",
+        amount: "25.99",
+        date: new Date().toISOString().split("T")[0],
+        photoUrl: googleDriveViewLink,
+      };
+
+      // 3. Sync to Google Sheets (service account fallback OK)
+      const sheetsToken = await getValidGoogleToken(user, true);
+      if (sheetsToken) {
+        try {
+          const settings = await getOrCreateSettings(user.id);
+          if (settings.invoiceSheetId) {
+            const sheets = new GoogleSheetsService({ accessToken: sheetsToken });
+            await sheets.appendRows(settings.invoiceSheetId, settings.invoiceSheetName || "Invoices", [
+              [extractedData.date, extractedData.store, extractedData.amount, extractedData.photoUrl]
+            ]);
+            console.log("[Telegram] Sheets sync success");
+            await ctx.reply("Receipt processed and synced to Google Sheets!");
+          }
+        } catch (e) {
+          console.error("[Telegram] Sheets sync failed:", e);
+        }
+      }
+
+    } catch (error) {
+      console.error("[Telegram] Processing error:", error);
+      await ctx.reply("Failed to process receipt.");
+    }
+  });
+
+  return bot;
+}
+```
+
+### Complete OAuth Routes
+
+```typescript
+// server/_core/oauth.ts
+import { OAuth2Client } from "google-auth-library";
+import * as db from "../db";
+
+export function registerOAuthRoutes(app: Express) {
+  // Login route - accepts optional telegramId for linking
+  app.get("/api/auth/google", (req, res) => {
+    const { clientId, clientSecret } = getGoogleCredentials();
+    const redirectUri = `${process.env.OAUTH_SERVER_URL}/api/oauth/callback`;
+
+    const client = new OAuth2Client(clientId, clientSecret, redirectUri);
+
+    // Pass telegramId through OAuth state if present
+    const telegramId = req.query.telegramId as string;
+    let state: string | undefined;
+    if (telegramId) {
+      state = Buffer.from(JSON.stringify({ telegramId })).toString("base64");
+    }
+
+    const url = client.generateAuthUrl({
+      access_type: "offline",
+      prompt: "consent", // CRITICAL: Always get refresh token
+      scope: [
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile",
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive.file",
+      ],
+      state,
+    });
+
+    res.redirect(url);
+  });
+
+  // Callback route - handles token exchange and Telegram linking
+  app.get("/api/oauth/callback", async (req, res) => {
+    const code = req.query.code as string;
+    const state = req.query.state as string;
+
+    // Extract telegramId from state if present
+    let telegramId: string | undefined;
+    if (state) {
+      try {
+        const stateData = JSON.parse(Buffer.from(state, "base64").toString());
+        telegramId = stateData.telegramId;
+      } catch {}
+    }
+
+    const { clientId, clientSecret } = getGoogleCredentials();
+    const redirectUri = `${process.env.OAUTH_SERVER_URL}/api/oauth/callback`;
+    const client = new OAuth2Client(clientId, clientSecret, redirectUri);
+
+    const { tokens } = await client.getToken(code);
+    client.setCredentials(tokens);
+
+    const ticket = await client.verifyIdToken({
+      idToken: tokens.id_token!,
+      audience: clientId,
+    });
+    const payload = ticket.getPayload()!;
+
+    const tokenExpiresAt = tokens.expiry_date
+      ? new Date(tokens.expiry_date)
+      : new Date(Date.now() + 3600 * 1000);
+
+    // Build user data with optional telegramId linking
+    const userData: any = {
+      openId: payload.sub,
+      name: payload.name || "User",
+      email: payload.email!,
+      googleAccessToken: tokens.access_token!,
+      googleRefreshToken: tokens.refresh_token || undefined,
+      googleTokenExpiresAt: tokenExpiresAt,
+    };
+
+    if (telegramId) {
+      userData.telegramId = telegramId;
+      console.log("[OAuth] Linking Telegram ID:", telegramId);
+    }
+
+    await db.upsertUser(userData);
+
+    res.redirect("/");
+  });
+}
+```
+
+### All Required Environment Variables
+
+```env
+# Google OAuth (for user login and token refresh)
+GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxx
+
+# Google Service Account (for Sheets fallback only - NOT for Drive)
+GOOGLE_SERVICE_ACCOUNT_EMAIL=xxx@project.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+
+# Google Drive folder (optional - for organizing uploads)
+GOOGLE_DRIVE_FOLDER_ID=1abc123...
+
+# Telegram Bot
+TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+
+# App URLs
+OAUTH_SERVER_URL=https://your-app.vercel.app
+```
+
+### Debugging Checklist
+
+When Telegram uploads fail:
+
+1. [ ] Check if user has `googleRefreshToken` in database (not just accessToken)
+2. [ ] Verify OAuth flow includes `prompt: "consent"`
+3. [ ] Check if user's `telegramId` is linked to correct account
+4. [ ] For Drive: ensure NOT using service account fallback
+5. [ ] For Sheets: verify service account email has Editor access to sheet
+6. [ ] Check Vercel logs for `[Telegram]` prefixed messages
+7. [ ] Verify all environment variables are set in Vercel
+
+### Common Errors
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| "Service Accounts do not have storage quota" | Using service account for Drive | Use user OAuth token, not service account |
+| "invalid_grant" or "Token has been revoked" | Refresh token invalid | User must re-login via `/start` |
+| "Your account is not linked" | telegramId not in database | User clicks linking URL from `/start` |
+| Sheets sync works but Drive fails | Different fallback behavior | Drive needs user token, Sheets can use service account |
+
+---
+*Updated 2026-01-12: Complete rewrite with tested root fixes (prompt:consent, no Drive fallback, Telegram linking)*
