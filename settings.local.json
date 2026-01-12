@@ -101,7 +101,8 @@
       "WebFetch(domain:resend.com)",
       "WebFetch(domain:mtl-craft-cocktails-ai.vercel.app)",
       "Skill(learn)",
-      "Bash(npx supabase status)"
+      "Bash(npx supabase status)",
+      "WebFetch(domain:developers.google.com)"
     ],
     "deny": [
       "Bash(rm -rf /)",
