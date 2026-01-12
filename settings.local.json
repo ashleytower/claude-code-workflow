@@ -99,7 +99,8 @@
       "Bash(sqlite3:*)",
       "Bash(npx tsc:*)",
       "WebFetch(domain:resend.com)",
-      "WebFetch(domain:mtl-craft-cocktails-ai.vercel.app)"
+      "WebFetch(domain:mtl-craft-cocktails-ai.vercel.app)",
+      "Skill(learn)"
     ],
     "deny": [
       "Bash(rm -rf /)",
