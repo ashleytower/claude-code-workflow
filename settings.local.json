@@ -97,7 +97,8 @@
       "Bash(touch:*)",
       "Bash(npx vitest:*)",
       "Bash(sqlite3:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:resend.com)"
     ],
     "deny": [
       "Bash(rm -rf /)",
