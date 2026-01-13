@@ -89,10 +89,10 @@ get_next_story() {
     jq -r '.stories[] | select(.passes == false) | .id' "$PRD_FILE" | head -1
 }
 
-# Get story details
+# Get story details (handles both string and numeric IDs)
 get_story_details() {
     local story_id="$1"
-    jq -r ".stories[] | select(.id == \"$story_id\")" "$PRD_FILE"
+    jq -r --arg id "$story_id" '.stories[] | select((.id|tostring) == $id)' "$PRD_FILE"
 }
 
 # Get story attempt count
