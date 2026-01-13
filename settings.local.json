@@ -107,7 +107,9 @@
       "WebFetch(domain:ai.google.dev)",
       "WebFetch(domain:medium.com)",
       "WebFetch(domain:igorstechnoclub.com)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
