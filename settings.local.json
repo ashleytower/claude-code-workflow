@@ -32,7 +32,8 @@
       "WebFetch(domain:virvid.ai)",
       "WebFetch(domain:sendshort.ai)",
       "WebFetch(domain:ai.studio)",
-      "WebFetch(domain:aistudio.google.com)"
+      "WebFetch(domain:aistudio.google.com)",
+      "Bash(python3:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
