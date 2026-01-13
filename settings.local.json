@@ -33,7 +33,8 @@
       "WebFetch(domain:sendshort.ai)",
       "WebFetch(domain:ai.studio)",
       "WebFetch(domain:aistudio.google.com)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(streamlit run:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
