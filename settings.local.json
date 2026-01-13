@@ -25,7 +25,8 @@
       "WebFetch(domain:kie.ai)",
       "WebFetch(domain:sync.so)",
       "WebFetch(domain:www.d-id.com)",
-      "WebFetch(domain:www.heygen.com)"
+      "WebFetch(domain:www.heygen.com)",
+      "WebFetch(domain:amperly.com)"
     ],
     "deny": [
       "Bash(rm -rf /)",
