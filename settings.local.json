@@ -19,7 +19,8 @@
       "AskUserQuestion",
       "TodoWrite",
       "EnterPlanMode",
-      "ExitPlanMode"
+      "ExitPlanMode",
+      "Bash(open:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
