@@ -135,7 +135,9 @@
       "WebFetch(domain:civitai.com)",
       "WebFetch(domain:runtheprompts.com)",
       "WebFetch(domain:www.saxifrage.xyz)",
-      "Bash(open:*)"
+      "Bash(open:*)",
+      "WebFetch(domain:krea.ai)",
+      "WebFetch(domain:kie.ai)"
     ],
     "deny": [
       "Bash(rm -rf /)",
