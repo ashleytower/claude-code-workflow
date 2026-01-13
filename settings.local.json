@@ -106,7 +106,8 @@
       "WebFetch(domain:dev.to)",
       "WebFetch(domain:ai.google.dev)",
       "WebFetch(domain:medium.com)",
-      "WebFetch(domain:igorstechnoclub.com)"
+      "WebFetch(domain:igorstechnoclub.com)",
+      "Bash(lsof:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
