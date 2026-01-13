@@ -5,7 +5,7 @@ description: Smart authentication - picks best solution for your framework
 
 # Auth Skill - Stop Wasting Time on Auth
 
-**Last updated**: 2026-01-08
+**Last updated**: 2026-01-11
 **Auto-updates**: Weekly (run `~/.claude/scripts/update-auth-docs.sh`)
 
 ---

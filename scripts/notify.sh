@@ -1,9 +1,16 @@
 #!/bin/bash
-# macOS notification script
-# Usage: notify.sh "message" "title"
+# Global notification script for Claude Code
+# Sends both macOS notifications and iTerm2 alerts
 
-MESSAGE="${1:-Claude Code Alert}"
+MESSAGE="$1"
 TITLE="${2:-Claude Code}"
 
-# Send macOS notification
-osascript -e "display notification \"$MESSAGE\" with title \"$TITLE\" sound name \"Glass\""
+# iTerm2 notification (works on macOS)
+if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
+  echo -e "\033]9;${MESSAGE}\007"
+fi
+
+# macOS native notification
+osascript -e "display notification \"${MESSAGE}\" with title \"${TITLE}\"" 2>/dev/null
+
+exit 0
