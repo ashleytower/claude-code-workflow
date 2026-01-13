@@ -113,7 +113,8 @@
       "Bash(/Users/ashleytower/Library/Python/3.9/bin/streamlit run app.py --server.port 8501)",
       "Bash(/Users/ashleytower/Library/Python/3.9/bin/streamlit run app.py --server.port 8501 --server.headless true)",
       "Bash(export GEMINI_API_KEY:*)",
-      "Bash(claude config list:*)"
+      "Bash(claude config list:*)",
+      "Bash(claude:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
