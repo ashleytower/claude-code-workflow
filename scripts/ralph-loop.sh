@@ -95,38 +95,40 @@ get_story_details() {
     jq -r --arg id "$story_id" '.stories[] | select((.id|tostring) == $id)' "$PRD_FILE"
 }
 
-# Get story attempt count
+# Get story attempt count (handles both string and numeric IDs)
 get_story_attempts() {
     local story_id="$1"
-    jq -r ".stories[] | select(.id == \"$story_id\") | .attempts // 0" "$PRD_FILE"
+    jq -r --arg id "$story_id" '.stories[] | select((.id|tostring) == $id) | .attempts // 0' "$PRD_FILE"
 }
 
-# Increment story attempt count
+# Increment story attempt count (handles both string and numeric IDs)
 increment_story_attempts() {
     local story_id="$1"
     local temp_file=$(mktemp)
 
-    jq "(.stories[] | select(.id == \"$story_id\")).attempts = ((.stories[] | select(.id == \"$story_id\")).attempts // 0) + 1" "$PRD_FILE" > "$temp_file"
+    jq --arg id "$story_id" '(.stories[] | select((.id|tostring) == $id)).attempts = ((.stories[] | select((.id|tostring) == $id)).attempts // 0) + 1' "$PRD_FILE" > "$temp_file"
     mv "$temp_file" "$PRD_FILE"
 }
 
-# Mark story as complete
+# Mark story as complete (handles both string and numeric IDs)
 mark_story_complete() {
     local story_id="$1"
     local temp_file=$(mktemp)
+    local timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-    jq "(.stories[] | select(.id == \"$story_id\")).passes = true | (.stories[] | select(.id == \"$story_id\")).completed_at = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" "$PRD_FILE" > "$temp_file"
+    jq --arg id "$story_id" --arg ts "$timestamp" '(.stories[] | select((.id|tostring) == $id)).passes = true | (.stories[] | select((.id|tostring) == $id)).completed_at = $ts' "$PRD_FILE" > "$temp_file"
     mv "$temp_file" "$PRD_FILE"
 
     log_success "Marked story $story_id as complete"
 }
 
-# Mark story as failed (exceeded pass@k attempts)
+# Mark story as failed (exceeded pass@k attempts, handles both string and numeric IDs)
 mark_story_failed() {
     local story_id="$1"
     local temp_file=$(mktemp)
+    local timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-    jq "(.stories[] | select(.id == \"$story_id\")).failed = true | (.stories[] | select(.id == \"$story_id\")).failed_at = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" "$PRD_FILE" > "$temp_file"
+    jq --arg id "$story_id" --arg ts "$timestamp" '(.stories[] | select((.id|tostring) == $id)).failed = true | (.stories[] | select((.id|tostring) == $id)).failed_at = $ts' "$PRD_FILE" > "$temp_file"
     mv "$temp_file" "$PRD_FILE"
 
     log_error "Marked story $story_id as FAILED (exceeded $PASS_K attempts)"
