@@ -20,7 +20,12 @@
       "TodoWrite",
       "EnterPlanMode",
       "ExitPlanMode",
-      "Bash(open:*)"
+      "Bash(open:*)",
+      "WebFetch(domain:docs.kie.ai)",
+      "WebFetch(domain:kie.ai)",
+      "WebFetch(domain:sync.so)",
+      "WebFetch(domain:www.d-id.com)",
+      "WebFetch(domain:www.heygen.com)"
     ],
     "deny": [
       "Bash(rm -rf /)",
