@@ -1,42 +1,37 @@
 ---
 name: ralph-loop
-description: Autonomous loop for hours of unattended work
+description: Run autonomous loop with pass@k evaluation
 model: sonnet
 ---
 
-# Ralph Loop - Autonomous Development
+# Ralph Loop - Autonomous Task Completion with pass@k
 
-Run Claude autonomously for hours. Go to sleep, wake up to commits.
+Run tasks autonomously with Anthropic's agent evaluation methodology.
 
-## Two Modes
+Based on: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
 
-### Simple Mode (original)
+## How pass@k Works
+
+**Pass@k** measures the likelihood an agent succeeds in k attempts. If ANY attempt passes, the story passes. After k failures, the story is marked failed.
+
+- `pass@1`: Must succeed first try (strict)
+- `pass@3`: 3 attempts to succeed (default, recommended)
+- `pass@5`: 5 attempts (lenient)
+
+## Process
+
+1. **Execute**: Run Claude with story
+2. **Verify**: Run tests / check markers
+3. **Pass?**: Mark complete, commit, move to next
+4. **Fail?**: Revert changes, retry (up to k times)
+5. **Exceeded k?**: Mark story FAILED, move to next
+
+## Configuration
+
 ```bash
-/ralph-loop "Fix all TypeScript errors"
-```
-Loops until git is clean. Good for migrations/refactors.
-
-### PRD Mode (for hours of autonomous work)
-```bash
-/ralph-loop --prd ./prd.json
-```
-Works through user stories, commits after each. This is what you want for feature development.
-
-## Quick Start
-
-```bash
-# 1. Voice your ideas (Wispr)
-"I want an app that tracks movies, with search, ratings, and dark mode"
-
-# 2. Create PRD with user stories
-/create-prd
-
-# 3. Review the prd.json, adjust if needed
-
-# 4. Start Ralph
-/ralph-loop --prd ./prd.json --max-iterations 50
-
-# 5. Go to sleep. Wake up to commits.
+export RALPH_MAX_ITERATIONS=50  # Default: 50
+export RALPH_MAX_COST=100       # Default: $100
+export RALPH_PASS_K=3           # Default: 3 attempts per story
 ```
 
 ## How PRD Mode Works
@@ -149,12 +144,59 @@ cat progress.txt
 - Voice alerts keep you informed
 - Clean exit if stuck
 
-## Integration
+## CRITICAL: File Writing Rules
 
-Works with existing skills:
-- `/create-prd` - Creates the prd.json
-- `/verify-app` - Called internally for tests
-- `/learn` - Save integrations after (manually)
+**ALWAYS use the Write tool for file creation. NEVER use:**
+- `cat > file << 'EOF'`
+- `node -e "fs.writeFileSync(...)"`
+- `echo ... > file`
+- `python -c "open(...).write(...)"`
+
+These bash workarounds trigger false-positive security detection and stop the loop.
+
+**Correct approach:**
+```
+Write(file_path: "path/to/file.ts", content: "...")
+```
+
+## CRITICAL: External Service Integration
+
+**ALWAYS use Rube MCP tools for external services. NEVER use direct CLI/API calls.**
+
+Available via `mcp__rube__RUBE_SEARCH_TOOLS`:
+- **Supabase**: Database operations, migrations, RLS policies
+- **Vercel**: Deployments, environment variables, domains
+- **Google**: Gmail, Calendar, Drive, Sheets
+- **GitHub**: Issues, PRs, repos, actions
+- **Slack**: Messages, channels, users
+- **Stripe**: Payments, customers, subscriptions
+- **Resend**: Email sending
+
+**Workflow:**
+1. `mcp__rube__RUBE_SEARCH_TOOLS` - Find the right tool
+2. `mcp__rube__RUBE_MANAGE_CONNECTIONS` - Ensure connection active
+3. `mcp__rube__RUBE_MULTI_EXECUTE_TOOL` - Execute the operation
+
+**Example - Supabase migration:**
+```
+# DON'T: supabase db push
+# DO: Use RUBE_SEARCH_TOOLS to find Supabase migration tools
+```
+
+**Example - Vercel deploy:**
+```
+# DON'T: vercel deploy
+# DO: Use RUBE_SEARCH_TOOLS to find Vercel deployment tools
+```
+
+## Notes
+
+- Runs in main context (uses your tokens)
+- Voice notifications keep you informed
+- Can run overnight on large tasks
+- Saves hours of manual iteration
+- Cost-conscious with limits
+- Uses Write tool for all file creation (no bash workarounds)
 
 ---
 
