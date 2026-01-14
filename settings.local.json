@@ -36,7 +36,8 @@
       "Bash(python3:*)",
       "Bash(streamlit run:*)",
       "Bash(gh repo create:*)",
-      "Bash(brew list:*)"
+      "Bash(brew list:*)",
+      "Bash(brew install:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
