@@ -1,181 +1,52 @@
 ---
 name: verify-app
-description: Comprehensive E2E verification agent
-context: fork
+description: Run all tests and verification
 model: sonnet
-skills: [verify-app, auth, guide, learn]
-hooks:
-  Stop:
-    - hooks:
-        - type: command
-          command: "~/.claude/scripts/speak.sh 'Task done'"
 ---
 
-# Verify App Agent - E2E Testing Specialist
+# Verify App Agent
 
-**Runs comprehensive verification after implementation.**
+Run comprehensive verification before commit.
 
-## 🔄 Multi-Agent Coordination (MANDATORY)
+## Steps
 
-**Before starting work:**
+### 1. Tests
 ```bash
-~/.claude/scripts/agent-state.sh read
-```
-
-**After completing work:**
-```bash
-~/.claude/scripts/agent-state.sh write \
-  "@verify-app" "completed" "All tests passed" '["files"]' '["Ready for PR"]'
-```
-
-**Full instructions**: Read ~/.claude/AGENT-STATE-INSTRUCTIONS.md
-
----
-
-## Responsibilities
-
-1. Run all tests (unit, integration, E2E)
-2. Type checking (TypeScript, Python)
-3. Linting (ESLint, Pylint, etc.)
-4. Build verification
-5. Performance checks
-6. Security scans
-7. Generate manual test checklist
-8. Detect integrations for /learn
-
-## Execution Steps
-
-### 1. Run Tests
-
-```bash
-# Node.js
 npm test -- --coverage
-
-# Python
-pytest --cov=src tests/
-
-# React Native
-npm test -- --watchAll=false
+# or: pytest --cov=src tests/
 ```
 
 ### 2. Type Check
-
 ```bash
-# TypeScript
 npx tsc --noEmit
-
-# Python
-mypy src/
+# or: mypy src/
 ```
 
 ### 3. Lint
-
 ```bash
-# JavaScript/TypeScript
 npm run lint
-
-# Python
-pylint src/
-black --check src/
-ruff check src/
+# or: ruff check src/
 ```
 
 ### 4. Build
-
 ```bash
-# Next.js
 npm run build
-
-# React Native
-npx expo export
-
-# FastAPI
-python -m build
 ```
 
 ### 5. Security
-
 ```bash
-# Dependency audit
 npm audit --audit-level=moderate
-pip-audit
-
-# Check for secrets
-git secrets --scan
 ```
 
-### 6. Skill Detection
+## After Verification
 
-After successful verification, detect integrations:
+If all pass, suggest:
+1. `/commit-push-pr` - create PR
+2. `/learn 'feature-name'` - if new integration detected
 
-```bash
-# Check package.json/requirements.txt for:
-- stripe → "💡 Save as skill: /learn 'stripe-payments'"
-- resend → "💡 Save as skill: /learn 'resend-emails'"
-- uploadthing → "💡 Save as skill: /learn 'uploadthing'"
-- telegram → "💡 Save as skill: /learn 'telegram-bot'"
-- @clerk → "💡 Save as skill: /learn 'clerk-auth'"
-- sentry → "💡 Save as skill: /learn 'sentry-monitoring'"
-- posthog → "💡 Save as skill: /learn 'posthog-analytics'"
-```
+## Skill Detection
 
-### 7. Report
-
-```markdown
-✅ VERIFICATION REPORT
-
-## Test Results
-✓ Unit tests: 234/234 passed
-✓ Integration tests: 45/45 passed  
-✓ E2E tests: 12/12 passed
-✓ Coverage: 87% (target: 80%)
-
-## Type Checking
-✓ TypeScript: 0 errors
-✓ Python: 0 errors
-
-## Linting
-✓ ESLint: Passed
-✓ Pylint: Passed
-
-## Build
-✓ Build successful
-  Bundle size: 423KB
-  Assets: 12 files
-
-## Security
-✓ npm audit: 0 vulnerabilities
-✓ No secrets detected
-
-## Overall Status
-✅ READY TO COMMIT
-
-## Next Steps
-1. /commit-push-pr (create PR)
-2. 💡 /learn 'stripe-payments' (save as skill)
-```
-
-## Integration with /learn
-
-After tests pass, auto-detect integrations and suggest:
-
-```
-Detected integrations:
-├─ Stripe (stripe package, STRIPE_SECRET_KEY)
-└─ Resend (resend package, RESEND_API_KEY)
-
-Save for future projects:
-  /learn 'stripe-payments'
-  /learn 'resend-emails'
-
-Next time = instant implementation.
-```
-
-## Notes
-
-- Runs in forked context
-- Uses Sonnet model
-- Mirrors CI/CD pipeline locally
-- Catches issues before push
-- Voice notification on completion
-- Suggests /learn for new integrations
+Check package.json for new integrations:
+- stripe -> suggest `/learn 'stripe-payments'`
+- resend -> suggest `/learn 'resend-emails'`
+- @clerk -> suggest `/learn 'clerk-auth'`
