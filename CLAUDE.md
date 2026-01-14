@@ -34,26 +34,32 @@
 - No emojis in code or responses
 - Facts only, no celebration messages
 
-## External Services (Rube MCP)
+## External Services (Rube MCP) - PROACTIVE
 
-**Prefer Rube MCP tools for external services:**
+**CRITICAL: Automatically use Rube MCP for ANY external service. Do NOT wait to be asked.**
 
-```
-mcp__rube__RUBE_SEARCH_TOOLS    → Find the right tool
-mcp__rube__RUBE_MANAGE_CONNECTIONS → Ensure connection active
-mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute the operation
-```
-
-**Available integrations:**
-- Supabase (migrations, queries, RLS)
-- Vercel (deploy, env vars, domains)
+When ANY task involves these services, immediately use Rube:
+- Supabase (migrations, queries, RLS, schema, functions)
+- Vercel (deploy, env vars, domains, settings)
 - Google (Gmail, Calendar, Drive, Sheets)
 - GitHub (issues, PRs, actions)
 - Slack (messages, channels)
 - Stripe (payments, customers)
 - Resend (emails)
 
-**Why:** Rube handles auth, rate limits, and errors.
+**Workflow:**
+```
+1. mcp__rube__RUBE_SEARCH_TOOLS    → Find the right tool
+2. mcp__rube__RUBE_MANAGE_CONNECTIONS → Ensure active connection
+3. mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute
+```
+
+**Examples of proactive use:**
+- "Fix RLS policy" → Use Rube for Supabase, don't ask
+- "Deploy to preview" → Use Rube for Vercel, don't ask
+- "Add column to users" → Use Rube migration, don't ask
+
+**Why:** Rube handles auth, rate limits, and errors. No CLI setup needed.
 
 ## Mindset & Process
 
@@ -258,13 +264,13 @@ Required API keys (see `.env.example` for details):
 ## Voice & Notifications (Global)
 
 **Setup (2026-01-09):**
-- ✅ ElevenLabs voice: `~/.claude/scripts/speak.sh` (all projects)
-- ✅ Visual notifications: `~/.claude/scripts/notify.sh` (all projects)
-- ✅ WhisperFlow: Voice input (user has installed)
+- ElevenLabs voice: `~/.claude/scripts/speak.sh` (all projects)
+- Visual notifications: `~/.claude/scripts/notify.sh` (all projects)
+- WhisperFlow: Voice input (user has installed)
 
 **When agent needs input:**
-- 🔊 Speaks: "I need your input"
-- 📱 Shows: macOS notification
+- Speaks: "I need your input"
+- Shows: macOS notification
 
 ## Permissions (Global)
 
@@ -297,7 +303,7 @@ Required API keys (see `.env.example` for details):
 
 ---
 
-**Last Updated**: 2026-01-09
+**Last Updated**: 2026-01-14
 **Philosophy**: Boris's approach + Autonomous execution + Mandatory research before code + No fluff
 
 **Critical Rules**:
