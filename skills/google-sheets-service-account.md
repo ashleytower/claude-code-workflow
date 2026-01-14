@@ -2,7 +2,7 @@
 name: google-sheets-service-account
 category: integration
 frameworks: [nextjs, node, vercel]
-last_updated: 2026-01-12
+last_updated: 2026-01-14
 version: Google Sheets API v4 + Drive API v3
 ---
 
@@ -273,6 +273,17 @@ await sheetsService.appendRows(sheetId, "Items", rows);
 ```
 
 ## Updates
+
+- 2026-01-14: Added Google Drive upload troubleshooting section
+  - Documented "Service Accounts do not have storage quota" error
+  - Added decision tree for Workspace vs personal Gmail accounts
+  - Documented Rube MCP commands for setting up shared folders
+  - Added quick reference table for what works where
+
+- 2026-01-12: Complete rewrite with OAuth token refresh
+  - Added prompt:consent requirement for refresh tokens
+  - Documented service account fallback rules (Sheets only, not Drive)
+  - Added Telegram account linking via OAuth state
 
 - 2026-01-11: Initial skill created from invoice-app debugging session
   - Discovered Vercel env var newline escaping issue
@@ -868,4 +879,188 @@ When Telegram uploads fail:
 | Sheets sync works but Drive fails | Different fallback behavior | Drive needs user token, Sheets can use service account |
 
 ---
-*Updated 2026-01-12: Complete rewrite with tested root fixes (prompt:consent, no Drive fallback, Telegram linking)*
+
+## Google Drive Upload Troubleshooting (Service Account Limitations)
+
+When service account uploads to Google Drive fail with "Service Accounts do not have storage quota", follow this decision tree.
+
+### The Core Problem
+
+**Service accounts CANNOT upload to personal Google Drive.** They have no storage quota. This is a Google limitation, not a bug.
+
+```
+Error: "Service Accounts do not have storage quota"
+       or 403 Forbidden on Drive upload
+```
+
+### Decision Tree: How to Fix
+
+```
+Is the Google account a Workspace account (business domain)?
+├── YES (e.g., info@company.com with custom domain)
+│   ├── Option A: Create folder in My Drive, share with service account
+│   │   1. Create folder in business account's My Drive
+│   │   2. Share folder with service account email as "Editor"
+│   │   3. Use that folder ID in your app
+│   │   └── Service account can now upload to that folder
+│   │
+│   └── Option B: Create Shared Drive (more complex)
+│       1. Create Shared Drive (Workspace only feature)
+│       2. Add service account as member
+│       3. Upload to Shared Drive
+│       └── Note: Shared Drive permissions work differently
+│
+└── NO (personal Gmail like user@gmail.com)
+    ├── Option A: Use OAuth user tokens instead of service account
+    │   1. Implement OAuth flow with refresh tokens
+    │   2. Store user's access/refresh tokens
+    │   3. Use user's token for Drive uploads
+    │   └── See "OAuth Token Refresh" section above
+    │
+    └── Option B: Switch to a Workspace account
+        └── Personal Gmail cannot create Shared Drives
+```
+
+### Solution A: Workspace Account with Shared Folder (Recommended)
+
+This is what we did for Nano Banana Studio:
+
+```python
+# 1. Create folder in business account's My Drive (via Rube MCP or manually)
+# Folder ID: 1LEpLIBLn6a7dMo1DjJdStpyrISK8p8KB
+
+# 2. Share folder with service account as Editor
+# Service account: google-sheets@atomic-rune-450718-q5.iam.gserviceaccount.com
+
+# 3. Update app to use the new folder ID
+NANO_BANANA_FOLDER_ID = "1LEpLIBLn6a7dMo1DjJdStpyrISK8p8KB"
+
+file_metadata = {
+    'name': filename,
+    'mimeType': 'video/mp4',
+    'parents': [NANO_BANANA_FOLDER_ID]  # Upload to shared folder
+}
+```
+
+**Why this works:** The folder is owned by the Workspace user (who has storage quota). The service account has write permission to the folder, so it can create files there.
+
+### What DOESN'T Work
+
+1. **Creating Shared Drive with personal Gmail**
+   ```
+   Error: "Shared Drives are only available for Google Workspace accounts"
+   ```
+   Personal Gmail accounts cannot create Shared Drives.
+
+2. **Sharing a folder from personal Gmail with service account**
+   ```
+   Error: "Service Accounts do not have storage quota"
+   ```
+   Even if you share a folder, the service account still can't upload because the storage would count against... nobody (service accounts have no quota).
+
+3. **Using service account for Drive with fallback**
+   ```python
+   # WRONG - Don't do this
+   token = await getValidGoogleToken(user, allowServiceAccountFallback=True)
+   drive.uploadFile(...)  # Will fail with 403
+   ```
+   Service account fallback should ONLY be used for Sheets, NEVER for Drive.
+
+### Diagnostic Steps
+
+When Drive uploads fail:
+
+1. **Check the error message**
+   - "no storage quota" → Service account limitation
+   - "403 Forbidden" → Permission or quota issue
+   - "404 Not Found" → Wrong folder ID
+
+2. **Verify account type**
+   ```python
+   # Workspace accounts have 'hd' (hosted domain) field
+   user_info = {
+       "email": "info@mtlcraftcocktails.com",
+       "hd": "mtlcraftcocktails.com"  # ← Workspace account
+   }
+
+   # Personal Gmail has no 'hd' field
+   user_info = {
+       "email": "user@gmail.com"
+       # No 'hd' field = personal account
+   }
+   ```
+
+3. **Check folder ownership**
+   - Folder must be owned by a user with storage quota
+   - Service account must have Editor permission on the folder
+
+### Quick Reference: What Works Where
+
+| Operation | Service Account | OAuth User Token |
+|-----------|-----------------|------------------|
+| Read Google Sheets | YES (if shared) | YES |
+| Write Google Sheets | YES (if shared) | YES |
+| Upload to Drive (personal) | NO | YES |
+| Upload to Drive (Workspace folder) | YES (if shared) | YES |
+| Upload to Shared Drive | YES (if member) | YES |
+| Create Shared Drive | NO | YES (Workspace only) |
+
+### Python Example: Detecting Account Type
+
+```python
+def can_use_service_account_for_drive(user_email: str) -> bool:
+    """
+    Check if we might be able to use service account for Drive.
+    Only possible with Workspace accounts that have shared folders.
+    """
+    # Personal Gmail - service account won't work
+    if user_email.endswith("@gmail.com"):
+        return False
+
+    # Workspace account - might work if folder is properly shared
+    # But still need to verify folder is shared with service account
+    return True
+```
+
+### Rube MCP Commands Used
+
+For reference, here are the Rube MCP commands used to set this up:
+
+```
+# 1. Connect Google Drive with business account
+RUBE_MANAGE_CONNECTIONS: toolkits=["googledrive"], reinitiate_specific=["googledrive"]
+→ User authorizes with business account (info@mtlcraftcocktails.com)
+
+# 2. Create folder in My Drive
+GOOGLEDRIVE_CREATE_FOLDER: name="Nano Banana Videos"
+→ Returns folder ID: 1LEpLIBLn6a7dMo1DjJdStpyrISK8p8KB
+
+# 3. Share folder with service account
+GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE:
+  file_id="1LEpLIBLn6a7dMo1DjJdStpyrISK8p8KB"
+  email_address="google-sheets@atomic-rune-450718-q5.iam.gserviceaccount.com"
+  role="writer"
+  type="user"
+
+# 4. Same process for Google Sheets
+RUBE_MANAGE_CONNECTIONS: toolkits=["googlesheets"], reinitiate_specific=["googlesheets"]
+GOOGLESHEETS_CREATE_GOOGLE_SHEET1: title="Nano Banana Videos"
+→ Returns spreadsheet ID: 1gdF4hYGDxsOaPBbvb0IQwFKAth24eZplF1FW7RaS-XM
+
+# 5. Share spreadsheet with service account
+GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE:
+  file_id="1gdF4hYGDxsOaPBbvb0IQwFKAth24eZplF1FW7RaS-XM"
+  email_address="google-sheets@atomic-rune-450718-q5.iam.gserviceaccount.com"
+  role="writer"
+  type="user"
+```
+
+### Summary
+
+**The fix for "Service Accounts do not have storage quota":**
+
+1. If you have a **Workspace account**: Create a folder in My Drive, share it with the service account as Editor, use that folder ID
+2. If you have a **personal Gmail**: Use OAuth user tokens instead of service account for Drive (service account can still work for Sheets)
+
+---
+*Updated 2026-01-14: Added Drive upload troubleshooting section from Nano Banana Studio debugging session*
