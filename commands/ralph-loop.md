@@ -34,83 +34,115 @@ export RALPH_MAX_COST=100       # Default: $100
 export RALPH_PASS_K=3           # Default: 3 attempts per story
 ```
 
-## Usage
+## How PRD Mode Works
+
+```
+┌─────────────────────────────────────────┐
+│ 1. Pick first story with passes: false  │
+│ 2. Implement ONLY that story            │
+│ 3. Run tests (verify acceptance)        │
+│ 4. If pass: mark passes: true           │
+│ 5. Commit the changes                   │
+│ 6. Log to progress.txt                  │
+│ 7. Voice notify: "Story N complete"     │
+│ 8. Loop to next story                   │
+│ 9. Until all done or max iterations     │
+└─────────────────────────────────────────┘
+```
+
+## prd.json Format
+
+```json
+{
+  "project": "Movie Tracker",
+  "stories": [
+    {
+      "id": "1",
+      "story": "As a user, I can search for movies",
+      "acceptance_criteria": [
+        "Search input on main screen",
+        "Results show as user types",
+        "Shows poster, title, year"
+      ],
+      "priority": 1,
+      "passes": false
+    }
+  ]
+}
+```
+
+## Options
 
 ```bash
-# Via command
-/ralph-loop "Migrate all components to TypeScript"
-
-# Direct script
-~/.claude/scripts/ralph-loop.sh "Complete the PRD implementation"
-
-# With custom limits
-RALPH_MAX_ITERATIONS=20 /ralph-loop "Large refactor task"
+--prd <file>           # PRD JSON file (enables PRD mode)
+--max-iterations <n>   # Safety limit (default: 50)
+--max-cost <n>         # Cost limit in dollars (default: 100)
 ```
+
+## Files Created
+
+| File | Purpose |
+|------|---------|
+| `prd.json` | Backlog (you create via /create-prd) |
+| `progress.txt` | Sprint notes (Ralph creates) |
+
+## Voice Notifications
+
+- "Ralph loop starting"
+- "Story 1 complete. 4 remaining."
+- "Story 2 complete. 3 remaining."
+- ...
+- "Ralph loop complete. All stories finished."
+
+Or:
+- "Ralph loop stopped. Maximum iterations reached."
 
 ## When to Use
 
-✅ **Great for**:
-- Large refactors
-- Framework migrations
-- Dependency upgrades across many files
-- Overnight autonomous development
-- Mechanical tasks with clear completion
+| Scenario | Use |
+|----------|-----|
+| Overnight feature work | PRD mode |
+| Large refactor | Simple mode |
+| Framework migration | Simple mode |
+| Multi-feature sprint | PRD mode |
+| Fix all type errors | Simple mode |
 
-❌ **Not ideal for**:
-- Creative work requiring human judgment
-- Tasks with ambiguous completion criteria
-- Anything that needs immediate human review
+## Tips for Success
 
-## Example
+1. **Small stories** - Each should be 1-2 hours max
+2. **Clear acceptance criteria** - Claude needs to verify itself
+3. **Good test coverage** - Feedback loops catch errors
+4. **Review prd.json** - Garbage in = garbage out
 
-```bash
-/ralph-loop "Migrate all API endpoints from Express to Fastify"
-```
-
-Ralph will:
-1. Start migration
-2. Complete one iteration
-3. Check if ALL endpoints migrated
-4. If not, continue with next batch
-5. Repeat until all done or limits hit
-6. Voice notification when complete
-
-## Integration with /guide
-
-Ralph Loop is particularly effective when combined with `/guide`:
+## Example Session
 
 ```bash
-# Generate plan
-/guide "Add authentication system"
+# Morning: Voice your ideas
+"Build a todo app with add, complete, delete, and dark mode"
 
-# Execute with Ralph Loop
-/ralph-loop "Implement the authentication system plan"
+# Create PRD
+/create-prd
+
+# Review prd.json - 6 stories created
+cat prd.json
+
+# Start Ralph before bed
+/ralph-loop --prd ./prd.json
+
+# Morning: Check results
+git log --oneline
+# 6 commits, one per story
+
+cat progress.txt
+# Full log of what happened
 ```
 
-This ensures:
-- Plan is clear (from /guide)
-- Execution is autonomous (Ralph Loop)
-- Completion is verified (Ralph Loop)
+## Safety
 
-## Monitoring
-
-Ralph Loop provides:
-- Voice notifications per iteration
-- Progress logging
-- Cost tracking
-- Completion verification status
-
-## Mark Task Complete
-
-To explicitly mark complete:
-
-```bash
-echo "COMPLETE" > /tmp/ralph-completion-$$.txt
-```
-
-Or let auto-detection handle it:
-- Clean git status
-- All tests passing
+- Max 50 iterations by default
+- Commits after each story (no lost work)
+- Voice alerts keep you informed
+- Clean exit if stuck
 
 ## CRITICAL: File Writing Rules
 
@@ -168,7 +200,4 @@ Available via `mcp__rube__RUBE_SEARCH_TOOLS`:
 
 ---
 
-**Sources:**
-- [Ralph Loop on GitHub](https://github.com/vercel-labs/ralph-loop-agent)
-- [Ralph Wiggum Guide](https://paddo.dev/blog/ralph-wiggum-autonomous-loops/)
-- [Autonomous Coding Guide](https://awesomeclaude.ai/ralph-wiggum)
+**Named after Ralph Wiggum** - persistent, keeps going until done.

@@ -1,154 +1,159 @@
 # Create PRD Command
 
-**Purpose**: Create a Product Requirements Document (PRD) that becomes the north star for all feature development.
+**Purpose**: Take your voice rambling and convert it into a structured PRD with user stories for Ralph loop.
 
 ## Usage
 
 ```bash
-claude /create-prd [output-file]
-# Example: claude /create-prd PRD.md
+# Voice record your ideas via Wispr, then:
+/create-prd
+
+# Or with specific output
+/create-prd --output ./prd.json
 ```
+
+## What It Does
+
+1. **Listens** to your rambling feature ideas
+2. **Extracts** the core requirements
+3. **Outputs**:
+   - `PRD.md` - Human-readable document
+   - `prd.json` - Machine-readable for Ralph loop
 
 ## Process
 
-You should have already had a conversation with the user about what they want to build. This command outputs that discussion into a structured PRD document.
+### Step 1: Capture Ideas
 
-## Template Structure
+You voice record (via Wispr) something like:
 
-Create a comprehensive PRD with these sections:
+> "I want to build an app that tracks movies I've watched. It should have a search feature, I can mark movies as watched, rate them 1-5 stars, and see my watch history. Oh and dark mode would be nice."
 
-### 1. Project Name & Tagline
-Concise name and one-sentence description
+### Step 2: Claude Converts
 
-### 2. Target Users
-Who is this for? Be specific about the audience.
+I take your rambling and produce:
 
-### 3. Mission Statement
-What problem does this solve? Why does it matter?
-
-### 4. In Scope (This Iteration)
-What we're building RIGHT NOW in this iteration. Be specific and realistic.
-
-### 5. Out of Scope
-What we're explicitly NOT building (prevents scope creep)
-
-### 6. Architecture Overview
-- Tech stack (specific versions!)
-- Key components
-- Data flow
-- Third-party integrations
-
-### 7. Features Breakdown
-Detailed list of features to build, organized by priority:
-
-**Phase 1 (MVP)**:
-- Feature 1: Description
-- Feature 2: Description
-
-**Phase 2 (Enhancement)**:
-- Feature 3: Description
-
-**Phase 3 (Polish)**:
-- Feature 4: Description
-
-### 8. Success Criteria
-How do we know we're done?
-- Measurable outcomes
-- User experience goals
-- Technical milestones
-
-### 9. Technical Decisions
-Document key technical choices made:
-- Why this framework?
-- Why this architecture?
-- Trade-offs considered
-
-### 10. Known Constraints
-- Budget constraints
-- Time constraints
-- Technical limitations
-- Platform requirements
-
-## Output
-
-Save the PRD to the specified file (usually `PRD.md` in project root).
-
-## Next Steps
-
-After creating PRD:
-1. Commit to git: `git add PRD.md && git commit -m "docs: add project PRD"`
-2. Start first feature: `claude /guide` or `claude "Based on the PRD, what should we build first?"`
-
-## Example PRD Output
-
+**PRD.md** (human readable):
 ```markdown
-# Wandr - Voice-First AI Travel Companion
+# Movie Tracker App
 
-*Your AI travel buddy that speaks your language*
+## Overview
+Personal movie tracking app with search, ratings, and watch history.
 
-## Target Users
-Solo travelers and small groups who want seamless travel experiences without language barriers
+## Features
+1. Movie search
+2. Mark as watched
+3. Rate 1-5 stars
+4. View watch history
+5. Dark mode theme
 
-## Mission
-Make international travel accessible by providing real-time voice translation, AI-powered booking assistance, and intelligent itinerary management - all controlled by voice.
-
-## In Scope (MVP)
-- Real-time voice translation (40+ languages)
-- AI agent restaurant booking via phone
-- Voice-controlled itinerary ("Add coffee shop on the way")
-- Budget tracking
-- Basic TikTok place discovery
-
-## Out of Scope
-- Group trip planning (future)
-- Flight booking (future)
-- Advanced analytics (future)
-
-## Architecture
-- **Mobile**: React Native + Expo SDK 52
-- **Voice**: Gemini Live API + Twilio
-- **Backend**: Supabase (Auth, Database, Storage)
-- **AI**: PydanticAI for agent workflows
-- **Social**: TikTok API for place discovery
-
-## Features (MVP - Phase 1)
-
-### F1: Voice Translation
-Real-time translation using Gemini Live
-
-### F2: AI Restaurant Booking
-Agent calls restaurants, makes reservations
-
-### F3: Voice Itinerary Control
-"Add coffee on the way" updates itinerary
-
-### F4: Budget Tracking
-Track expenses, convert currencies
-
-### F5: TikTok Discovery
-Find trending places from TikTok
-
-## Success Criteria
-- Users can have basic conversation in foreign language
-- AI successfully books 80%+ of restaurant calls
-- Voice commands work with 90%+ accuracy
-- Budget tracking within 5% accuracy
-
-## Technical Decisions
-- Gemini Live: Best real-time voice AI (vs OpenAI Realtime)
-- Twilio: Reliable voice calling infrastructure
-- Supabase: Fast development, good RLS support
-- Expo: Cross-platform with good SDK support
-
-## Known Constraints
-- Gemini Live in beta (may have rate limits)
-- TikTok API requires approval
-- Voice calling costs ~$0.01/min (budget consideration)
+## Tech Stack
+[Based on project or ask]
 ```
+
+**prd.json** (for Ralph loop):
+```json
+{
+  "project": "Movie Tracker",
+  "stories": [
+    {
+      "id": "1",
+      "story": "As a user, I can search for movies by title",
+      "acceptance_criteria": [
+        "Search input field on main screen",
+        "Results appear as user types",
+        "Shows movie poster, title, year"
+      ],
+      "priority": 1,
+      "passes": false
+    },
+    {
+      "id": "2",
+      "story": "As a user, I can mark a movie as watched",
+      "acceptance_criteria": [
+        "Watch button on movie detail",
+        "Watched movies show checkmark",
+        "Watch date is recorded"
+      ],
+      "priority": 2,
+      "passes": false
+    }
+  ]
+}
+```
+
+### Step 3: Review & Refine
+
+I'll show you the user stories and ask:
+- Are these the right priorities?
+- Any missing acceptance criteria?
+- Should we split any stories smaller?
+
+### Step 4: Start Ralph Loop
+
+```bash
+/ralph-loop --prd ./prd.json
+# Go to sleep, wake up to features
+```
+
+## User Story Guidelines
+
+**Good stories are:**
+- Small (1-2 hours of work max)
+- Verifiable (clear acceptance criteria)
+- Independent (can be built alone)
+- User-focused ("As a user, I can...")
+
+**Bad stories:**
+- "Build the authentication system" (too big)
+- "Make it fast" (not verifiable)
+- "Improve UX" (too vague)
+
+## Examples
+
+### Voice Input:
+> "I need a dashboard that shows my sales data. Should have charts, filter by date range, export to CSV, and send weekly email reports."
+
+### Output Stories:
+
+| ID | Story | Priority |
+|----|-------|----------|
+| 1 | As a user, I can see a sales chart on the dashboard | 1 |
+| 2 | As a user, I can filter sales data by date range | 2 |
+| 3 | As a user, I can export sales data to CSV | 3 |
+| 4 | As a user, I receive weekly sales email reports | 4 |
+
+Each with 3-5 acceptance criteria.
+
+## Integration with Workflow
+
+```bash
+# 1. Voice your ideas
+[Wispr recording]
+
+# 2. Create PRD
+/create-prd
+
+# 3. Review and approve stories
+"Yes, looks good" or "Split story 3 into smaller pieces"
+
+# 4. Start autonomous work
+/ralph-loop --prd ./prd.json --max-iterations 50
+
+# 5. Check in the morning
+git log --oneline  # See all the commits
+```
+
+## Output Files
+
+| File | Purpose | Used By |
+|------|---------|---------|
+| `PRD.md` | Human reference | You, planning |
+| `prd.json` | Ralph backlog | `/ralph-loop --prd` |
+| `progress.txt` | Sprint notes | Ralph (auto-created) |
 
 ## Notes
 
-- Keep PRD focused and realistic
-- Update as project evolves
-- Reference in all planning sessions
-- Foundation for all `/plan` commands
+- Spend time on good acceptance criteria (garbage in = garbage out)
+- Smaller stories = more commits = less lost work
+- Ralph can handle 10-20 stories per session
+- Voice notifications tell you when each story completes
