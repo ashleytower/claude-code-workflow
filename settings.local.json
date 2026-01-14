@@ -34,7 +34,9 @@
       "WebFetch(domain:ai.studio)",
       "WebFetch(domain:aistudio.google.com)",
       "Bash(python3:*)",
-      "Bash(streamlit run:*)"
+      "Bash(streamlit run:*)",
+      "Bash(gh repo create:*)",
+      "Bash(brew list:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
