@@ -2,7 +2,7 @@
 name: vercel-supabase-migration
 category: deployment
 frameworks: [express, nextjs, react]
-last_updated: 2026-01-08
+last_updated: 2026-01-09
 version: vercel-latest, supabase-latest
 ---
 
@@ -46,8 +46,28 @@ npm install drizzle-orm@latest
 
 ## Environment Variables
 
+### Supabase Auth (instead of custom Google OAuth)
 ```env
-# Supabase (from Supabase dashboard)
+# Supabase Project (from Supabase dashboard → Settings → API)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key  # Server-side only
+
+# Database (from Supabase dashboard → Settings → Database)
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:6543/postgres
+```
+
+**Why use Supabase Auth vs custom Google OAuth:**
+- ✅ Security: Asymmetric JWT signing (RS256/ES256), built-in RLS
+- ✅ Simpler: No manual token management, auto-refresh
+- ✅ Multi-provider: Google, GitHub, Apple, etc. - one interface
+- ✅ Free tier: 50,000 MAUs (custom OAuth = more infrastructure)
+- Source: [Supabase Auth Docs](https://supabase.com/docs/guides/auth)
+
+### Supabase Storage (instead of AWS S3)
+```env
+# Storage is built-in - no additional env vars needed!
+# Access via same Supabase client using buckets
 DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres
 
 # Remove these (no longer needed)
@@ -424,6 +444,73 @@ const connectionString = process.env.DATABASE_URL?.replace(
 );
 ```
 
+### 6. Tables Don't Exist After Schema Migration
+**Issue**: OAuth/Database errors like `_DrizzleQueryError: Failed query: select ... from "users"` even though schema files exist
+
+**Root Cause**: Schema files (e.g., `drizzle/schema.pg.ts`) define structure but DON'T create tables. Must run migrations!
+
+**Diagnosis**:
+```bash
+# Check Vercel Runtime Logs → Look for:
+# [Database] Failed to upsert user: _DrizzleQueryError
+# This means tables don't exist in the database!
+
+# Check if migrations exist
+ls drizzle/migrations/*.sql  # If empty, no migrations created
+
+# Verify DATABASE_URL is set
+vercel env pull .env.local --environment production
+grep DATABASE_URL .env.local
+```
+
+**Solution**:
+```bash
+# Link to Vercel project first
+vercel link --project your-project-name --yes
+
+# Pull production env vars (development may have different/invalid credentials)
+vercel env pull .env.local --environment production --yes
+
+# Export and push schema
+export $(grep -v '^#' .env.local | xargs)
+npx drizzle-kit push
+```
+
+### 7. Pooler vs Direct Connection for Migrations
+**Issue**: `password authentication failed for user "postgres"` when running `drizzle-kit push`
+
+**Root Cause**: Supabase pooler connection (pooler.supabase.com) may fail for DDL operations like CREATE TABLE
+
+**Solution**: Use direct connection for migrations:
+```bash
+# Pooler (for app runtime - handles connection pooling)
+DATABASE_URL=postgresql://postgres.[ref]:[password]@aws-1-us-east-1.pooler.supabase.com:5432/postgres
+
+# Direct (for migrations - required for DDL)
+DATABASE_URL=postgresql://postgres.[ref]:[password]@db.[ref].supabase.co:5432/postgres
+```
+
+**Get direct connection from Supabase Dashboard**:
+1. Go to Project Settings → Database
+2. Copy "Direct connection" string (NOT "Connection pooling")
+3. Use for `drizzle-kit push` and migrations
+
+### 8. Vercel Environment Variables Mismatch
+**Issue**: Development env vars may be empty or have invalid credentials
+
+**Diagnosis**:
+```bash
+# Pull development (default)
+vercel env pull .env.local
+# May only have VERCEL_OIDC_TOKEN!
+
+# Pull production (has real credentials)
+vercel env pull .env.local --environment production --yes
+# Now has DATABASE_URL, JWT_SECRET, etc.
+```
+
+**Best Practice**: Always pull production env vars when debugging database issues
+
 ## Testing
 
 ### Local Development
@@ -458,6 +545,13 @@ vercel promote
 ```
 
 ## Updates
+
+- **2026-01-09**: Added learnings from debugging production OAuth failure
+  - Tables must be created with `drizzle-kit push` (schema files don't create them!)
+  - Pooler connection may fail for DDL operations - use direct connection
+  - `vercel env pull --environment production` to get real credentials
+  - Diagnostic flow: Vercel Runtime Logs → Drizzle errors → Check tables exist
+  - Common error: "password authentication failed" = wrong connection type
 
 - **2026-01-08**: Created skill from invoice app migration research
   - Comprehensive SQLite → PostgreSQL conversion

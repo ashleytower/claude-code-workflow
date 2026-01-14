@@ -1,0 +1,44 @@
+{
+  "last_updated": "2026-01-08",
+  "models": {
+    "opus": {
+      "provider": "anthropic",
+      "model_id": "claude-opus-4-5",
+      "openrouter_id": "anthropic/claude-opus-4.5",
+      "use_for": ["complex planning", "critical features", "system architecture", "code simplification"],
+      "agents": ["@code-simplifier", "@research-ui-patterns"]
+    },
+    "gpt": {
+      "provider": "openai",
+      "model_id": "gpt-5.2",
+      "openrouter_id": "openai/gpt-5.2",
+      "use_for": ["general development", "code generation", "API implementation"],
+      "agents": ["@backend"]
+    },
+    "gemini": {
+      "provider": "google",
+      "model_id": "gemini-pro-3-high",
+      "openrouter_id": "google/gemini-3-pro",
+      "use_for": ["fast iterations", "simple tasks", "bash orchestration", "quick analysis"],
+      "agents": ["@bash", "@orchestrator"]
+    },
+    "grok": {
+      "provider": "x-ai",
+      "model_id": "grok-2",
+      "openrouter_id": "x-ai/grok-2",
+      "use_for": ["screenshot analysis", "UI review", "visual debugging"],
+      "agents": []
+    },
+    "sonnet": {
+      "provider": "anthropic",
+      "model_id": "claude-sonnet-4-5",
+      "openrouter_id": "anthropic/claude-sonnet-4.5",
+      "use_for": ["balanced speed and quality", "frontend development", "mobile development", "verification"],
+      "agents": ["@frontend", "@react-native-expert", "@verify-app"]
+    }
+  },
+  "update_sources": [
+    "https://openrouter.ai/api/v1/models",
+    "https://openrouter.ai/models"
+  ]
+}
