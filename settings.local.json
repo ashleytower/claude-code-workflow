@@ -2,6 +2,7 @@
   "includeCoAuthoredBy": true,
   "permissions": {
     "allow": [
+      "Bash(*)",
       "*",
       "Edit(**)",
       "Write(**)",
