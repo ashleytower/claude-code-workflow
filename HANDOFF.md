@@ -1,68 +1,61 @@
-# Session Handoff - 2026-01-09
+# Session Handoff - 2026-01-15
 
 ## What Was Built
 
-PRD-driven Ralph Loop for autonomous overnight development.
+Context engineering improvements for better session handoffs.
 
-## Key Files
+## Changes Made
 
-| File | Purpose |
-|------|---------|
-| `scripts/ralph-loop.sh` | Autonomous loop with PRD mode |
-| `commands/ralph-loop.md` | Documentation |
-| `commands/create-prd.md` | Voice → user stories |
-| `commands/init-project.md` | Generate project CLAUDE.md |
-| `templates/prd.json` | Example PRD format |
-| `~/.claude/.env` | API keys (ELEVENLABS_API_KEY) |
+| File | Change |
+|------|--------|
+| `templates/task_plan.md` | Added TDD phase, better structure |
+| `templates/findings.md` | Better organized sections |
+| `templates/progress.md` | Simplified to session log |
+| `templates/session_state.md` | NEW - handoff between sessions |
+| `commands/resume.md` | NEW - pick up where left off |
+| `skills/planning.md` | Updated with new templates |
+| `README.md` | Updated with /resume and workflow |
 
 ## How to Use
 
+### Starting a Task
 ```bash
-# 1. Voice your ideas (Wispr)
-"I want a movie tracker with search, ratings, dark mode..."
+# Copy templates to project
+cp ~/.claude/templates/task_plan.md ./
+cp ~/.claude/templates/session_state.md ./
 
-# 2. Create PRD
-/create-prd
-
-# 3. Review prd.json
-
-# 4. Start Ralph
-/ralph-loop --prd ./prd.json
-
-# 5. Walk away - wake up to commits
+# Start guided workflow
+/guide "Build feature X"
 ```
 
-## Two Modes
+### Ending a Session
+Update `session_state.md` with:
+- Current task
+- Next action
+- Any blockers
 
-- **Simple**: `/ralph-loop "Fix all TypeScript errors"` - loops until git clean
-- **PRD**: `/ralph-loop --prd ./prd.json` - works through user stories, commits each
+### Resuming
+```bash
+/resume
+```
 
-## Voice Notifications
+## Template Files
 
-Working via ElevenLabs. Key stored in `~/.claude/.env`.
+| Template | Purpose |
+|----------|---------|
+| `task_plan.md` | Phases (includes TDD), decisions, errors |
+| `session_state.md` | Minimal handoff state for next session |
+| `findings.md` | Research and discoveries |
+| `progress.md` | Session log (append-only) |
 
-- "Ralph loop starting"
-- "Story 1 complete. 4 remaining."
-- "Ralph loop complete."
+## Workflow
 
-## Branch Status
+```
+Plan -> Research -> TDD -> Implement -> Verify -> Ship -> Handoff
+```
 
-- `main` - Updated and pushed
-- `clean-workflow` - Merged into main
+## Next Steps
 
-## Global Config
-
-Synced to `~/.claude/`:
-- `scripts/ralph-loop.sh`
-- `scripts/speak.sh`
-- `templates/prd.json`
-- `.env` (API keys)
-
-## Next Steps for User
-
-1. Start new session
-2. Go to a real project
-3. Voice record feature ideas
-4. Run `/create-prd`
-5. Run `/ralph-loop --prd ./prd.json`
-6. Test overnight autonomous work
+1. Test `/resume` command in a real project
+2. Consider hooks for auto-updating session_state.md
+3. Test template workflow end-to-end

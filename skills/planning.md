@@ -1,79 +1,86 @@
 ---
 name: planning
-description: Manus-style file-based planning for complex tasks
+description: File-based planning for complex tasks. Use for multi-step work.
 ---
 
 # Planning with Files
 
-Use persistent markdown files as working memory. Context window = RAM (volatile). Filesystem = Disk (persistent).
+Context window = RAM (volatile). Filesystem = Disk (persistent).
 
 ## When to Use
 
 - Multi-step tasks (3+ steps)
-- Research tasks
-- Building projects
-- Any task requiring organization
+- Tasks spanning multiple sessions
+- Anything requiring handoff
+
+## The Files
+
+| File | Purpose | When |
+|------|---------|------|
+| `task_plan.md` | Phases, decisions, errors | Start of task |
+| `findings.md` | Research, discoveries | During research |
+| `session_state.md` | Handoff between sessions | End of session |
+| `progress.md` | Session log | During work |
 
 ## Quick Start
 
-1. Copy templates to your project:
-   ```bash
-   cp ~/.claude/templates/*.md ./
-   ```
+```bash
+# Copy templates to project
+cp ~/.claude/templates/task_plan.md ./
+cp ~/.claude/templates/session_state.md ./
 
-2. Fill in task_plan.md with your phases
+# Start work, update task_plan.md as you go
 
-3. Work through phases, updating files as you go
+# End of session - update session_state.md
+# Next session - /resume
+```
 
-## The 3 Files
-
-| File | Purpose | When to Update |
-|------|---------|----------------|
-| `task_plan.md` | Phases, progress, decisions | After each phase |
-| `findings.md` | Research, discoveries | After ANY discovery |
-| `progress.md` | Session log, test results | Throughout session |
-
-## Critical Rules
+## Rules
 
 ### 1. Create Plan First
-Never start complex task without task_plan.md.
+No complex task without `task_plan.md`.
 
 ### 2. The 2-Action Rule
-After every 2 view/browser/search operations, save findings to findings.md.
+After 2 search/browse operations, save to `findings.md`.
 
-### 3. Read Before Decide
-Before major decisions, re-read task_plan.md.
+### 3. Update Session State
+Before ending, update `session_state.md` with next action.
 
-### 4. Log ALL Errors
-Every error goes in task_plan.md. Prevents repetition.
+### 4. Log Errors
+Every error goes in `task_plan.md`. Prevents repetition.
 
-### 5. Never Repeat Failures
-```
-if action_failed:
-    next_action != same_action
-```
-
-## The 3-Strike Protocol
-
+### 5. 3-Strike Protocol
 ```
 Attempt 1: Diagnose & fix
-Attempt 2: Try different approach (NEVER same action)
+Attempt 2: Different approach
 Attempt 3: Rethink assumptions
-After 3: Ask user for help
+After 3: Ask user
 ```
 
-## 5-Question Reboot Test
+## Session Handoff
 
-Can you answer these?
+End of session:
+```markdown
+# session_state.md
+## Current Task
+Building user auth
 
-1. Where am I? -> Current phase in task_plan.md
-2. Where am I going? -> Remaining phases
-3. What's the goal? -> Goal statement
-4. What have I learned? -> findings.md
-5. What have I done? -> progress.md
+## Status
+- Phase: 3 (TDD)
+- Branch: feature/auth
+- Blocked: no
 
-If yes, context is solid.
+## Next Action
+Write test for password validation
+```
 
-## Integration with /guide
+Start of next session:
+```bash
+/resume
+```
 
-/guide automatically uses this pattern for complex tasks.
+## Integration
+
+- `/guide` uses these templates automatically
+- `/resume` reads session_state.md
+- TDD phase built into task_plan.md
