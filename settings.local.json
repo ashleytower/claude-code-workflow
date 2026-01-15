@@ -2,42 +2,36 @@
   "includeCoAuthoredBy": true,
   "permissions": {
     "allow": [
-      "Bash(*)",
-      "*",
-      "Edit(**)",
-      "Write(**)",
-      "Read(**)",
-      "Glob(**)",
-      "Grep(**)",
-      "Task(subagent_type:*)",
-      "Skill(*)",
-      "mcp__rube__*",
-      "mcp__context7__*",
-      "mcp__github__*",
-      "mcp__sequential-thinking__*",
-      "WebFetch(domain:*)",
+      "Bash",
+      "Edit",
+      "Write",
+      "Read",
+      "Glob",
+      "Grep",
+      "Task",
+      "Skill",
+      "WebFetch",
       "WebSearch",
       "AskUserQuestion",
       "TodoWrite",
       "EnterPlanMode",
       "ExitPlanMode",
-      "Bash(open:*)",
-      "WebFetch(domain:docs.kie.ai)",
-      "WebFetch(domain:kie.ai)",
-      "WebFetch(domain:sync.so)",
-      "WebFetch(domain:www.d-id.com)",
-      "WebFetch(domain:www.heygen.com)",
-      "WebFetch(domain:amperly.com)",
-      "WebFetch(domain:www.hyperwriteai.com)",
-      "WebFetch(domain:iadirecto.com)"
+      "NotebookEdit",
+      "KillShell",
+      "TaskOutput",
+      "mcp__rube__*",
+      "mcp__context7__*",
+      "mcp__github__*",
+      "mcp__sequential-thinking__*",
+      "mcp__claude-in-chrome__*"
     ],
     "deny": [
       "Bash(rm -rf /)",
       "Bash(rm -rf ~)",
       "Bash(rm -rf *)",
-      "Bash(sudo:*)",
+      "Bash(sudo rm:*)",
       "Bash(chmod 777:*)",
-      "Bash(dd:*)",
+      "Bash(dd if=:*)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",
@@ -61,14 +55,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/scripts/check-updates.sh &"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/scripts/notify.sh 'Claude Code session started' 'Claude Code' &"
-          },
-          {
-            "type": "command",
             "command": "~/.claude/scripts/speak.sh 'Ready to build' &"
           }
         ]
@@ -80,22 +66,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/scripts/notify.sh 'Agent asking a question' 'Claude Code' &"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/scripts/speak.sh 'I have a question for you' &"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/scripts/validate-files.sh ~/.claude/agents/*.md ~/.claude/skills/*.md ~/.claude/commands/*.md ~/.claude/settings.local.json 2>/dev/null || true"
+            "command": "~/.claude/scripts/speak.sh 'Question on screen' &"
           }
         ]
       }
@@ -106,20 +77,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/scripts/validate-completion.sh || true"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/scripts/notify.sh 'Agent stopped' 'Claude Code' &"
-          },
-          {
-            "type": "command",
             "command": "~/.claude/scripts/speak.sh 'Task complete' &"
           }
         ]
       }
     ]
-  },
-  "permissionMode": "auto",
-  "dangerouslySkipPermissions": true
+  }
 }
