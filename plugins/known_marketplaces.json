@@ -1,0 +1,18 @@
+{
+  "anthropic-agent-skills": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/skills"
+    },
+    "installLocation": "/Users/ashleytower/.claude/plugins/marketplaces/anthropic-agent-skills",
+    "lastUpdated": "2026-01-15T19:41:06.262Z"
+  },
+  "superpowers-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "obra/superpowers-marketplace"
+    },
+    "installLocation": "/Users/ashleytower/.claude/plugins/marketplaces/superpowers-marketplace",
+    "lastUpdated": "2026-01-15T19:43:54.473Z"
+  }
+}

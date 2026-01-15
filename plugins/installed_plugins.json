@@ -1,4 +1,35 @@
 {
   "version": 2,
-  "plugins": {}
+  "plugins": {
+    "document-skills@anthropic-agent-skills": [
+      {
+        "scope": "user",
+        "installPath": "/Users/ashleytower/.claude/plugins/cache/anthropic-agent-skills/document-skills/69c0b1a06741",
+        "version": "69c0b1a06741",
+        "installedAt": "2026-01-15T19:42:29.157Z",
+        "lastUpdated": "2026-01-15T19:42:29.157Z",
+        "gitCommitSha": "69c0b1a0674149f27b61b2635f935524b6add202"
+      }
+    ],
+    "example-skills@anthropic-agent-skills": [
+      {
+        "scope": "user",
+        "installPath": "/Users/ashleytower/.claude/plugins/cache/anthropic-agent-skills/example-skills/69c0b1a06741",
+        "version": "69c0b1a06741",
+        "installedAt": "2026-01-15T19:43:08.794Z",
+        "lastUpdated": "2026-01-15T19:43:08.794Z",
+        "gitCommitSha": "69c0b1a0674149f27b61b2635f935524b6add202"
+      }
+    ],
+    "superpowers@superpowers-marketplace": [
+      {
+        "scope": "user",
+        "installPath": "/Users/ashleytower/.claude/plugins/cache/superpowers-marketplace/superpowers/4.0.3",
+        "version": "4.0.3",
+        "installedAt": "2026-01-15T19:44:51.853Z",
+        "lastUpdated": "2026-01-15T19:44:51.853Z",
+        "gitCommitSha": "a08f088968d0789a44a4f5f5f7d8d6bbe46a0b44"
+      }
+    ]
+  }
 }

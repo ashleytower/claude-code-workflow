@@ -140,5 +140,10 @@
       "Bash(git reset --hard:*)"
     ],
     "defaultMode": "dontAsk"
+  },
+  "enabledPlugins": {
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": true,
+    "superpowers@superpowers-marketplace": true
   }
 }
