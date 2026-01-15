@@ -3,7 +3,7 @@ name: research-ui-patterns
 description: Deep UI research for complex patterns
 context: fork
 model: opus
-skills: [research, auth, guide, learn]
+skills: [research, auth, guide, prd-to-ux]
 hooks:
   Stop:
     - hooks:

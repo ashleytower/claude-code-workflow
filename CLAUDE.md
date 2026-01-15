@@ -111,6 +111,7 @@ When ANY task involves these services, immediately use Rube:
 - **Subagent when**: Specialized expertise needed repeatedly
 - **Update reference when**: Patterns emerge
 - **Update CLAUDE.md when**: Learn from bugs
+- **Update /guide when**: Adding ANY new skill, command, or workflow enhancement - integrate into appropriate phase automatically. Do NOT wait to be asked.
 
 ## Guided Workflow (Use /guide)
 
@@ -198,12 +199,33 @@ When you successfully implement integrations, use `/learn` to save as reusable s
 
 **Saved Skills** (~/.claude/skills/):
 - `auth.md` - Framework-aware auth (Clerk/Supabase)
-- `stripe-payments.md` - Payment processing (when first implemented)
-- `resend-emails.md` - Email service (when first implemented)
-- `telegram-bot.md` - Bot integration (when first implemented)
-- `uploadthing.md` - File uploads (when first implemented)
+- `research.md` - Docs-first research
+- `guide.md` - Workflow orchestration
+- `prd-clarifier.md` - PRD refinement questions
+- `prd-to-ux.md` - 6-pass UX foundations
 
 **Philosophy**: Build it once, save as skill, next time = instant copy-paste.
+
+## Plugin Marketplaces
+
+**Setup**: Run `~/.claude/scripts/setup-plugins.sh` for instructions.
+
+**Marketplaces to add** (run in Claude Code):
+```
+/plugin marketplace add anthropics/skills
+/plugin marketplace add obra/superpowers-marketplace
+```
+
+**Key Anthropic skills**:
+- `mcp-builder` - Build MCP integrations
+- `webapp-testing` - Test web apps
+- `frontend-design` - UI/UX assistance
+- `docx/pdf/xlsx/pptx` - Document handling
+
+**How skills load**:
+- Agent `skills: [...]` in frontmatter → loads at spawn
+- Skills in `~/.claude/skills/` → Claude auto-detects relevance (~100 tokens scan)
+- Plugin skills → on-demand via marketplace
 
 ### Authentication
 - 2026-01-08: Auth skill created with framework detection
@@ -268,9 +290,16 @@ Required API keys (see `.env.example` for details):
 - Visual notifications: `~/.claude/scripts/notify.sh` (all projects)
 - WhisperFlow: Voice input (user has installed)
 
-**When agent needs input:**
-- Speaks: "I need your input"
-- Shows: macOS notification
+**Voice alerts:**
+- AskUserQuestion: "Question on screen" + check terminal
+- Task complete: "Task done"
+- Session start: "Ready to build"
+
+**Hook limitations (Claude Code architecture):**
+- Hooks cannot access tool parameters (only tool names)
+- Cannot make voice say the actual question content - check screen
+- Permission prompts are CLI-level, not hookable
+- Stop hooks are informational, never block agents
 
 ## Permissions (Global)
 
@@ -312,3 +341,14 @@ Required API keys (see `.env.example` for details):
 - NEVER write code without checking existing patterns
 - NO celebration messages, NO emojis, NO parties
 - Check for Claude Code updates on startup
+
+## Behavior Directives
+
+**Proactive Mode (default)**:
+Implement changes rather than only suggesting them. If intent is unclear, infer the most useful action and proceed. Use tools to discover missing details instead of guessing.
+
+**Investigate Before Answering**:
+Never speculate about code you have not opened. If the user references a specific file, READ it before answering. Give grounded, hallucination-free answers.
+
+**After Tool Use**:
+Provide a quick summary of the work done.

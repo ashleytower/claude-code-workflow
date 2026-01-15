@@ -39,9 +39,50 @@ Invoke `@research-ui-patterns` subagent to search:
 - Interaction patterns
 - Animation ideas
 
+**21st.dev** (Component Gallery):
+- Search for similar components
+- Get AI-optimized prompts (copy directly to Claude)
+- Includes: requirements, code, dependencies, installation steps
+- Libraries: Aceternity UI, Prism UI, Magic UI, ShadCN variants
+
 **Output**: `.claude/research/ui-[component].md` with findings
 
-### Phase 2: Generate UI Mockup
+## Component Library Selection
+
+**Choose library based on project style:**
+
+| Style | Library | Notes |
+|-------|---------|-------|
+| Apple/iOS style | Hero UI | Built on Tailwind + Framer Motion |
+| General purpose | ShadCN | Most flexible, copy-paste components |
+| Animated/flashy | Aceternity UI | Heavy animations, landing pages |
+| Minimal/clean | Radix UI | Unstyled primitives, full control |
+| Dashboard | Tremor | Charts, metrics, data display |
+| Mobile (RN) | React Native Paper | Material Design |
+| Mobile (RN) | Tamagui | Cross-platform, performant |
+
+**21st.dev workflow**:
+1. Search for component type (e.g., "hero section", "pricing table")
+2. Find component you like
+3. Click "Copy AI Prompt" button
+4. Paste prompt directly to Claude
+5. Prompt includes all dependencies and installation steps
+
+**Animation libraries**:
+- motion.dev (formerly Framer Motion) - scroll animations, parallax
+- Lottie - JSON-based animations from After Effects
+- React Spring - physics-based animations
+
+### Phase 2: Generate 2-3 Different Approaches
+
+Before committing to one design, generate **2-3 philosophically different approaches** (not cosmetic variations). For example:
+- Approach A: Minimal - single focus, progressive disclosure
+- Approach B: Information-dense - everything visible, power-user oriented
+- Approach C: Guided - wizard/stepper, hand-holding
+
+Present all approaches with tradeoffs. Let user pick before detailing.
+
+### Phase 3: Generate UI Mockup
 
 **Option A: Google AI Studio (Gemini 2.0)**
 ```bash

@@ -3,7 +3,7 @@ name: code-simplifier
 description: Post-implementation cleanup and refactoring
 context: fork
 model: opus
-skills: [research, auth, guide, learn]
+skills: [research, auth, guide]
 hooks:
   Stop:
     - hooks:

@@ -3,7 +3,7 @@ name: orchestrator
 description: Quality check coordinator (auto-invoked by Stop hook)
 context: fork
 model: haiku
-skills: [research, auth, guide, learn]
+skills: [research, auth, guide]
 hooks:
   Stop:
     - hooks:

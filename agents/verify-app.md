@@ -3,7 +3,7 @@ name: verify-app
 description: Comprehensive E2E verification agent
 context: fork
 model: sonnet
-skills: [verify-app, auth, guide, learn]
+skills: [auth, guide, research]
 hooks:
   Stop:
     - hooks:
@@ -104,7 +104,35 @@ pip-audit
 git secrets --scan
 ```
 
-### 6. Skill Detection
+### 6. Screenshot Verification Protocol (UI)
+
+**Critical for preventing premature completion with UI errors.**
+
+1. **Capture screenshots** during E2E tests (Playwright)
+2. **Review EVERY screenshot** in `screenshots/` folder
+3. **For each screenshot**:
+   - UI correct → Rename to `verified_[name].png`
+   - UI errors → Fix code → Re-run tests → Re-capture
+4. **After renaming all**: Do NOT claim task complete yet
+5. **Next iteration**: Verify all have `verified_` prefix
+6. **Only then**: Output completion promise
+
+**Checklist before completion**:
+```bash
+# Check all screenshots verified
+ls screenshots/ | grep -v "^verified_"
+# If any files returned → NOT DONE
+# If empty → All verified, can complete
+```
+
+**UI errors to check**:
+- Broken layouts, overlapping elements
+- Text overflow, truncation
+- Wrong colors, spacing
+- Missing states (hover, focus, disabled, loading, error)
+- Responsive issues
+
+### 7. Skill Detection
 
 After successful verification, detect integrations:
 

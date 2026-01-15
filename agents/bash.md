@@ -3,7 +3,7 @@ name: bash
 description: Long-running bash operations and system commands
 context: fork
 model: haiku
-skills: [research, auth, guide, learn]
+skills: [research, auth, guide]
 hooks:
   Stop:
     - hooks:

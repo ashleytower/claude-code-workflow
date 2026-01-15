@@ -15,6 +15,47 @@ claude /research "[topic]"
 
 This command must complete before any implementation begins.
 
+## Systematic Research Protocol
+
+### Phase 0: Problem Decomposition
+Before searching, break down the question:
+1. **Restate** the question in your own words
+2. **Identify sub-questions** - What must be answered?
+3. **Define success criteria** - What would a complete answer look like?
+4. **Note existing knowledge** - What do you already know?
+5. **Identify knowledge gaps** - What are you most uncertain about?
+
+### Phase 1: Hypothesis Generation
+Generate 2-4 competing hypotheses/approaches:
+
+| Hypothesis | Description | Initial Confidence | Key Assumptions |
+|------------|-------------|-------------------|-----------------|
+| H1 | ... | X% | ... |
+| H2 | ... | X% | ... |
+
+For each: What evidence would support vs refute it?
+
+### Phase 2: Evidence Gathering (see Process below)
+
+### Phase 3: Confidence Updates
+After gathering evidence, update the table:
+
+| Hypothesis | Prior | Evidence Summary | Posterior | Verdict |
+|------------|-------|------------------|-----------|---------|
+| H1 | X% | +: supports / -: refutes | Y% | Likely/Unlikely |
+
+**Confidence adjustments:**
+- Strong supporting evidence: +10-30%
+- Weak supporting: +5-10%
+- Strong disconfirming: -10-30%
+
+### Phase 4: Self-Critique
+Before finalizing, check:
+- [ ] Did I seek disconfirming evidence?
+- [ ] Did I verify across multiple sources?
+- [ ] Am I overconfident given evidence quality?
+- [ ] What would change my mind?
+
 ## Process
 
 ### 1. Search Official Documentation

@@ -2,24 +2,28 @@
   "includeCoAuthoredBy": true,
   "permissions": {
     "allow": [
-      "*",
-      "Edit(**)",
-      "Write(**)",
-      "Read(**)",
-      "Glob(**)",
-      "Grep(**)",
-      "Task(subagent_type:*)",
-      "Skill(*)",
-      "mcp__rube__*",
-      "mcp__context7__*",
-      "mcp__github__*",
-      "mcp__sequential-thinking__*",
-      "WebFetch(domain:*)",
+      "Bash",
+      "Edit",
+      "Write",
+      "Read",
+      "Glob",
+      "Grep",
+      "Task",
+      "Skill",
+      "WebFetch",
       "WebSearch",
       "AskUserQuestion",
       "TodoWrite",
       "EnterPlanMode",
       "ExitPlanMode",
+      "NotebookEdit",
+      "KillShell",
+      "TaskOutput",
+      "mcp__rube__*",
+      "mcp__context7__*",
+      "mcp__github__*",
+      "mcp__sequential-thinking__*",
+      "mcp__claude-in-chrome__*",
       "Bash(open:*)",
       "WebFetch(domain:docs.kie.ai)",
       "WebFetch(domain:kie.ai)",
@@ -88,11 +92,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/scripts/notify.sh 'Agent asking a question' 'Claude Code' &"
+            "command": "~/.claude/scripts/notify.sh 'Question waiting - check terminal' 'Claude Code' &"
           },
           {
             "type": "command",
-            "command": "~/.claude/scripts/speak.sh 'I have a question for you' &"
+            "command": "~/.claude/scripts/speak.sh 'Question on screen' &"
           }
         ]
       }

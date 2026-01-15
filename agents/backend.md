@@ -3,7 +3,7 @@ name: backend
 description: API/server development with security and validation
 context: fork
 model: sonnet
-skills: [research, auth, guide, learn]
+skills: [research, auth, guide]
 hooks:
   PostToolUse:
     - matcher:

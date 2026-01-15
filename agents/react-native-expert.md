@@ -3,7 +3,7 @@ name: react-native-expert
 description: React Native and Expo SDK expertise
 context: fork
 model: sonnet
-skills: [research, auth, guide, learn]
+skills: [research, auth, guide]
 hooks:
   Stop:
     - hooks:

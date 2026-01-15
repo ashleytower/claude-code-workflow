@@ -11,7 +11,37 @@ claude /create-prd [output-file]
 
 ## Process
 
-You should have already had a conversation with the user about what they want to build. This command outputs that discussion into a structured PRD document.
+### Phase 1: Clarification Questions (PROMPT IMPROVER)
+
+Before writing ANY PRD, ask 3-5 targeted questions to eliminate ambiguity:
+
+**Key Areas to Clarify:**
+- **Purpose & Context**: What problem is this solving? Who are the users?
+- **Scope & Features**: What specific capabilities are needed? What's explicitly out?
+- **Technical Requirements**: What technologies, patterns, or constraints apply?
+- **Data & Content**: What data needs to be displayed/processed? What's the source?
+- **Interactions & UX**: How should users interact? What are key workflows?
+- **Design & Styling**: Existing design system? Brand requirements?
+
+**Question Format:**
+```
+I need to clarify a few things before creating the PRD:
+
+1. [Most critical ambiguity]
+2. [Second most critical]
+3. [Third priority]
+4. [Optional: Fourth if needed]
+5. [Optional: Fifth if needed]
+```
+
+**Rules:**
+- DO NOT start writing the PRD until questions are answered
+- DO NOT make assumptions - ASK
+- Questions should be specific and actionable (answers directly inform the PRD)
+
+### Phase 2: PRD Generation
+
+After receiving answers, synthesize everything into the PRD structure below.
 
 ## Template Structure
 

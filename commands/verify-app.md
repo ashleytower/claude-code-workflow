@@ -76,7 +76,66 @@ python -m build
 
 **Requirement**: Clean build with no errors
 
-### 5. Manual Test Guidance
+### 5. Screenshot Verification Protocol (UI)
+
+**Problem solved**: Claude reviews screenshots, ignores errors, claims completion too early.
+
+**Setup** (in your E2E test file):
+```typescript
+// tests/e2e/screenshots.spec.ts
+import { test, expect } from '@playwright/test';
+
+test('capture UI states', async ({ page }) => {
+  await page.goto('/');
+  await page.screenshot({ path: 'screenshots/01_home.png' });
+
+  await page.click('[data-testid="login-button"]');
+  await page.screenshot({ path: 'screenshots/02_login_modal.png' });
+
+  // ... capture all functional states
+});
+```
+
+**Verification Process**:
+
+1. **Run E2E tests** → Screenshots captured to `screenshots/` folder
+2. **Review EVERY screenshot** - no skipping
+3. **For each screenshot**:
+   - If UI correct → Rename to `verified_01_home.png`
+   - If UI has errors → Fix code → Re-run tests → Re-capture
+4. **Critical rule**: After renaming all screenshots, do NOT claim completion
+5. **Next iteration** verifies all files have `verified_` prefix
+6. **Only then** output completion promise
+
+**Why 2+ loops are required**:
+- Loop 1: Implement, test, review screenshots, rename to `verified_`
+- Loop 2: Confirm ALL screenshots have `verified_` prefix, then complete
+
+**Screenshot Checklist**:
+```markdown
+## Screenshot Verification
+
+- [ ] All screenshots captured (no missing states)
+- [ ] Each screenshot reviewed for UI errors:
+  - [ ] Components render correctly (no broken layouts)
+  - [ ] Text is readable (no overflow, truncation)
+  - [ ] Colors/spacing match design
+  - [ ] Interactive states visible (hover, focus, disabled)
+  - [ ] Responsive layouts correct (if applicable)
+- [ ] All screenshots renamed to `verified_[name].png`
+- [ ] No unverified screenshots remain
+```
+
+**Integration with Ralph Loop**:
+```bash
+/ralph-loop "Implement [feature]" --max-iterations 5
+# Loop continues until:
+# 1. All tests pass
+# 2. ALL screenshots have verified_ prefix
+# 3. THEN completion promise is output
+```
+
+### 6. Manual Test Guidance
 
 Generates checklist based on changes:
 

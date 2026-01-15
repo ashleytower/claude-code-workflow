@@ -187,10 +187,10 @@ Ready to design the UI? (y/n)
 Next: Run /guide to continue to Phase 3
 ```
 
-### Phase 3: UI Design (If Applicable)
+### Phase 3: UX Foundations (If UI Feature)
 
 ```
-🎨 Phase 3: UI Design
+🧠 Phase 3: UX Foundations (6 Passes)
 
 Does this feature include UI components?
 
@@ -198,7 +198,34 @@ Does this feature include UI components?
 
 ✓ UI components identified
 
-INVOKE: /ui-design "login and registration screens for React Native"
+BEFORE any visual work, we must complete UX foundations.
+
+INVOKE: Load prd-to-ux skill
+
+[Runs 6 mandatory passes...]
+
+Pass 1: Mental Model - What does user think is happening?
+Pass 2: Information Architecture - All concepts enumerated
+Pass 3: Affordances - What's clickable vs editable vs output?
+Pass 4: Cognitive Load - Where will user hesitate?
+Pass 5: State Design - Empty/Loading/Success/Error for each element
+Pass 6: Flow Integrity - Where could first-time user fail?
+
+✓ UX Spec created: .claude/designs/auth-ux-spec.md
+
+[Voice: "UX foundations complete"]
+
+Next: Run /guide to continue to Phase 4 (Visual Design)
+```
+
+### Phase 4: Visual Design
+
+```
+🎨 Phase 4: Visual Design
+
+UX foundations complete. Now we can do visual design.
+
+INVOKE: /ui-design "login and registration screens" --ux-spec .claude/designs/auth-ux-spec.md
 
 [UI design runs...]
 
