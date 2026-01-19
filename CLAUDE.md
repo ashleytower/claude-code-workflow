@@ -1,412 +1,96 @@
-# Global Claude Code Configuration
+# Global Claude Code Rules
 
-> Universal rules and workflows that apply to ALL projects
-> Project-specific details belong in each project's ./CLAUDE.md file
+## Core Behavior
 
-## MANDATORY: Context Monitoring (70% Warning)
+**Style:** No emojis. No celebration messages. Facts only.
 
-**Claude MUST self-monitor context usage and warn at 70%.**
+**Before editing:** Read the file first. Check existing patterns with Grep.
 
-### Rules:
-1. After every 10-15 tool calls, check context usage in status bar
-2. At 70% (140K tokens): IMMEDIATELY run voice alert and warn user
-3. At 85%: STOP work, create handoff, do not continue
+**After completing work:** Summarize what was done.
 
-### At 70% - Run This:
+## External Services
+
+Use Rube MCP for: Supabase, Vercel, Google, GitHub, Slack
+```
+mcp__rube__RUBE_SEARCH_TOOLS → Find tool
+mcp__rube__RUBE_MANAGE_CONNECTIONS → Connect
+mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute
+```
+
+## Browser Testing
+
+Use `agent-browser` for web testing:
 ```bash
-~/.claude/scripts/speak.sh "Context at 70 percent. Time to create handoff."
+agent-browser open <url>
+agent-browser snapshot -i    # Get elements with refs
+agent-browser click @e1      # Interact by ref
+agent-browser screenshot
 ```
 
-Then tell user:
+## Workflow
+
+1. Plan first (shift+tab twice for plan mode)
+2. Research docs before coding (Context7 MCP or WebFetch)
+3. Implement
+4. Test with `/verify-app`
+5. Commit with `/commit-push-pr`
+
+## Key Commands
+
+- `/guide` - Step-by-step feature workflow
+- `/research` - Check docs before coding
+- `/verify-app` - Run tests
+- `/commit-push-pr` - Git workflow
+- `/learn` - Save implementation as skill
+
+## /guide Workflow (9 Phases)
+
 ```
-⚠️ CONTEXT AT 70% - Handoff Required
-
-I need to create a handoff before continuing. This ensures no work is lost.
-
-Creating handoff now...
-```
-
-Then create handoff at: `~/.claude/handoffs/NEXT_SESSION_START_HERE.md`
-
-### Handoff Template:
-```markdown
-# Session Handoff - [Date]
-
-## Current Task
-[What we're building]
-
-## Completed
-- [x] What's done
-
-## In Progress
-- [ ] Current work
-
-## Next Steps
-1. [Specific next action]
-2. [Following action]
-
-## Key Context
-- [Critical info for next session]
-- [File paths, decisions made, blockers]
-
-## Resume Command
-claude "Read this handoff and continue: ~/.claude/handoffs/NEXT_SESSION_START_HERE.md"
+0. Explore    → Task(Explore) - understand codebase first
+1. Detect     → New project? /create-prd. Existing? Skip to 2
+2. Research   → /research - docs before code
+3. UX         → prd-to-ux skill (if UI feature)
+4. Plan       → /prime + /plan
+5. Execute    → Fresh context, implement
+6. Verify     → /code-review → /verify-app → @code-simplifier
+7. Quality    → Automated checks
+8. Ship       → /commit-push-pr
+9. Learn      → /learn to save for reuse
 ```
 
-### At 85% - Emergency Stop:
-```bash
-~/.claude/scripts/speak.sh "Context critical. Stopping now. Handoff created."
-```
-Create handoff immediately. Do NOT continue work.
+Run `/guide` and follow the prompts. State saved in `.claude/guide-state.json`.
 
----
+## /learn - Save Implementations
 
-## Exploration-First (Best Practice)
-
-**For existing projects, prefer reading code before editing:**
-
-1. Use Read to examine files you're about to edit
-2. Check existing patterns with Grep before creating new files
-3. Review CLAUDE.md for project-specific conventions
-
-**Good habits:**
-- Read the file before editing it
-- Check for similar patterns in the codebase
-- Cite files/lines when discussing architecture
-
-**Note:** This is guidance for quality, not a blocker. Proceed with edits when you have sufficient context.
-
----
-
-## Best Practices
-
-**Quality habits (not blockers):**
-- Read files before editing them
-- Check docs when implementing new integrations
-- Search codebase for existing patterns
-- Use Rube MCP for external services (Supabase, Vercel, Google)
-- Run tests after making changes
-- Keep dependencies up-to-date
-
-**Style:**
-- No emojis in code or responses
-- Facts only, no celebration messages
-
-## External Services (Rube MCP) - PROACTIVE
-
-**CRITICAL: Automatically use Rube MCP for ANY external service. Do NOT wait to be asked.**
-
-When ANY task involves these services, immediately use Rube:
-- Supabase (migrations, queries, RLS, schema, functions)
-- Vercel (deploy, env vars, domains, settings)
-- Google (Gmail, Calendar, Drive, Sheets)
-- GitHub (issues, PRs, actions)
-- Slack (messages, channels)
-- Stripe (payments, customers)
-- Resend (emails)
-
-**Workflow:**
-```
-1. mcp__rube__RUBE_SEARCH_TOOLS    → Find the right tool
-2. mcp__rube__RUBE_MANAGE_CONNECTIONS → Ensure active connection
-3. mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute
-```
-
-**Examples of proactive use:**
-- "Fix RLS policy" → Use Rube for Supabase, don't ask
-- "Deploy to preview" → Use Rube for Vercel, don't ask
-- "Add column to users" → Use Rube migration, don't ask
-
-**Why:** Rube handles auth, rate limits, and errors. No CLI setup needed.
-
-## Mindset & Process
-
-**PRD-First**: Single document defines entire scope
-**Research-First**: Docs + boilerplates before coding
-**UI-First**: Mockups + approval before implementation
-**Plan → Context Reset → Execute**: Optimal context management
-**System Evolution**: Fix the system, not just the bug
-
-## CLAUDE.md Philosophy
-
-**Global (~/.claude/CLAUDE.md)**: LEAN (<200 lines)
-- Universal rules that apply everywhere
-- Cross-project conventions
-- Automation triggers
-
-**Project-Specific (./CLAUDE.md)**: COMPREHENSIVE
-- Tech stack details, architecture, APIs, schema, components
-- Everything specific to that project
-
-## Tech Stack Overview
-
-- **React Native/Mobile**: TypeScript, Expo SDK, FlashList, React Navigation
-- **Python/FastAPI**: Type hints, Pydantic v2, async/await
-- **TypeScript/Next.js**: App Router, Server Components, strict mode
-- **Supabase/PostgreSQL**: RLS for ALL tables, database functions
-
-**Detailed conventions**: See `.claude/reference/` docs and project CLAUDE.md
-
-## Reference Docs (Load Only When Needed)
-
-- API development: `~/.claude/reference/api-development.md`
-- Frontend components: `~/.claude/reference/frontend-components.md`
-- Mobile patterns: `~/.claude/reference/mobile-patterns.md`
-- Database: `~/.claude/reference/database-schema.md`
-- Testing: `~/.claude/reference/testing-strategy.md`
-- Deployment: `~/.claude/reference/deployment.md`
-
-## Quality Standards
-
-- No `any` types without justification
-- 80%+ test coverage for critical paths
-- All linting must pass
-- Auto-format on save (automated via hooks)
-
-## Automation Rules
-
-- **Command when**: Prompt used >2x
-- **Subagent when**: Specialized expertise needed repeatedly
-- **Update reference when**: Patterns emerge
-- **Update CLAUDE.md when**: Learn from bugs
-- **Update /guide when**: Adding ANY new skill, command, or workflow enhancement - integrate into appropriate phase automatically. Do NOT wait to be asked.
-
-## Guided Workflow (Use /guide)
-
-1. PRD → 2. Research → 3. UI Design → 4. Plan → 5. Context Reset → 6. Execute → 7. Verify → 8. Commit → 9. Learn
-
-## Ralph Loop (Autonomous Execution)
-
-**Continuous autonomous loop** - keeps running until task is actually complete, not just when Claude thinks it's done.
-
-- **Outer loop**: Ralph verification loop (checks completion, restarts if needed)
-- **Inner loop**: Standard Claude tool loop
-- **Use case**: Large refactors, overnight autonomous development, mechanical tasks
-- **Safety**: Max iterations, cost limits, completion verification
+After building something reusable (Stripe, auth, email), save it:
 
 ```bash
-/ralph-loop "Migrate all components to TypeScript"
-# Runs autonomously, voice notifies when complete
+/learn 'stripe-payments'
 ```
 
-**Integration**: Combine with `/superpowers` for multi-repo overnight development
+Creates `~/.claude/skills/stripe-payments.md` with:
+- Setup code, env vars, common patterns
+- Framework-specific variations
+- Gotchas and testing
 
-## Parallel Execution (5 Terminals)
+Next project: "Add Stripe" → uses saved skill instantly.
 
-- **Terminal 1**: Main (planning, coordination)
-- **Terminals 2-5**: Agents (@frontend, @backend, @testing, @bash)
-- Voice notifications alert when complete or need input!
+## Skills (in ~/.claude/skills/)
 
-## Commands Reference
+Skills are reference docs, not auto-triggered. Use when relevant:
+- `auth.md` - Authentication patterns
+- `react-best-practices/` - React/Next.js optimization (45 rules)
+- `web-design-guidelines/` - Accessibility/UX (100+ rules)
+- `agent-browser/` - Browser automation
 
-| Command | Purpose |
-|---------|---------|
-| `/guide` | Step-by-step feature guidance (auto-detects new vs existing project) |
-| `/create-prd` | Create product requirements |
-| `/research` | Consult docs, find boilerplates |
-| `/ui-design` | Design UI before coding |
-| `/prime` | Load context for planning |
-| `/plan` | Create structured execution plan |
-| `/execute` | Execute plan (fresh context!) |
-| `/commit-push-pr` | Automated git workflow |
-| `/code-review` | Ruthless senior dev review |
-| `/verify-app` | E2E testing and verification |
-| `/learn` | **Save implementation as reusable skill** |
-| `/parallel-branches` | Multi-branch parallel work |
-| `/superpowers` | Multi-repo orchestration |
-| `/system-evolve` | Learn from bugs, improve system |
-| `/ralph-loop` | Autonomous loop until task complete |
-| `/update-council` | Update LLM models to latest |
-| `/self-update` | Update Claude Code and ecosystem |
+## Permissions
 
-## Agents Reference
+Defined in `settings.json`. Auto-approves most operations.
+Blocks: Stripe, Resend emails, prod deploys, force push, db reset.
 
-- `@frontend`: UI development (enforces ui-design)
-- `@backend`: API/server development
-- `@orchestrator`: Quality check coordinator (auto-invoked)
-- `@research-ui-patterns`: Deep UI research
-- `@code-simplifier`: Post-implementation cleanup
-- `@verify-app`: Comprehensive E2E verification
-- `@react-native-expert`: RN expertise
-- `@bash`: Long-running bash (context: fork, agent: bash)
+## Session Handoff
 
-## Authentication (Zero Time Waste)
+Before ending a long session, create handoff at:
+`~/.claude/handoffs/NEXT_SESSION_START_HERE.md`
 
-**Use `/auth` skill - picks right solution automatically**
-
-### Framework → Auth Solution
-- Next.js (fast) → Clerk (1 day)
-- Next.js (cheap) → Supabase (2 days, 5x free tier)
-- React Native/Expo → Supabase (best mobile)
-- FastAPI/Python → Supabase (Python SDK)
-- Any framework → NextAuth.js (full control)
-
-**CRITICAL**: Clerk + Supabase integration deprecated (April 2025). Choose one.
-
-**Updates**: Auto-updates weekly (Sunday 3 AM). Manual: `~/.claude/scripts/update-auth-docs.sh`
-
-## Institutional Knowledge
-
-**Two types of learning:**
-
-### 1. Bug/Issue Learning (via /system-evolve)
-When you encounter bugs, use `/system-evolve` to capture fixes and update the system.
-
-### 2. Success Learning (via /learn)
-When you successfully implement integrations, use `/learn` to save as reusable skills.
-
-**Saved Skills** (~/.claude/skills/):
-- `auth.md` - Framework-aware auth (Clerk/Supabase)
-- `research.md` - Docs-first research
-- `guide.md` - Workflow orchestration
-- `prd-clarifier.md` - PRD refinement questions
-- `prd-to-ux.md` - 6-pass UX foundations
-
-**Philosophy**: Build it once, save as skill, next time = instant copy-paste.
-
-## Plugin Marketplaces
-
-**Setup**: Run `~/.claude/scripts/setup-plugins.sh` for instructions.
-
-**Marketplaces to add** (run in Claude Code):
-```
-/plugin marketplace add anthropics/skills
-/plugin marketplace add obra/superpowers-marketplace
-```
-
-**Key Anthropic skills**:
-- `mcp-builder` - Build MCP integrations
-- `webapp-testing` - Test web apps
-- `frontend-design` - UI/UX assistance
-- `docx/pdf/xlsx/pptx` - Document handling
-
-**How skills load**:
-- Agent `skills: [...]` in frontmatter → loads at spawn
-- Skills in `~/.claude/skills/` → Claude auto-detects relevance (~100 tokens scan)
-- Plugin skills → on-demand via marketplace
-
-### Authentication
-- 2026-01-08: Auth skill created with framework detection
-- Clerk + Supabase integration deprecated (use one or the other)
-- Always check latest docs (skill auto-updates weekly)
-
-### React Native
-(Add learnings as they emerge)
-
-### Supabase
-(Add learnings as they emerge)
-
-### API Development
-(Add learnings as they emerge)
-
-### Performance
-(Add learnings as they emerge)
-
-## LLM Council (OpenRouter)
-
-- **Opus 4.5** (`anthropic/claude-opus-4.5`): Complex planning, critical features, system architecture
-  - Used by: @code-simplifier, @research-ui-patterns
-- **GPT-5.2** (`openai/gpt-5.2`): General development, API implementation
-  - Used by: @backend
-- **Gemini Pro 3** (`google/gemini-3-pro`): Fast iterations, simple tasks, bash orchestration
-  - Used by: @bash, @orchestrator
-- **Grok 2** (`x-ai/grok-2`): Screenshot analysis, UI review, visual debugging
-  - Available for visual tasks
-- **Sonnet 4.5** (`anthropic/claude-sonnet-4.5`): Balanced speed/quality, frontend/mobile
-  - Used by: @frontend, @react-native-expert, @verify-app
-
-**Auto-updates**: Run `/update-council` or set up daily cron job to keep models current
-
-Specify in agent frontmatter: `model: anthropic/claude-opus-4.5`
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and fill in your API keys:
-
-```bash
-cp ~/.claude/.env.example ~/.claude/.env
-# Edit ~/.claude/.env with your actual API keys
-```
-
-Then source the file in your shell:
-
-```bash
-source ~/.claude/.env
-```
-
-Required API keys (see `.env.example` for details):
-- `OPENROUTER_API_KEY`: For LLM Council multi-model access
-- `ELEVENLABS_API_KEY`: For voice notifications
-- `GITHUB_TOKEN`: For git operations and PR creation
-- `COMPOSIO_API_KEY`: For integrations (optional)
-- `RUBE_API_KEY`: For workflow automation (optional)
-
-## Voice & Notifications (Global)
-
-**Setup (2026-01-09):**
-- ElevenLabs voice: `~/.claude/scripts/speak.sh` (all projects)
-- Visual notifications: `~/.claude/scripts/notify.sh` (all projects)
-- WhisperFlow: Voice input (user has installed)
-
-**Voice alerts:**
-- AskUserQuestion: "Question on screen" + check terminal
-- Task complete: "Task done"
-- Session start: "Ready to build"
-
-**Hook limitations (Claude Code architecture):**
-- Hooks cannot access tool parameters (only tool names)
-- Cannot make voice say the actual question content - check screen
-- Permission prompts are CLI-level, not hookable
-- Stop hooks are informational, never block agents
-
-## Permissions (Global)
-
-**Strategy:** Auto-approve 95% of operations, block dangerous 5%
-
-**Always asks before:**
-- Stripe/payment operations
-- Sending emails (Resend)
-- Production deploys (`vercel --prod`)
-- Force pushes (`git push --force`)
-- Database resets (`supabase db reset`)
-- Recursive deletes (`rm -rf`)
-
-**Auto-approves:**
-- Read/Write/Edit files
-- Tests, builds, dev
-- Normal git operations
-- Installing packages
-- All MCP tools (except blocked ones)
-
-**See:** `~/.claude/settings.local.json` for full list (154 allow, 22 deny rules)
-
-## Notes
-
-- All config committed to git for team sharing
-- CLAUDE.md updated whenever Claude makes mistakes (institutional learning)
-- Use Opus 4.5 (thinking enabled) for best results
-- Voice + visual notifications keep you informed
-- Permission system protects money, emails, production
-
----
-
-**Last Updated**: 2026-01-14
-**Philosophy**: Boris's approach + Autonomous execution + Mandatory research before code + No fluff
-
-**Critical Rules**:
-- ALWAYS research docs before writing code (enforced by hook)
-- NEVER guess implementations
-- NEVER write code without checking existing patterns
-- NO celebration messages, NO emojis, NO parties
-- Check for Claude Code updates on startup
-
-## Behavior Directives
-
-**Proactive Mode (default)**:
-Implement changes rather than only suggesting them. If intent is unclear, infer the most useful action and proceed. Use tools to discover missing details instead of guessing.
-
-**Investigate Before Answering**:
-Never speculate about code you have not opened. If the user references a specific file, READ it before answering. Give grounded, hallucination-free answers.
-
-**After Tool Use**:
-Provide a quick summary of the work done.
+Resume with: `/resume`
