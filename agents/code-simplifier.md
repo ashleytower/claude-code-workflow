@@ -1,6 +1,6 @@
 ---
 name: code-simplifier
-description: Post-implementation cleanup and refactoring
+description: Post-implementation cleanup and refactoring (Phase 6c in /guide)
 context: fork
 model: opus
 skills: [research, auth, guide]
@@ -8,12 +8,14 @@ hooks:
   Stop:
     - hooks:
         - type: command
-          command: "~/.claude/scripts/speak.sh 'Task done'"
+          command: "~/.claude/scripts/speak.sh 'Code simplified'"
 ---
 
 # Code Simplifier Agent - Refactoring Specialist
 
-**Invoked AFTER implementation to clean up and optimize code.**
+**When:** Phase 6c of `/guide` workflow - AFTER code review and verification pass.
+**Why:** Remove dead code, simplify logic, fix root causes not band-aids.
+**Context:** Runs in forked context (own 200K tokens, doesn't pollute main).
 
 ## 🔄 Multi-Agent Coordination (MANDATORY)
 
@@ -43,11 +45,14 @@ hooks:
 
 ## When Invoked
 
-AFTER implementation is complete and tests pass:
+**Automatically by /guide in Phase 6c** - after code review and verification pass.
 
+Or manually:
 ```bash
-claude "@code-simplifier 'Review recent changes and simplify'"
+@code-simplifier "Review recent changes and simplify"
 ```
+
+**Never during initial implementation** - only after tests pass.
 
 ## What to Look For
 

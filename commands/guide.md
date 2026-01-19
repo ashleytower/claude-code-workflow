@@ -4,6 +4,39 @@
 
 **User's request**: "I want to be guided like: work on this feature, send it to agents in multiple terminals. Make sure it works, then continue."
 
+## Quick Reference - What Runs When
+
+```
+PHASE 0: Explore         → Task(Explore) - understand codebase
+PHASE 1: Detect/Init     → /create-prd (new project) or detect existing
+PHASE 2: Research        → /research - docs, patterns, boilerplates
+PHASE 3: UX Foundations  → prd-to-ux skill (6 passes)
+PHASE 4: Design & Plan   → /ui-design + /prime + /plan
+PHASE 5: Execute         → /execute (FRESH CONTEXT - 5 terminals)
+PHASE 6: Verify & Clean  → /code-review → /verify-app → @code-simplifier
+PHASE 7: Quality         → @orchestrator (auto) → @frontend, @verify-app
+PHASE 8: Ship            → /commit-push-pr
+PHASE 9: Learn           → /system-evolve + /learn
+```
+
+**Agents (all run in forked context - don't pollute main):**
+- `@frontend` - Verify UI matches approved design
+- `@backend` - API implementation (if needed in Phase 5)
+- `@code-simplifier` - Remove dead code, simplify logic (Phase 6c)
+- `@verify-app` - E2E testing
+- `@orchestrator` - Coordinate quality checks (auto)
+
+**You don't need to remember this** - the guide tells you exactly what to do at each step.
+
+## Context Checkpoints (MANDATORY)
+
+At these points, Claude MUST check context usage and warn if >70%:
+- After Phase 2 (Research)
+- After Phase 4 (Planning)
+- After Phase 6 (Verification)
+
+If >70%: Create handoff with `/handoff`, then tell user to start fresh session.
+
 ## Usage
 
 ```bash
@@ -329,14 +362,18 @@ While Terminal 1 executes, Terminals 2-5 will be used for parallel agents if nee
 ⏸️  PAUSED - Resume by running /guide after execution completes
 ```
 
-### Phase 6: Post-Execution Verification
+### Phase 6: Post-Execution Verification & Cleanup
 
 ```
-✅ Phase 6: Verification
+✅ Phase 6: Verification & Cleanup
 
 [Detects you're back from execution session]
 
 Welcome back! Let's verify the implementation.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 6a: Code Review (catch band-aids, root cause issues)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 INVOKE: /code-review
 
@@ -360,6 +397,11 @@ Ready to re-verify?
 INVOKE: /code-review
 
 ✓ All code review issues resolved!
+✓ No band-aids - all fixes address root cause
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 6b: E2E Verification
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 INVOKE: /verify-app
 
@@ -371,7 +413,40 @@ Verification Results:
 ✓ Session persistence works
 ✓ Protected routes working
 
-[Voice: "Verification complete. All checks passed."]
+[Voice: "Verification complete"]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 6c: Code Simplification (remove dead code, clean up)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tests pass. Now let's clean up the code.
+
+INVOKE: @code-simplifier "Review recent changes and simplify"
+
+[Runs in separate context - doesn't affect main...]
+
+@code-simplifier analyzing...
+
+Simplification Results:
+✓ Removed 3 unused imports
+✓ Extracted duplicate validation logic → validateEmail()
+✓ Simplified nested conditionals in auth.ts
+✓ Removed commented-out code (12 lines)
+✓ No unnecessary abstractions found
+
+Changes made:
+- src/utils/validation.ts (new file)
+- src/auth/login.ts (simplified)
+- src/auth/register.ts (simplified)
+
+[Voice: "Code simplified. Ready for quality checks."]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Phase 6 Complete:
+  ✓ Code review passed (no band-aids)
+  ✓ E2E verification passed
+  ✓ Code simplified (no dead code)
 
 Next: Run /guide to continue to Phase 7
 ```
@@ -590,15 +665,31 @@ Maintains state in: `.claude/guide-state.json`
 ## Integration with Other Commands
 
 The guide command orchestrates ALL other commands:
-- Phase 1: `/create-prd`
-- Phase 2: `/research`
-- Phase 3: `/ui-design`
-- Phase 4: `/prime` + `/plan`
-- Phase 5: `/execute`
-- Phase 6: `/code-review` + `/verify-app`
-- Phase 7: Orchestrator (automatic)
-- Phase 8: `/commit-push-pr`
-- Phase 9: `/system-evolve`
+
+| Phase | Command/Agent | Purpose |
+|-------|---------------|---------|
+| 0 | `Task(Explore)` | Understand existing codebase |
+| 1 | `/create-prd` | Define what to build |
+| 2 | `/research` | Find docs, patterns, boilerplates |
+| 3 | `prd-to-ux` skill | UX foundations (6 passes) |
+| 4a | `/ui-design` | Visual mockups |
+| 4b | `/prime` + `/plan` | Create execution plan |
+| 5 | `/execute` | Build it (fresh context) |
+| 6a | `/code-review` | Catch band-aids, root cause issues |
+| 6b | `/verify-app` | E2E testing |
+| 6c | `@code-simplifier` | Remove dead code, simplify |
+| 7 | `@orchestrator` | Final quality checks |
+| 8 | `/commit-push-pr` | Ship it |
+| 9 | `/system-evolve` + `/learn` | Capture knowledge |
+
+**Agents summary:**
+| Agent | When Used | What It Does |
+|-------|-----------|--------------|
+| `@frontend` | Phase 7 | Verify UI matches design |
+| `@backend` | Phase 5 (if needed) | API implementation |
+| `@code-simplifier` | Phase 6c | Remove duplication, dead code, simplify |
+| `@verify-app` | Phase 6b, 7 | Run all tests, E2E verification |
+| `@orchestrator` | Phase 7 (auto) | Coordinate quality checks |
 
 ## Voice Notifications
 

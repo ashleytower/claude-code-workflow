@@ -3,6 +3,64 @@
 > Universal rules and workflows that apply to ALL projects
 > Project-specific details belong in each project's ./CLAUDE.md file
 
+## MANDATORY: Context Monitoring (70% Warning)
+
+**Claude MUST self-monitor context usage and warn at 70%.**
+
+### Rules:
+1. After every 10-15 tool calls, check context usage in status bar
+2. At 70% (140K tokens): IMMEDIATELY run voice alert and warn user
+3. At 85%: STOP work, create handoff, do not continue
+
+### At 70% - Run This:
+```bash
+~/.claude/scripts/speak.sh "Context at 70 percent. Time to create handoff."
+```
+
+Then tell user:
+```
+⚠️ CONTEXT AT 70% - Handoff Required
+
+I need to create a handoff before continuing. This ensures no work is lost.
+
+Creating handoff now...
+```
+
+Then create handoff at: `~/.claude/handoffs/NEXT_SESSION_START_HERE.md`
+
+### Handoff Template:
+```markdown
+# Session Handoff - [Date]
+
+## Current Task
+[What we're building]
+
+## Completed
+- [x] What's done
+
+## In Progress
+- [ ] Current work
+
+## Next Steps
+1. [Specific next action]
+2. [Following action]
+
+## Key Context
+- [Critical info for next session]
+- [File paths, decisions made, blockers]
+
+## Resume Command
+claude "Read this handoff and continue: ~/.claude/handoffs/NEXT_SESSION_START_HERE.md"
+```
+
+### At 85% - Emergency Stop:
+```bash
+~/.claude/scripts/speak.sh "Context critical. Stopping now. Handoff created."
+```
+Create handoff immediately. Do NOT continue work.
+
+---
+
 ## Exploration-First (Best Practice)
 
 **For existing projects, prefer reading code before editing:**
