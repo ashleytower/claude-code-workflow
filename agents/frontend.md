@@ -3,7 +3,7 @@ name: frontend
 description: UI development with mandatory design-first approach
 context: fork
 model: sonnet
-skills: [auth, guide, research, prd-to-ux]
+skills: [react-best-practices, web-design-guidelines, agent-browser]
 hooks:
   PreToolUse:
     - matcher:

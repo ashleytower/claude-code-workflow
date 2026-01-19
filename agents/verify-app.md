@@ -3,7 +3,7 @@ name: verify-app
 description: Comprehensive E2E verification agent
 context: fork
 model: sonnet
-skills: [auth, guide, research]
+skills: [agent-browser, webapp-testing]
 hooks:
   Stop:
     - hooks:
