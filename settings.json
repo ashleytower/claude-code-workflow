@@ -47,5 +47,163 @@
     "document-skills@anthropic-agent-skills": true,
     "example-skills@anthropic-agent-skills": true,
     "superpowers@superpowers-marketplace": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/speak.sh 'Ready to build' &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/memory-persistence/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/speak.sh 'Question on screen' &"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(npm run dev*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Use tmux for dev servers: tmux new-session -d -s dev npm run dev'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git push*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/git-push-review.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit(*.ts)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/check-typescript.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit(*.tsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/check-typescript.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit(*.js)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit(*.jsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      },
+      {
+        "matcher": "Write(*.ts)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      },
+      {
+        "matcher": "Write(*.tsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      },
+      {
+        "matcher": "Write(*.js)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      },
+      {
+        "matcher": "Write(*.jsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/speak.sh 'Task complete' &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/check-console-logs.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/speak.sh 'Context getting full. Creating handoff now.' &"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/memory-persistence/pre-compact.sh"
+          }
+        ]
+      }
+    ]
   }
 }
