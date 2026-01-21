@@ -5,8 +5,22 @@
 
 set -e
 
-CONFIG_FILE="$HOME/.claude/config/llm-council.json"
-BACKUP_FILE="$HOME/.claude/config/llm-council.backup.json"
+# Config locations (check repo first, then home)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_CONFIG="$SCRIPT_DIR/../config/llm-council.json"
+REPO_BACKUP="$SCRIPT_DIR/../config/llm-council.backup.json"
+HOME_CONFIG="$HOME/.claude/config/llm-council.json"
+HOME_BACKUP="$HOME/.claude/config/llm-council.backup.json"
+
+# Use repo config if exists, otherwise home
+if [ -f "$REPO_CONFIG" ]; then
+    CONFIG_FILE="$REPO_CONFIG"
+    BACKUP_FILE="$REPO_BACKUP"
+else
+    CONFIG_FILE="$HOME_CONFIG"
+    BACKUP_FILE="$HOME_BACKUP"
+fi
+
 LOG_FILE="$HOME/.claude/logs/llm-council-updates.log"
 
 # Colors
