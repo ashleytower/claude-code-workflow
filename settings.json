@@ -45,7 +45,7 @@
   },
   "enabledPlugins": {
     "document-skills@anthropic-agent-skills": true,
-    "example-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": false,
     "superpowers@superpowers-marketplace": true
   },
   "hooks": {
