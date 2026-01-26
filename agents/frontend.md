@@ -61,6 +61,15 @@ Before ANY UI implementation: Run `/ui-design` → Get approval → THEN impleme
 5. Performance (lazy loading, code splitting)
 6. Testing (component tests)
 
+## Learning (After Completing)
+
+If you solved something reusable:
+1. **Known service?** (vercel, supabase, etc.) → Append to `~/.claude/skills/<service>-*.md`
+2. **New pattern?** → `/learn '<name>'`
+3. **Project-specific?** → Add to `./CLAUDE.md`
+
+Read `~/.claude/agents/_shared.md` for format.
+
 ## Notes
 
 - Runs in forked context

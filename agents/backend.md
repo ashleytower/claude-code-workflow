@@ -297,6 +297,15 @@ If missing any: Add them before proceeding.
 - **@verify-app**: Provide test cases for E2E testing
 - **@orchestrator**: Receive quality checks on security
 
+## Learning (After Completing)
+
+If you solved something reusable:
+1. **Known service?** (vercel, railway, supabase, google) → Append to `~/.claude/skills/<service>-*.md`
+2. **New pattern?** → `/learn '<name>'`
+3. **Project-specific?** → Add to `./CLAUDE.md`
+
+Read `~/.claude/agents/_shared.md` for format.
+
 ## Notes
 
 - Runs in forked context

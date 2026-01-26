@@ -183,20 +183,19 @@ After successful verification, detect integrations:
 2. 💡 /learn 'stripe-payments' (save as skill)
 ```
 
-## Integration with /learn
+## Learning (After Completing)
 
-After tests pass, auto-detect integrations and suggest:
+After tests pass, detect integrations:
+
+1. **Check existing skills first**: `ls ~/.claude/skills/`
+2. **Existing skill?** (vercel, railway, supabase, google, stripe, resend) → Append findings
+3. **New integration?** → `/learn '<name>'`
+4. **Project-specific?** → Add to `./CLAUDE.md`
 
 ```
-Detected integrations:
-├─ Stripe (stripe package, STRIPE_SECRET_KEY)
-└─ Resend (resend package, RESEND_API_KEY)
-
-Save for future projects:
-  /learn 'stripe-payments'
-  /learn 'resend-emails'
-
-Next time = instant implementation.
+Detected: Stripe
+├─ Skill exists: ~/.claude/skills/stripe-*.md
+└─ Action: Append new patterns to existing skill
 ```
 
 ## Notes

@@ -1,96 +1,53 @@
-# Global Claude Code Rules
+# Claude Code Rules
 
-## Core Behavior
+## Style
+No emojis. No celebration. Facts only. Read before editing. Summarize when done.
 
-**Style:** No emojis. No celebration messages. Facts only.
+## Workflow
+1. Plan first (shift+tab x2)
+2. Research docs before coding
+3. Implement
+4. `@code-reviewer` then `/verify-app`
+5. `/commit-push-pr`
 
-**Before editing:** Read the file first. Check existing patterns with Grep.
+## Commands
+`/guide` `/research` `/verify-app` `/commit-push-pr` `/learn` `/resume`
 
-**After completing work:** Summarize what was done.
+## Agents
+`@frontend` `@backend` `@code-reviewer` `@verify-app` `@code-simplifier`
 
-## External Services
+## Skills
+Check `~/.claude/skills/` before implementing integrations.
 
-Use Rube MCP for: Supabase, Vercel, Google, GitHub, Slack
+## Learning Rules
+After solving something reusable:
+1. **Known service?** (vercel, railway, supabase, google) → Append to existing skill
+2. **New service?** → Create new skill via `/learn`
+3. **Project-specific?** → Add to project's `./CLAUDE.md`
+
+Existing skills to append to:
+- `vercel-*.md`, `supabase-*.md`, `google-*.md`, `railway-*.md`
+
+## External Services (Rube MCP)
 ```
-mcp__rube__RUBE_SEARCH_TOOLS → Find tool
-mcp__rube__RUBE_MANAGE_CONNECTIONS → Connect
-mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute
+RUBE_SEARCH_TOOLS → Find tool
+RUBE_MANAGE_CONNECTIONS → Connect
+RUBE_MULTI_EXECUTE_TOOL → Execute
 ```
 
 ## Browser Testing
-
-Use `agent-browser` for web testing:
 ```bash
 agent-browser open <url>
-agent-browser snapshot -i    # Get elements with refs
-agent-browser click @e1      # Interact by ref
-agent-browser screenshot
+agent-browser snapshot -i
+agent-browser click @e1
 ```
 
-## Workflow
-
-1. Plan first (shift+tab twice for plan mode)
-2. Research docs before coding (Context7 MCP or WebFetch)
-3. Implement
-4. Test with `/verify-app`
-5. Commit with `/commit-push-pr`
-
-## Key Commands
-
-- `/guide` - Step-by-step feature workflow
-- `/research` - Check docs before coding
-- `/verify-app` - Run tests
-- `/commit-push-pr` - Git workflow
-- `/learn` - Save implementation as skill
-
-## /guide Workflow (9 Phases)
-
-```
-0. Explore    → Task(Explore) - understand codebase first
-1. Detect     → New project? /create-prd. Existing? Skip to 2
-2. Research   → /research - docs before code
-3. UX         → prd-to-ux skill (if UI feature)
-4. Plan       → /prime + /plan
-5. Execute    → Fresh context, implement
-6. Verify     → /code-review → /verify-app → @code-simplifier
-7. Quality    → Automated checks
-8. Ship       → /commit-push-pr
-9. Learn      → /learn to save for reuse
-```
-
-Run `/guide` and follow the prompts. State saved in `.claude/guide-state.json`.
-
-## /learn - Save Implementations
-
-After building something reusable (Stripe, auth, email), save it:
-
-```bash
-/learn 'stripe-payments'
-```
-
-Creates `~/.claude/skills/stripe-payments.md` with:
-- Setup code, env vars, common patterns
-- Framework-specific variations
-- Gotchas and testing
-
-Next project: "Add Stripe" → uses saved skill instantly.
-
-## Skills (in ~/.claude/skills/)
-
-Skills are reference docs, not auto-triggered. Use when relevant:
-- `auth.md` - Authentication patterns
-- `react-best-practices/` - React/Next.js optimization (45 rules)
-- `web-design-guidelines/` - Accessibility/UX (100+ rules)
-- `agent-browser/` - Browser automation
-
-## Permissions
-
-Defined in `settings.json`. Auto-approves most operations.
-Blocks: Stripe, Resend emails, prod deploys, force push, db reset.
+## Context Management
+Compact when: repeated reads, resolved errors cleared, exploration done.
 
 ## Session Handoff
+End: update `~/.claude/handoffs/NEXT_SESSION_START_HERE.md`
+Start: `/resume`
 
-Before ending a long session, create handoff at:
-`~/.claude/handoffs/NEXT_SESSION_START_HERE.md`
-
-Resume with: `/resume`
+## Permissions
+Auto-approves most. Blocks: Stripe, Resend, prod deploys, force push, db reset.

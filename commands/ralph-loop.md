@@ -22,9 +22,45 @@ Based on: https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
 
 1. **Execute**: Run Claude with story
 2. **Verify**: Run tests / check markers
-3. **Pass?**: Mark complete, commit, move to next
+3. **Pass?**: Mark complete, **COMMIT IMMEDIATELY**, move to next
 4. **Fail?**: Revert changes, retry (up to k times)
 5. **Exceeded k?**: Mark story FAILED, move to next
+
+## MANDATORY: Commit After Every Iteration (ENFORCED)
+
+**YOU MUST COMMIT AFTER EVERY SUCCESSFUL ITERATION. THIS IS NOT OPTIONAL.**
+
+After each story/task passes verification:
+
+```bash
+# 1. Stage all changes
+git add -A
+
+# 2. Commit with descriptive message
+git commit -m "feat(ralph): [Story ID] - [Brief description]
+
+[What was implemented]
+[What was tested]
+
+Ralph Loop iteration [N] of [total]
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+# 3. Push to remote (prevents lost work)
+git push
+```
+
+**FAILURE TO COMMIT = LOOP FAILURE**
+
+If you complete work without committing:
+- The iteration is NOT complete
+- You MUST commit before proceeding
+- Never output `<promise>COMPLETE</promise>` without a commit
+
+**Why this matters:**
+- Overnight runs can crash - commits preserve work
+- User wakes up to committed code, not staged changes
+- Each commit is a checkpoint that can be reverted independently
 
 ## Configuration
 
@@ -107,12 +143,69 @@ Or:
 | Multi-feature sprint | PRD mode |
 | Fix all type errors | Simple mode |
 
+## MANDATORY: TDD Workflow (Test-Driven Development)
+
+**Every story MUST follow TDD. No exceptions.**
+
+```
+┌─────────────────────────────────────────┐
+│ 1. Write FAILING test first             │
+│ 2. Run test - confirm it FAILS          │
+│ 3. Implement minimum code to pass       │
+│ 4. Run test - confirm it PASSES         │
+│ 5. Refactor if needed                   │
+│ 6. Commit + push                        │
+└─────────────────────────────────────────┘
+```
+
+**Why TDD:**
+- Tests define acceptance criteria precisely
+- Prevents over-engineering
+- Creates documentation automatically
+- Ensures code is testable from the start
+
+## MANDATORY: Context7 Before Library Changes
+
+**Before modifying ANY file that imports external libraries, you MUST:**
+
+1. Call `mcp__context7__resolve-library-id` for the library
+2. Call `mcp__context7__query-docs` with your specific question
+3. Verify API patterns match current documentation
+
+**Required for these libraries:**
+- `@google/genai` (Gemini API)
+- `@supabase/supabase-js` (Supabase)
+- `resend` (Email)
+- `stripe` (Payments)
+- `date-fns` (Date utilities)
+- Any library you're not 100% certain about
+
+**Skip Context7 lookup = hallucinated API patterns = wasted iterations**
+
+## MANDATORY: Correct Working Directory
+
+**Before starting ANY work, verify you're in the correct repo:**
+
+```bash
+# Check current directory
+pwd
+
+# Verify git remote matches expected repo
+git remote -v
+
+# If wrong, STOP and alert user
+```
+
+**Never create new git repos. Never init. Always work in the provided directory.**
+
 ## Tips for Success
 
 1. **Small stories** - Each should be 1-2 hours max
 2. **Clear acceptance criteria** - Claude needs to verify itself
 3. **Good test coverage** - Feedback loops catch errors
 4. **Review prd.json** - Garbage in = garbage out
+5. **TDD always** - Test first, then implement
+6. **Context7 always** - Check docs before using libraries
 
 ## Example Session
 
@@ -197,6 +290,33 @@ Available via `mcp__rube__RUBE_SEARCH_TOOLS`:
 - Saves hours of manual iteration
 - Cost-conscious with limits
 - Uses Write tool for all file creation (no bash workarounds)
+
+## ITERATION CHECKLIST (Must Complete Each Iteration)
+
+Before outputting any promise token, verify ALL items:
+
+**Pre-Implementation:**
+- [ ] Verified working directory is correct (`pwd`, `git remote -v`)
+- [ ] Checked Context7 for any libraries being used
+- [ ] Wrote FAILING test first (TDD red phase)
+
+**Implementation:**
+- [ ] Test now PASSES (TDD green phase)
+- [ ] Code refactored if needed (TDD refactor phase)
+- [ ] No TypeScript errors (`npm run build` or type check)
+
+**Commit:**
+- [ ] `git add -A` executed
+- [ ] `git commit` executed with descriptive message
+- [ ] `git push` executed successfully
+- [ ] Commit SHA logged to progress.txt
+
+**Only after ALL items are checked can you output:**
+```
+<promise>STORY_N_COMPLETE</promise>
+```
+
+**If ANY item is unchecked, you are NOT done. Complete the checklist.**
 
 ---
 

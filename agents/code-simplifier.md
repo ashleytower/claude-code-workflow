@@ -63,6 +63,13 @@ Or manually:
 - Missing types → Add type annotations
 - Unused imports → Remove
 
+## Learning (After Completing)
+
+If you discovered a reusable pattern:
+1. **Known service?** → Append to `~/.claude/skills/<service>-*.md`
+2. **New pattern?** → `/learn '<name>'`
+3. **Project-specific?** → Add to `./CLAUDE.md`
+
 ## Notes
 
 - Runs in forked context
