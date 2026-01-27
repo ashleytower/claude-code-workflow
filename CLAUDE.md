@@ -16,8 +16,17 @@ No emojis. No celebration. Facts only. Read before editing. Summarize when done.
 ## Agents
 `@frontend` `@backend` `@code-reviewer` `@verify-app` `@code-simplifier`
 
-## Skills
-Check `~/.claude/skills/` before implementing integrations.
+## Skills - ALWAYS CHECK FIRST
+
+**Before implementing anything new:**
+1. Check `~/.claude/skills/` for existing skills
+2. If no local skill exists, search skills.sh: `npx skills search <keyword>`
+3. Install useful skills: `npx skills add -g -y <owner/repo@skill>`
+
+**When user asks "how do I do X" or needs specialized capability:**
+- ALWAYS run `npx skills search <relevant-keywords>` first
+- Present found skills and offer to install
+- Browse: https://skills.sh/
 
 ## Learning Rules
 After solving something reusable:
