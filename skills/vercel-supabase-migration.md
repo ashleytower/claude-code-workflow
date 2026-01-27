@@ -546,6 +546,21 @@ vercel promote
 
 ## Updates
 
+- **2026-01-26**: Added learnings from Supabase Site URL mismatch debugging
+  - **CRITICAL**: When deploying to a new Vercel domain, update Supabase Auth → URL Configuration
+  - `site_url` must match your production domain (OAuth redirects use this)
+  - `uri_allow_list` must include your production domain pattern (e.g., `https://your-app.vercel.app/**`)
+  - Use Rube MCP `SUPABASE_UPDATE_PROJECT_AUTH_CONFIG` to update these programmatically
+  - Symptom: "Failed to save settings: Please login (10001)" after successful OAuth
+  - Root cause: OAuth redirects to old domain, cookies don't transfer to new domain
+
+- **2026-01-26**: Supabase password confusion (Supavisor pooler)
+  - Supabase has TWO different passwords: **Database password** vs **Shared pooler password**
+  - For Supavisor connection strings, use the **Database password** (not shared pooler password)
+  - Connection string format: `postgresql://postgres.[ref]:[DATABASE_PASSWORD]@aws-1-us-east-1.pooler.supabase.com:5432/postgres`
+  - If you get "password authentication failed", you're likely using the wrong password
+  - Find Database password in: Supabase Dashboard → Project Settings → Database → Connection string → Copy password
+
 - **2026-01-09**: Added learnings from debugging production OAuth failure
   - Tables must be created with `drizzle-kit push` (schema files don't create them!)
   - Pooler connection may fail for DDL operations - use direct connection
