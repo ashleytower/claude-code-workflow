@@ -28,12 +28,44 @@ After solving something reusable:
 Existing skills to append to:
 - `vercel-*.md`, `supabase-*.md`, `google-*.md`, `railway-*.md`
 
-## External Services (Rube MCP)
+## External Services - ALWAYS USE MCP
+
+**CRITICAL: NEVER ask the user to manually deploy, configure, or access external services. USE MCP TOOLS.**
+
+### Rube MCP (Primary)
 ```
-RUBE_SEARCH_TOOLS → Find tool
-RUBE_MANAGE_CONNECTIONS → Connect
-RUBE_MULTI_EXECUTE_TOOL → Execute
+mcp__rube__RUBE_SEARCH_TOOLS    → Find the right tool
+mcp__rube__RUBE_MANAGE_CONNECTIONS → Ensure connection active
+mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute the operation
 ```
+
+**Available via Rube:** Supabase, Vercel, Google (Gmail/Calendar/Drive/Sheets), GitHub, Slack, Stripe, Resend
+
+### Vercel MCP (Deployments)
+```
+mcp__claude_ai_Vercel__deploy_to_vercel → Deploy app
+mcp__claude_ai_Vercel__list_projects → List projects
+mcp__claude_ai_Vercel__get_deployment_build_logs → Check logs
+mcp__claude_ai_Vercel__list_deployments → Deployment history
+```
+
+### V0 MCP (UI Generation)
+```
+v0_generate_ui → Generate UI from text prompt
+v0_generate_from_image → Generate UI from design image
+v0_chat_complete → Iterate on existing UI
+v0_setup_check → Verify API connection
+```
+
+### Railway MCP (Backend)
+```
+mcp__railway__deploy → Deploy service
+mcp__railway__list-services → List services
+mcp__railway__get-logs → Check logs
+mcp__railway__set-variables → Set env vars
+```
+
+**RULE: If an MCP tool exists, USE IT. Never tell user to "go to Vercel" or "go to Railway".**
 
 ## Browser Testing
 ```bash
