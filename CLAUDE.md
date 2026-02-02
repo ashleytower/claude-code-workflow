@@ -37,52 +37,69 @@ After solving something reusable:
 Existing skills to append to:
 - `vercel-*.md`, `supabase-*.md`, `google-*.md`, `railway-*.md`
 
-## External Services - ALWAYS USE MCP
+## External Services - MANDATORY MCP USAGE
 
-**CRITICAL: NEVER ask the user to manually deploy, configure, or access external services. USE MCP TOOLS.**
+**YOU MUST USE MCP TOOLS. THIS IS NOT OPTIONAL.**
 
-### Rube MCP (Primary)
+When user says ANY of these phrases, IMMEDIATELY use Rube MCP. Do NOT say "I can't access that" or "you'll need to do that manually":
+
+| User Says | You Do |
+|-----------|--------|
+| "deploy to Vercel", "push to Vercel", "ship it" | Use Rube → Vercel deploy |
+| "check Supabase", "query the database", "look at the data" | Use Rube → Supabase |
+| "check Google Docs", "look at the doc", "read the spreadsheet" | Use Rube → Google Drive/Docs/Sheets |
+| "send an email", "email them" | Use Rube → Gmail or Resend |
+| "check my calendar", "schedule it" | Use Rube → Google Calendar |
+| "post to Slack", "message the channel" | Use Rube → Slack |
+| "check GitHub", "look at the PR", "check issues" | Use Rube → GitHub |
+| "check Stripe", "look at payments" | Use Rube → Stripe |
+
+### Rube MCP - USE THIS FIRST
+
+**Every agent MUST use Rube for external services. No exceptions. No "I can't do that."**
+
 ```
-mcp__rube__RUBE_SEARCH_TOOLS    → Find the right tool
-mcp__rube__RUBE_MANAGE_CONNECTIONS → Ensure connection active
+mcp__rube__RUBE_SEARCH_TOOLS       → Find the right tool (search first!)
+mcp__rube__RUBE_MANAGE_CONNECTIONS → Ensure connection is active
 mcp__rube__RUBE_MULTI_EXECUTE_TOOL → Execute the operation
 ```
 
-**Available via Rube:** Supabase, Vercel, Google (Gmail/Calendar/Drive/Sheets), GitHub, Slack, Stripe, Resend
+**Workflow:**
+1. `RUBE_SEARCH_TOOLS` with service name (e.g., "vercel deploy", "supabase query")
+2. `RUBE_MANAGE_CONNECTIONS` to verify/establish connection
+3. `RUBE_MULTI_EXECUTE_TOOL` to run the operation
 
-### Vercel MCP (Deployments)
+**Available Services:** Vercel, Supabase, Google (Gmail/Calendar/Drive/Sheets), GitHub, Slack, Stripe, Resend
+
+### Other MCP Tools (Use if Rube doesn't have it)
+
+**Vercel MCP:**
 ```
-mcp__claude_ai_Vercel__deploy_to_vercel → Deploy app
+mcp__claude_ai_Vercel__deploy_to_vercel → Deploy
 mcp__claude_ai_Vercel__list_projects → List projects
 mcp__claude_ai_Vercel__get_deployment_build_logs → Check logs
-mcp__claude_ai_Vercel__list_deployments → Deployment history
 ```
 
-### V0 MCP (UI Generation)
+**V0 MCP:**
 ```
-v0_generate_ui → Generate UI from text prompt
-v0_generate_from_image → Generate UI from design image
-v0_chat_complete → Iterate on existing UI
-v0_setup_check → Verify API connection
+v0_generate_ui → Generate UI from text
+v0_generate_from_image → Generate UI from image
+v0_chat_complete → Iterate on UI
 ```
 
-### Railway MCP (Backend)
+**Railway MCP:**
 ```
-mcp__railway__deploy → Deploy service
+mcp__railway__deploy → Deploy
 mcp__railway__list-services → List services
 mcp__railway__get-logs → Check logs
-mcp__railway__set-variables → Set env vars
 ```
 
-### Tally MCP (Forms & Proposals)
+**Tally MCP:**
 ```
 mcp__tally__* → Create forms, get responses, set webhooks
 ```
 
-Use Tally for: client proposals, menu selection, contracts, payment flows.
-Pre-fill forms via URL params, webhook responses to Supabase.
-
-**RULE: If an MCP tool exists, USE IT. Never tell user to "go to Vercel" or "go to Railway".**
+**NEVER say "I can't access external services." You CAN. Use Rube MCP.**
 
 ## Browser Testing
 ```bash
