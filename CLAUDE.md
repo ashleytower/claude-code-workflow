@@ -74,6 +74,14 @@ mcp__railway__get-logs → Check logs
 mcp__railway__set-variables → Set env vars
 ```
 
+### Tally MCP (Forms & Proposals)
+```
+mcp__tally__* → Create forms, get responses, set webhooks
+```
+
+Use Tally for: client proposals, menu selection, contracts, payment flows.
+Pre-fill forms via URL params, webhook responses to Supabase.
+
 **RULE: If an MCP tool exists, USE IT. Never tell user to "go to Vercel" or "go to Railway".**
 
 ## Browser Testing
