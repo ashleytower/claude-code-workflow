@@ -2,14 +2,15 @@
 # Pre-compact hook: Save session state before context compaction
 
 MEMORY_DIR="$HOME/.claude/memory"
+SESSIONS_DIR="$MEMORY_DIR/sessions"
 HANDOFF_DIR="$HOME/.claude/handoffs"
-mkdir -p "$MEMORY_DIR" "$HANDOFF_DIR"
+mkdir -p "$SESSIONS_DIR" "$HANDOFF_DIR"
 
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 PROJECT_NAME=$(basename "$(pwd)")
 
 # Save current working directory context
-cat > "$MEMORY_DIR/last_session_${PROJECT_NAME}.json" << EOF
+cat > "$SESSIONS_DIR/last_session_${PROJECT_NAME}.json" << EOF
 {
   "timestamp": "$(date -Iseconds)",
   "project": "$PROJECT_NAME",
@@ -38,6 +39,12 @@ git log --oneline -10
 git status
 \`\`\`
 
+## Memory
+Check AutoMemory for context from previous sessions:
+\`\`\`bash
+cat ~/.claude/memory/INDEX.md
+\`\`\`
+
 ## Resume With
 \`\`\`
 /resume
@@ -45,4 +52,4 @@ git status
 EOF
 fi
 
-echo "Session state saved to $MEMORY_DIR"
+echo "Session state saved to $SESSIONS_DIR"
