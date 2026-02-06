@@ -86,21 +86,49 @@ When `/memory prune <topic>` is invoked:
 4. Consolidate related entries
 5. Keep the file under 50 entries
 
-## Auto-Save Rules (for CLAUDE.md)
+## Auto-Save Triggers
 
-All agents -- lead, teammates, and research agents -- follow these rules:
+Agents do NOT wait to be told. These triggers fire automatically during work:
 
-### MUST save a memory note when:
-- A build/deploy fails for a non-obvious reason and you find the fix
-- An API behaves differently than documented
-- A workaround is needed for a library/service bug
-- A configuration took multiple attempts to get right
-- You discover an undocumented requirement or dependency
+### Trigger 1: Retry Pattern
+You tried approach A, it failed, then approach B worked.
+- Save: what failed, why, and what worked instead.
+- Tag: `[gotcha]`
 
-### MUST save research notes when:
-- Sent to investigate a topic, tool, or service
-- Comparing multiple approaches or libraries
-- Finding pricing, limits, or compatibility info
+### Trigger 2: Docs Were Wrong
+API or docs said X, but reality was Y.
+- Save: the discrepancy and the actual behavior.
+- Tag: `[gotcha]`
+
+### Trigger 3: Config Discovery
+A non-obvious env var, flag, or config setting was required.
+- Save: the exact config that was needed.
+- Tag: `[pattern]`
+
+### Trigger 4: Error Decoding
+An error message was misleading or took research to understand.
+- Save: error message → real cause → fix.
+- Tag: `[debug]`
+
+### Trigger 5: Version/Compat Issue
+Something broke due to version mismatch or deprecation.
+- Save: the versions involved and the workaround.
+- Tag: `[gotcha]`
+
+### Trigger 6: Wasted Time
+Anything that took 3+ attempts to get right.
+- Save: the shortcut for next time.
+- Tag: `[gotcha]`
+
+### Trigger 7: Research Task
+You were sent to investigate something.
+- Save: structured findings to `research/YYYY-MM-DD-<topic>.md`
+- Tag: `[research]`
+
+### Trigger 8: Comparison Made
+You evaluated 2+ options and made a choice.
+- Save: the comparison and conclusion.
+- Tag: `[decision]`
 
 ### DO NOT save:
 - Obvious things (e.g., "npm install installs packages")
@@ -110,11 +138,23 @@ All agents -- lead, teammates, and research agents -- follow these rules:
 ## Integration with Agent Teams
 
 When working in an agent team:
-1. **All teammates** can read and write to `~/.claude/memory/`
+1. **All teammates** read memory at start, write during work (triggers above are mandatory)
 2. **Research teammates** save findings to `research/` with structured notes
 3. **Implementation teammates** save gotchas to `topics/` as they encounter them
-4. **The lead** should query memory before assigning tasks to check for known issues
-5. At team shutdown, the lead reviews if any significant learnings should be captured
+4. **The lead** queries memory before assigning tasks to check for known issues
+
+### Team Debrief (REQUIRED before team cleanup)
+
+Before the lead shuts down a team, the lead MUST run a debrief:
+
+1. **Ask each teammate**: "What was harder than expected? What broke? What did you figure out?"
+2. **Compile a debrief** to `~/.claude/memory/research/YYYY-MM-DD-team-debrief-<project>.md`:
+   - **What went smoothly**: Tasks completed first try
+   - **What was hard**: Issues requiring retries or workarounds
+   - **Key learnings**: Non-obvious fixes, gotchas, patterns
+   - **Unresolved**: Anything still broken or unclear
+3. **Verify**: Check that individual teammate learnings were saved to topic files
+4. **Report**: Summarize the debrief to the user before cleanup
 
 ## Integration with /learn
 
