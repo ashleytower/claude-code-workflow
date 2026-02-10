@@ -176,6 +176,15 @@
             "command": "~/.claude/scripts/format-prettier.sh \"$CLAUDE_FILE_PATH\" &"
           }
         ]
+      },
+      {
+        "matcher": "Bash(npx skills*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/scripts/sync-skills.sh --quiet &"
+          }
+        ]
       }
     ],
     "Stop": [

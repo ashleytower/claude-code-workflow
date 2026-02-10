@@ -24,7 +24,11 @@
       "mcp__github__*",
       "mcp__sequential-thinking__*",
       "mcp__claude-in-chrome__*",
-      "mcp__21st-dev-magic__21st_magic_component_builder"
+      "mcp__21st-dev-magic__21st_magic_component_builder",
+      "mcp__remotion-documentation__remotion-documentation",
+      "mcp__claude_ai_Rube_app__RUBE_SEARCH_TOOLS",
+      "mcp__claude_ai_Rube_app__RUBE_REMOTE_WORKBENCH",
+      "mcp__magicui__getSpecialEffects"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -47,7 +51,8 @@
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "slack",
-    "rube"
+    "rube",
+    "remotion-documentation"
   ],
   "hooks": {
     "SessionStart": [

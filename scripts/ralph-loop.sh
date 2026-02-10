@@ -348,16 +348,25 @@ run_prd_mode() {
             # Log progress
             log_progress "$story_id" "PASSED (attempt $current_attempt/$PASS_K): $story_text"
 
-            # Commit changes
-            log "Committing changes..."
+            # Commit and push changes (MANDATORY - prevents lost work)
+            log "Committing and pushing changes..."
             git add -A
-            git commit -m "feat: $story_text
+            local commit_sha=$(git commit -m "feat(ralph): $story_text
 
 Ralph Loop iteration $ITERATION
 Story ID: $story_id
 Pass@k: attempt $current_attempt of $PASS_K
 
-Co-Authored-By: Claude <noreply@anthropic.com>" || true
+Co-Authored-By: Claude <noreply@anthropic.com>" --quiet && git rev-parse --short HEAD) || true
+
+            # Push to remote (critical for overnight runs)
+            if git push 2>/dev/null; then
+                log_success "Pushed commit $commit_sha to remote"
+                log_progress "$story_id" "PASSED (attempt $current_attempt/$PASS_K): $story_text\nCommit: $commit_sha (pushed)"
+            else
+                log_warning "Push failed - commit $commit_sha is local only"
+                log_progress "$story_id" "PASSED (attempt $current_attempt/$PASS_K): $story_text\nCommit: $commit_sha (local - push failed)"
+            fi
 
             speak "Story $story_id passed on attempt $current_attempt. $remaining remaining."
         else

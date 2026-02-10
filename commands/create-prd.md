@@ -101,13 +101,47 @@ Document key technical choices made:
 
 ## Output
 
-Save the PRD to the specified file (usually `PRD.md` in project root).
+Save TWO files:
+1. **PRD.md** - Human-readable document (in project root)
+2. **prd.json** - Machine-readable for Ralph Loop (in project root)
+
+### prd.json Format
+
+```json
+{
+  "project": "Project Name",
+  "created": "2026-01-19",
+  "stories": [
+    {
+      "id": "1",
+      "story": "As a user, I can [action] so that [benefit]",
+      "acceptance_criteria": [
+        "Criterion 1",
+        "Criterion 2"
+      ],
+      "priority": 1,
+      "passes": false,
+      "attempts": 0
+    }
+  ]
+}
+```
+
+**Rules for prd.json:**
+- Each feature from PRD.md becomes a story
+- Stories should be small (1-2 hours of work max)
+- Break large features into multiple stories
+- acceptance_criteria must be verifiable (testable)
+- `passes: false` for all new stories
+- `attempts: 0` for all new stories
+- Order by priority (1 = highest)
 
 ## Next Steps
 
 After creating PRD:
-1. Commit to git: `git add PRD.md && git commit -m "docs: add project PRD"`
-2. Start first feature: `claude /guide` or `claude "Based on the PRD, what should we build first?"`
+1. Commit both files: `git add PRD.md prd.json && git commit -m "docs: add project PRD"`
+2. Run Ralph Loop: `/ralph-loop --prd ./prd.json`
+3. Or start manually: `/guide`
 
 ## Example PRD Output
 

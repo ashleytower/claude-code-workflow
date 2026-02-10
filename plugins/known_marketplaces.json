@@ -14,5 +14,13 @@
     },
     "installLocation": "/Users/ashleytower/.claude/plugins/marketplaces/superpowers-marketplace",
     "lastUpdated": "2026-01-15T19:43:54.473Z"
+  },
+  "claude-mem-marketplace": {
+    "source": {
+      "source": "github",
+      "repo": "thedotmack/claude-mem"
+    },
+    "installLocation": "/Users/ashleytower/.claude/plugins/marketplaces/claude-mem-marketplace",
+    "lastUpdated": "2026-02-06T22:00:00.000Z"
   }
 }
