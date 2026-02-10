@@ -34,3 +34,7 @@ logs/
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# Python
+__pycache__/
+*.pyc
