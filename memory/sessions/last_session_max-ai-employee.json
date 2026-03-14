@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-03-13T10:33:21-04:00",
+  "project": "max-ai-employee",
+  "working_dir": "/Users/ashleytower/Documents/GitHub/max-ai-employee",
+  "git_branch": "main",
+  "git_status": " M .claude/agent-state.json| M apps/agency-dashboard/.claude/agent-state.json| M apps/agency-dashboard/components/Sidebar.tsx| M apps/agency-dashboard/lib/supabase.ts|?? apps/agency-dashboard/app/api/builder/|?? apps/agency-dashboard/app/builder/|"
+}

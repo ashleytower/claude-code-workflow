@@ -3,6 +3,13 @@
 ## Style
 No emojis. Facts only. Read before editing. Summarize when done.
 
+## Problem-Solving Rules
+- **Easiest path first.** Always present the simplest solution before complex debugging. If something is broken and a fresh install takes 10 minutes vs hours of debugging, say so immediately.
+- **3-strike rule.** If the same fix fails 3 times, stop. Step back, consider whether a clean slate (reinstall, fresh setup, new approach) is faster than continuing to debug.
+- **Don't chase files.** If you're deleting/editing config files one by one hoping something sticks, you've lost the plot. Propose the nuclear option early.
+- **User's time > cleverness.** A working simple solution beats an elegant broken one.
+- **Use official installers.** If a service has an installer/setup wizard, use it. Don't rewrite setup logic in custom scripts. Customize on top of the official setup, not instead of it.
+
 ## Workflow (AGENT TEAMS MANDATORY)
 Plan → Document → TDD (test first) → Implement (with team) → `@code-reviewer` → `@code-simplifier` → `/verify-app` → `/commit-push-pr`
 

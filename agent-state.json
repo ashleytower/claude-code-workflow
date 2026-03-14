@@ -1,0 +1,230 @@
+{
+  "last_updated": "2026-02-27T11:48:48Z",
+  "current_agent": "@frontend",
+  "status": "completed",
+  "message": "Full rewrite of chat-view.tsx: ChatHeader, VoiceOrb (120px, CSS keyframe animations), DataCard, ChatMessage, MessageThread with quick-action chips, TextInput (never disabled), LiveKitChatInner, ChatView root. Text commands always work via parseCommand/executeCommand fallback.",
+  "files_changed": [
+    "web-client/components/chat/chat-view.tsx"
+  ],
+  "next_steps": [
+    "Run CI: npm run typecheck && npm run build in web-client"
+  ],
+  "history": [
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Created /api/claude proxy endpoint to remove browser API key exposure. Removed dangerouslyAllowBrowser and VITE_ANTHROPIC_API_KEY from claudeService.ts. Replaced direct Anthropic SDK usage with fetch calls through /api/claude server proxy using existing apiFetch utility.",
+      "timestamp": "2026-02-06T16:51:32Z",
+      "files_changed": [
+        "api/claude.js",
+        "services/claudeService.ts",
+        "tests/api/claude-proxy.test.ts",
+        ".env.example"
+      ],
+      "next_steps": [
+        "Other services (claudeVoicePipeline, memoryFilterService, episodeSummaryService, lossAnalysisService) still use VITE_ANTHROPIC_API_KEY directly and should be migrated next",
+        "Add ANTHROPIC_API_KEY to Vercel env vars for production"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Created notification consumer service and wired checkNotifications/dismissNotification voice tools. All 7 tests pass.",
+      "timestamp": "2026-02-06T16:56:29Z",
+      "files_changed": [
+        "services/notificationConsumer.ts",
+        "tests/services/notification-consumer.test.ts",
+        "services/toolExecutor.ts",
+        "contexts/VoiceToolContext.tsx",
+        "services/voiceHandlers/base/miscBaseHandlers.ts",
+        "hooks/useBaseHandlers.ts",
+        "App.tsx"
+      ],
+      "next_steps": [
+        "Test with actual voice input: say Do I have any notifications"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Upgraded Stripe SDK from v17.5.0 to v20.3.1. No code changes needed - all existing APIs (checkout sessions, payment links, webhook verification) are fully compatible. All Stripe-related tests pass.",
+      "timestamp": "2026-02-06T17:02:28Z",
+      "files_changed": [
+        "package.json",
+        "package-lock.json"
+      ],
+      "next_steps": [
+        "No follow-up needed - drop-in upgrade"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Wrote 20 new tests: 10 for actionLogService, 10 for leadNurturingService. Verified threadContextLoader already had all 7 required tests. All 27 tests pass. Used vi.hoisted() pattern for Vitest 4 mock compatibility.",
+      "timestamp": "2026-02-06T19:36:02Z",
+      "files_changed": [
+        "tests/services/actionLogService.test.ts",
+        "tests/services/leadNurturingService.test.ts"
+      ],
+      "next_steps": [
+        "Run full test suite to verify no regressions"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Split 3 oversized skill bundles into 7 new bundles (all <= 15 tools). Created memoryAssistantCore (10), memoryAssistantAdvanced (8), emailInboxCore (14), emailApprovalQueue (8), emailSpamFilter (7/6), eventManagementCore (14), eventLeadManagement (10/9). Updated index.ts with new registrations and context configs. Added deprecation comments to old files. Created bundleSizeLimit.test.ts - all 8 tests pass. Build succeeds.",
+      "timestamp": "2026-02-06T19:36:02Z",
+      "files_changed": [
+        "services/skills/bundles/memoryAssistantCore.ts",
+        "services/skills/bundles/memoryAssistantAdvanced.ts",
+        "services/skills/bundles/emailInboxCore.ts",
+        "services/skills/bundles/emailApprovalQueue.ts",
+        "services/skills/bundles/emailSpamFilter.ts",
+        "services/skills/bundles/eventManagementCore.ts",
+        "services/skills/bundles/eventLeadManagement.ts",
+        "services/skills/bundles/index.ts",
+        "services/skills/bundles/memoryAssistant.ts",
+        "services/skills/bundles/emailInbox.ts",
+        "services/skills/bundles/eventManagement.ts",
+        "tests/services/skills/bundleSizeLimit.test.ts"
+      ],
+      "next_steps": [
+        "Verify no runtime regressions with full integration test"
+      ]
+    },
+    {
+      "agent": "@verify-app",
+      "status": "completed",
+      "message": "Full verification complete. Build passes. 1431/1434 tests pass (3 pre-existing CalendarWidget locale failures). All 7 bundles under 15-tool limit. Validation loop, voice teaching, bundle registration, and migration all verified.",
+      "timestamp": "2026-02-06T19:42:50Z",
+      "files_changed": [
+        "services/skills/bundles/",
+        "services/draftService.ts",
+        "services/voiceTeaching.ts",
+        "supabase/migrations/028_validation_columns.sql"
+      ],
+      "next_steps": [
+        "Ready for PR"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Task 3: Fixed draftService.ts regenerateDraft to pass client from_name and from_email to recordCorrection. Task 4: Added reinforceBehavior and decayBehavior methods to BehaviorInjectionService with confidence increment/decrement of 0.05, cap at 0.99, deactivation below 0.3.",
+      "timestamp": "2026-02-06T21:06:23Z",
+      "files_changed": [
+        "services/draftService.ts",
+        "services/behaviorInjectionService.ts",
+        "tests/services/draftLearningClientContext.test.ts",
+        "tests/services/confidencePromotion.test.ts"
+      ],
+      "next_steps": [
+        "Wire reinforceBehavior/decayBehavior into draftLearningService correction flow",
+        "Code review all Phase 3 changes"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Wired behavior injection into voice pipeline and created confidence_history migration",
+      "timestamp": "2026-02-06T21:06:26Z",
+      "files_changed": [
+        "services/claudeVoicePipeline.ts",
+        "tests/services/claudeVoicePipelineBehaviors.test.ts",
+        "tests/services/claudeVoicePipeline.test.ts",
+        "supabase_migrations/032_confidence_history.sql"
+      ],
+      "next_steps": [
+        "Run full test suite to verify no regressions",
+        "Code review the behavior injection approach"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Added deeper integration tests for recordDraftCorrection -> storeClientCorrection -> behaviorInjectionService chain. 16 total tests across 3 files, all passing. 32 existing tests confirmed no regressions.",
+      "timestamp": "2026-02-06T21:10:20Z",
+      "files_changed": [
+        "services/draftService.ts",
+        "services/behaviorInjectionService.ts",
+        "tests/services/draftLearningClientContext.test.ts",
+        "tests/services/draftLearningStoreClientCorrection.test.ts",
+        "tests/services/confidencePromotion.test.ts"
+      ],
+      "next_steps": [
+        "Wire reinforceBehavior/decayBehavior into draftLearningService correction flow"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Added 5 missing handler types to VoiceToolContext.tsx, added getDailyBrief switch case to toolExecutor.ts, added missing ToolHandlers interface members (onCheckSmsStatus, onSearchOlderSms, onNavigateToAllEvents, onFilterEvents, onOpenClientPortal), created 26 integration tests for all 18 Memory Assistant tools",
+      "timestamp": "2026-02-07T00:36:22Z",
+      "files_changed": [
+        "contexts/VoiceToolContext.tsx",
+        "services/toolExecutor.ts",
+        "tests/services/memoryAssistantWiring.test.ts"
+      ],
+      "next_steps": [
+        "Review and approve changes",
+        "Run full test suite to confirm no regressions"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Added action logging helpers and integrated into 6 voice handler hooks. Enhanced getDailyBrief with notifications, recent actions, and richer summary. All tests pass, build succeeds.",
+      "timestamp": "2026-02-07T00:39:46Z",
+      "files_changed": [
+        "utils/actionLogHelpers.ts",
+        "hooks/useEventSelection.ts",
+        "hooks/useTodoActions.ts",
+        "hooks/useDraftReviewPanel.ts",
+        "hooks/useLeadActions.ts",
+        "hooks/useProposalActions.ts",
+        "hooks/useCalendarActions.ts",
+        "hooks/useEmailActions.ts",
+        "tests/utils/actionLogHelpers.test.ts",
+        "tests/hooks/useDailyBrief.test.ts",
+        "tests/integration/actionLoggingVoiceHandlers.test.ts"
+      ],
+      "next_steps": [
+        "Run full regression test",
+        "Verify voice commands trigger action logs in staging"
+      ]
+    },
+    {
+      "agent": "@backend",
+      "status": "completed",
+      "message": "Task 4: Added workflow persistence to Supabase with migration, persistence service, coordinator integration. Task 5: Implemented all 6 operationsAgent act() operations with real service calls, replaced helper stubs.",
+      "timestamp": "2026-02-07T00:40:35Z",
+      "files_changed": [
+        "supabase_migrations/032_workflows.sql",
+        "services/agents/workflowPersistence.ts",
+        "services/agents/workflowCoordinator.ts",
+        "services/agents/operationsAgent.ts",
+        "hooks/useSalesWorkflowHandlers.ts",
+        "tests/services/agents/workflowPersistence.test.ts",
+        "tests/services/agents/workflowCoordinator.persistence.test.ts",
+        "tests/services/agents/operationsAgent.act.test.ts"
+      ],
+      "next_steps": [
+        "Run migration 032_workflows.sql against Supabase",
+        "Set VITE_ENABLE_WORKFLOW_PERSISTENCE=true in env to enable persistence"
+      ]
+    },
+    {
+      "agent": "@frontend",
+      "status": "completed",
+      "message": "Full rewrite of chat-view.tsx: ChatHeader, VoiceOrb (120px, CSS keyframe animations), DataCard, ChatMessage, MessageThread with quick-action chips, TextInput (never disabled), LiveKitChatInner, ChatView root. Text commands always work via parseCommand/executeCommand fallback.",
+      "timestamp": "2026-02-27T11:48:48Z",
+      "files_changed": [
+        "web-client/components/chat/chat-view.tsx"
+      ],
+      "next_steps": [
+        "Run CI: npm run typecheck && npm run build in web-client"
+      ]
+    }
+  ]
+}

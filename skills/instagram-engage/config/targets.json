@@ -1,0 +1,26 @@
+{
+  "event-leads": {
+    "name": "Event Leads",
+    "target_accounts": ["mtl_weddings", "mariagesmontreal", "mtl_event_planner", "montrealweddings", "receptionsmtl"],
+    "hashtags": ["#montrealwedding", "#mtlevents", "#montrealvenue", "#weddingmontreal", "#mtlwedding"],
+    "posts_per_account": 5,
+    "max_post_age_days": 14,
+    "notes": "Wedding and event accounts. Tone: warm, celebratory, genuinely excited about their event content. Lead with compliments about the venue/setup. Mention specific details visible in photos (florals, lighting, cocktail displays). Bilingual sensitivity - comment in the language of the post."
+  },
+  "managed-bar": {
+    "name": "Managed Bar Program",
+    "target_accounts": ["mtlfoodie", "mtl_food", "tastemontreal", "mtlbarscene", "bfrfreres", "mtl_bartender"],
+    "hashtags": ["#montrealbar", "#mtlcocktails", "#montrealfoodie", "#cocktailbar", "#mtldrinks", "#montrealrestaurant"],
+    "posts_per_account": 5,
+    "max_post_age_days": 14,
+    "notes": "Food and bar scene accounts. Tone: cocktail nerd, enthusiastic about what they are making or serving. React to specific drinks or techniques visible in photos. Ask about ingredients, garnishes, or inspiration. Never critique - always appreciate craft."
+  },
+  "voice-crm": {
+    "name": "Voice CRM",
+    "target_accounts": ["solopreneurlife", "freelancecanada", "smallbizcanada", "womeninbizca", "canadianentrepreneur"],
+    "hashtags": ["#solopreneur", "#freelancelife", "#smallbusinessowner", "#crmtips", "#canadiansmallbusiness"],
+    "posts_per_account": 5,
+    "max_post_age_days": 14,
+    "notes": "Solopreneur and small business accounts. Tone: fellow solopreneur, empathetic, practical. Reference shared struggles with client management, scheduling, and follow-ups. Be relatable about the chaos of running things solo."
+  }
+}

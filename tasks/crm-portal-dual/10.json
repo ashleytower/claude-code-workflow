@@ -1,0 +1,13 @@
+{
+  "id": "10",
+  "subject": "Portal Phase 4: MixologistChat + Cocktail Menu",
+  "description": "Wire MixologistChat to Claude API with proposal context as system prompt. Add FAQ guardrails. Task completion tracking. Store chat history in Supabase. Design illustrated cocktail menu component (Remotion or curated SVGs).",
+  "activeForm": "Building MixologistChat and cocktail menu",
+  "status": "pending",
+  "blocks": [
+    "11"
+  ],
+  "blockedBy": [
+    "9"
+  ]
+}

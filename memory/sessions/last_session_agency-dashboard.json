@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-02-10T12:53:27-05:00",
+  "project": "agency-dashboard",
+  "working_dir": "/Users/ashleytower/Documents/GitHub/max-ai-employee/apps/agency-dashboard",
+  "git_branch": "main",
+  "git_status": " M apps/agency-dashboard/app/globals.css| M apps/agency-dashboard/app/layout.tsx| M apps/agency-dashboard/app/page.tsx| M apps/agency-dashboard/components/AddTaskModal.tsx| M apps/agency-dashboard/components/FilterBar.tsx| M apps/agency-dashboard/components/StatsBar.tsx| M apps/agency-dashboard/components/TaskBoard.tsx| M apps/agency-dashboard/components/TaskCard.tsx| M apps/agency-dashboard/components/TaskDetail.tsx| M apps/agency-dashboard/lib/supabase.ts| M apps/agency-dashboard/package-lock.json| M apps/agency-dashboard/package.json|?? apps/agency-dashboard/app/activity/|?? apps/agency-dashboard/app/corrections/|?? apps/agency-dashboard/app/emails/|?? apps/agency-dashboard/app/leads/|?? apps/agency-dashboard/app/tasks/|?? apps/agency-dashboard/components/EmptyState.tsx|?? apps/agency-dashboard/components/Sidebar.tsx|?? apps/agency-dashboard/components/StatCard.tsx|"
+}

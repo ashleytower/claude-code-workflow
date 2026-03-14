@@ -1,0 +1,11 @@
+{
+  "id": "15",
+  "subject": "stripe-agent",
+  "description": "You are on team mtl-sprint. Your task is Task #7: Implement Stripe quote/invoice integration in sale",
+  "status": "in_progress",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "_internal": true
+  }
+}

@@ -1,6 +1,6 @@
 ---
 name: nexus-code-review
-description: Code review pipeline using NEXUS agent sequence. Git Workflow Master -> Code Reviewer -> API Tester -> Reality Checker. Use after implementation before merging any feature branch.
+description: Use after implementing any non-trivial feature or bug fix, when a PR needs a thorough multi-agent review before merge, or as the Quality & Hardening gate in NEXUS-Sprint Phase 4. Runs Git Workflow Master (diff + context) -> Code Reviewer (blockers / suggestions / nits with file:line references) -> API Tester (if endpoints changed; skipped for UI-only) -> Reality Checker (final gate: zero blockers, CI green, RLS present, no secrets). Do NOT use for trivial one-line changes.
 ---
 
 # NEXUS Code Review Pipeline
@@ -268,3 +268,20 @@ All reviewers must use this severity taxonomy:
 | NIT | Polish, optional | No |
 
 File references must include `file.ts:lineNumber` format for every finding.
+
+## Evals
+
+### Eval 1: Full pipeline activation for a feature branch
+Prompt: "I just finished implementing the trip invitation feature on branch feat/trip-invitations. It adds a POST /api/trips/:id/invite endpoint and updates the TripDetail screen. Can you run the code review pipeline?"
+Expected: Activates the full Git Workflow Master -> Code Reviewer -> API Tester -> Reality Checker pipeline. Starts with Git Workflow Master to produce a diff summary. Notes that API Tester is needed because an endpoint was added. Does not skip to Reality Checker without running earlier steps.
+Pass if: Activates Git Workflow Master first, identifies that API Tester is required (new endpoint exists), mentions the 4-step pipeline order, does not compress steps.
+
+### Eval 2: Blocker identification and gate enforcement
+Prompt: "Code Reviewer found that the new Supabase table for trip invitations has no RLS policies, and there's an unhandled promise in inviteService.ts:47. The developer says these are minor — can we advance to API Tester?"
+Expected: Refuses to advance to API Tester. Both findings are BLOCKERS per the review criteria (missing RLS policy, unhandled promise). Gate requires zero blockers before advancing. Explains why both are blockers and what the developer must fix first.
+Pass if: Does not advance to API Tester, categorizes missing RLS and unhandled promise as BLOCKERS (not suggestions), explains the zero-blocker gate requirement, lists required fixes.
+
+### Eval 3: API Tester skip for UI-only changeset
+Prompt: "The changeset is UI-only — we refactored the TripCard component and updated some styles. No API changes. Should we still run the API Tester?"
+Expected: Confirms that API Tester is skipped for UI-only changesets per the pipeline rules. Advances directly from Code Reviewer to Reality Checker. Does not run API Tester unnecessarily.
+Pass if: Explicitly skips API Tester, references the UI-only exception rule, proceeds to Reality Checker as the next step after Code Reviewer.

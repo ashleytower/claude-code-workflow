@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-03-11T08:16:44-04:00",
+  "project": "twilio-sms",
+  "working_dir": "/Users/ashleytower/Documents/GitHub/max-ai-employee/skills/twilio-sms",
+  "git_branch": "main",
+  "git_status": " M .claude/agent-state.json| M skills/twilio-sms/package.json| M skills/twilio-sms/src/routes/approval.js| M skills/twilio-sms/src/services/claude.js| M skills/twilio-sms/src/services/corrections.js| M skills/twilio-sms/src/services/rube.js|"
+}

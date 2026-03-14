@@ -1,0 +1,12 @@
+{
+  "id": "3",
+  "subject": "CRM Phase 1B-Research: Calendar + Liquid Glass prototype",
+  "description": "Research macos-calendar React component, liquid-glass-react, Aceternity UI Pro glass components, and 21st.dev MCP components. Evaluate React 19 + Vite compatibility. Build standalone prototype. Save findings to ~/.claude/memory/research/2026-02-07-calendar-research.md. Present for user approval before Phase 1B-Impl.",
+  "activeForm": "Researching Apple Calendar + Liquid Glass libraries",
+  "owner": "calendar-researcher",
+  "status": "completed",
+  "blocks": [
+    "4"
+  ],
+  "blockedBy": []
+}

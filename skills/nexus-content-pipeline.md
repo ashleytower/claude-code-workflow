@@ -1,6 +1,6 @@
 ---
 name: nexus-content-pipeline
-description: Content creation pipeline using NEXUS agent sequence. Sprint Prioritizer -> Content Creator -> SEO Specialist -> Reality Checker. Use for blog posts, landing pages, email sequences, social campaigns.
+description: Use when content output requires strategy, quality control, and SEO — not for quick one-off writing. Runs Sprint Prioritizer -> Content Creator -> SEO Specialist -> Reality Checker, with a gate at each step so no draft advances without a content brief approved, no SEO pass without an approved draft, and no publish without Reality Checker PASS. Covers blog posts, landing page copy, email sequences, and multi-platform social campaigns.
 ---
 
 # NEXUS Content Pipeline
@@ -236,3 +236,20 @@ If Reality Checker issues NEEDS WORK, return to the appropriate step (usually Co
 | Email sequence | Content Creator | Open rate hook, single CTA |
 | Social campaign | Social Media Strategist + Content Creator | Platform-native format |
 | Product marketing | Brand Guardian + Content Creator | Positioning, voice |
+
+## Evals
+
+### Eval 1: Full pipeline activation for a blog post
+Prompt: "I need a blog post about the top 10 travel planning mistakes. The audience is first-time international travelers. Goal is organic traffic from Google. Timeline is end of this week."
+Expected: Activates the full Sprint Prioritizer -> Content Creator -> SEO Specialist -> Reality Checker pipeline. Starts with Sprint Prioritizer to scope the content brief. Outputs a brief with RICE-scored angles before proceeding. Does not skip to writing the draft without the brief being approved.
+Pass if: Activates Sprint Prioritizer first, produces a content brief with angle options, gates the handoff to Content Creator on brief approval, mentions the SEO Specialist and Reality Checker as subsequent steps.
+
+### Eval 2: Gate enforcement — brief not approved before drafting
+Prompt: "Skip the strategy step, just go ahead and write the blog post draft now. I know what I want."
+Expected: Explains that the content brief gate exists to ensure the draft covers the right angle, messages, and acceptance criteria. Offers a fast-track — asks 3-4 quick questions to produce a minimal brief that the user can approve in under 2 minutes — rather than skipping the gate entirely.
+Pass if: Does not skip to drafting without any brief. Explains why the gate matters. Offers a streamlined path to get a brief quickly rather than eliminating it.
+
+### Eval 3: Reality Checker NEEDS WORK on content — keyword stuffing
+Prompt: "Reality Checker: the SEO Specialist added the keyword 'budget travel tips' 11 times in a 600-word post. The meta title and description are correct lengths. Everything else looks good."
+Expected: Issues NEEDS WORK for keyword stuffing. Identifies keyword density as a specific issue (reads unnaturally). References the acceptance criterion 'no keyword stuffing'. Provides a Path to PASS requiring the Content Creator to reduce keyword repetition while maintaining search intent. Does not issue PASS.
+Pass if: Issues NEEDS WORK not PASS, identifies keyword stuffing as the specific failure, references the no-stuffing acceptance criterion, specifies which criterion failed and what the fix is.

@@ -1,0 +1,14 @@
+{
+  "id": "7",
+  "subject": "Portal Phase 1: Wire to Supabase",
+  "description": "Replace mock /api/proposal route with Supabase query. Map quotes table to ProposalData. Add PATCH endpoint for client edits. Add quote access auth (quote ID + email). Wire real-time subscription.",
+  "activeForm": "Wiring portal to Supabase",
+  "owner": "backend",
+  "status": "completed",
+  "blocks": [
+    "8"
+  ],
+  "blockedBy": [
+    "6"
+  ]
+}

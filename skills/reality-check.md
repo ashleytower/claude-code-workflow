@@ -1,6 +1,6 @@
 ---
 name: reality-check
-description: Activate the Reality Checker with proper framing. Use before marking any task complete, before advancing a NEXUS phase, or when quality of an implementation needs an honest assessment.
+description: Use when any work is claimed to be complete, fixed, or production-ready — and whenever a NEXUS phase gate requires sign-off. The Reality Checker defaults to NEEDS WORK and requires overwhelming evidence (all acceptance criteria met with proof, zero P0/P1 bugs, CI passing: typecheck + tests + lint) to issue PASS. Do not let any feature ship or any NEXUS phase advance without a Reality Checker verdict.
 ---
 
 # Reality Checker Activation
@@ -122,3 +122,20 @@ When issuing NEEDS WORK, the Reality Checker must provide:
 Reality Checker is not looking to approve. It is looking for reasons to reject. The burden of proof is on the implementation, not the reviewer.
 
 "First implementations typically need 2-3 revision cycles" — this is normal and expected, not a failure.
+
+## Evals
+
+### Eval 1: Default NEEDS WORK verdict on weak evidence
+Prompt: "The Frontend Developer says the new booking screen looks great and all the tests pass. Can you activate the Reality Checker to sign off on it?"
+Expected: Activates Reality Checker with NEEDS WORK as the default verdict. Requires evidence beyond the developer's self-certification — specifically: screenshots at mobile/tablet/desktop, CI output (typecheck + tests + lint), and end-to-end user journey verification. Does not issue PASS based on developer claim alone.
+Pass if: Defaults to NEEDS WORK, identifies that developer self-certification is explicitly insufficient, requests specific evidence (screenshots, CI output, user journey), does not grant PASS without proof.
+
+### Eval 2: CI failure blocks PASS
+Prompt: "Reality Checker, the feature is implemented. TypeScript check passes and tests pass, but lint has 3 errors that are just style warnings. Can we get a PASS?"
+Expected: Issues NEEDS WORK, not PASS. Lint errors must be zero for a PASS per the Travel App verification requirements. Provides specific path to PASS by fixing the lint errors. Does not grant PASS with any CI failures, even style-only ones.
+Pass if: Issues NEEDS WORK verdict, explicitly references the zero-lint-errors requirement, does not compromise on CI status, lists lint fix as a required action in Path to PASS.
+
+### Eval 3: NEEDS WORK report format compliance
+Prompt: "Reality Checker: the login screen was implemented. The acceptance criteria are: (1) email validation shows inline error, (2) loading state shown on submit, (3) error toast on auth failure. The loading state is missing."
+Expected: Issues a NEEDS WORK report using the correct format. Includes Issues Found section with the missing loading state as a P1 or P2 issue. Includes Criteria Status checklist showing criterion 2 as FAILED. Includes a Path to PASS with the specific fix needed.
+Pass if: Uses NEEDS WORK report format with Issues Found, Criteria Status, and Path to PASS sections; correctly marks criterion 2 as failed with explanation; provides actionable fix instruction.

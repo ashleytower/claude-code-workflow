@@ -1,0 +1,14 @@
+[
+  {
+    "from": "team-lead",
+    "text": "Research Apple Calendar + Liquid Glass UI libraries for the CRM Dashboard calendar redesign. This is a React 19 + Vite 6 + Tailwind CSS project.\n\n1. **Current calendar implementation** - Read these files at `/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/`:\n   - `components/CalendarWidget.tsx` - Current calendar component\n   - `components/crm-bento-grid.tsx` - Dashboard layout (especially calendar section and convertEventsToCalendarFormat)\n   - `components/QuickAddEventModal.tsx` or similar - Check if quick add modal exists\n   - Check `package.json` for current calendar-related dependencies\n\n2. **Library research** - Search the web for:\n   - `macos-calendar` React component (github.com/macos-components/macos-calendar) - API, props, customization, React 19 compatibility\n   - `liquid-glass-react` (github.com/rdev/liquid-glass-react) - Glass effects, CSS backdrop-filter, React 19 compatibility\n   - Aceternity UI Pro glass/frosted components - What's available for Pro license holders\n   - Any Apple Calendar-style React libraries on npm\n\n3. **Key questions:**\n   - Does macos-calendar work with React 19?\n   - Does liquid-glass-react work with Vite 6?\n   - What Aceternity Pro components could provide glass effects?\n   - How does the current calendar render events? What data format does it expect?\n   - Does QuickAddEventModal exist? What fields does it have?\n\n4. **Fallback evaluation** - If macos-calendar + liquid-glass don't work, evaluate:\n   - Hand-building Apple Calendar-style with just Tailwind + Aceternity Pro\n   - Using CSS backdrop-filter directly for glass effects\n   - Any other Apple-inspired calendar libraries\n\nSave findings in a structured format. Be thorough - this research determines whether we use community libraries or build custom.",
+    "timestamp": "2026-02-07T05:43:35.444Z",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"3\",\"subject\":\"CRM Phase 1B-Research: Calendar + Liquid Glass prototype\",\"description\":\"Research macos-calendar React component, liquid-glass-react, Aceternity UI Pro glass components, and 21st.dev MCP components. Evaluate React 19 + Vite compatibility. Build standalone prototype. Save findings to ~/.claude/memory/research/2026-02-07-calendar-research.md. Present for user approval before Phase 1B-Impl.\",\"assignedBy\":\"team-lead\",\"timestamp\":\"2026-02-07T05:43:40.484Z\"}",
+    "timestamp": "2026-02-07T05:43:40.484Z",
+    "read": true
+  }
+]

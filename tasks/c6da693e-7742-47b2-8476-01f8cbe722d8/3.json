@@ -1,0 +1,13 @@
+{
+  "id": "3",
+  "subject": "Complete setup wizard",
+  "description": "Walk through Clawdbot setup wizard: gateway config, AI model, security settings, channels (WhatsApp + Telegram)",
+  "activeForm": "Completing setup wizard",
+  "status": "completed",
+  "blocks": [
+    "4"
+  ],
+  "blockedBy": [
+    "2"
+  ]
+}

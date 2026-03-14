@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-02-27T08:42:46+09:00",
+  "project": "browser-automation",
+  "working_dir": "/Users/ashleytower/Documents/GitHub/max-ai-employee/skills/browser-automation",
+  "git_branch": "main",
+  "git_status": " M .claude/agent-state.json| M CLAUDE.md| M docs/ARCHITECTURE.md| M docs/MAX-WORKFLOW.md| M skills/fb-group-monitor/config/groups.json| M skills/shared/lib/common.sh|?? scripts/fix-codex.sh|?? skills/heartbeat/scripts/.heartbeat-check-fixed.sh|"
+}

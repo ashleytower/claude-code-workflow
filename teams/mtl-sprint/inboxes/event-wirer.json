@@ -1,0 +1,9 @@
+[
+  {
+    "from": "event-wirer",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"4\",\"subject\":\"Wire event status update handler in crm-bento-grid.tsx\",\"description\":\"File: `/Users/ashleytower/mtl-craft-cocktails-ai/components/crm-bento-grid.tsx`\\n\\nTwo TODOs:\\n1. Line 664: Check if linked event is in 48hrs\\n2. Line 1069: Wire to actual status update handler for event status changes\\n\\nThe status update handler should:\\n- Call `supabase.from('events').update({ status: newStatus }).eq('id', eventId)`\\n- Optimistically update the UI\\n- Log the action via `logAction()` from actionLogService\\n- Handle error with toast/notification\\n\\nLook at how other event updates are done in the codebase (check `useEventSelection.ts`, `App.tsx` voice handlers) to match patterns.\\n\\nWrite a test for the status update handler before implementing. Check the events table schema from migrations to confirm the status column and valid values.\",\"assignedBy\":\"event-wirer\",\"timestamp\":\"2026-02-07T02:28:46.808Z\"}",
+    "timestamp": "2026-02-07T02:28:46.808Z",
+    "color": "yellow",
+    "read": false
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "id": "1",
+  "subject": "Stash unstaged work and clean working tree",
+  "description": "In /Users/ashleytower/mtl-craft-cocktails-ai, there are 15 modified files and 3 untracked files from prior work (email components, PRD files, a migration). Stash all unstaged changes with `git stash push -m \"pre-sprint: email draft components + PRD updates\"`. Do NOT discard anything. Then verify `git status` shows a clean tree. The untracked migration `031_add_draft_needs_review_status.sql` and other untracked files should remain (stash doesn't touch untracked unless -u flag). That's fine for now.",
+  "activeForm": "Stashing unstaged work",
+  "owner": "team-lead",
+  "status": "completed",
+  "blocks": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+  ],
+  "blockedBy": []
+}

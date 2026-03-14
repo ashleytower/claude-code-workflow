@@ -1,0 +1,10 @@
+{
+  "id": "2",
+  "subject": "Upgrade proposal email templates to branded bilingual HTML",
+  "description": "In `hooks/useProposalActions.ts`, replace bare text email templates with branded bilingual HTML matching the style of `api/payment-link.js`.\n\nChanges needed:\n1. Create a shared helper function `generateProposalEmailHtml()` that takes: clientName, eventDate, headcount, eventType, location, total, depositAmount, portalUrl. Returns branded HTML matching payment-link.js style with:\n   - MTL Craft Cocktails header with brand gradient (#6182FA to #4F6AD6)\n   - Bilingual greeting (EN/FR)\n   - Event summary card (date, headcount, event type, location)\n   - Total amount and deposit info\n   - \"View Your Proposal / Voir votre proposition\" CTA button linking to external portal\n   - Trust footer with tax numbers (GST: 721488476 RT0001, QST: 1226717648 TQ0001)\n   - Same styling as payment-link email\n\n2. In `handleCreateQuote` (lines 482-498), replace the inline HTML with a call to the shared helper.\n\n3. In `handleSendProposal` (lines 818-827), replace the bare text email with a call to the shared helper. Use HTML email instead of plain text converted with `.replace(/\\n/g, '<br>')`.\n\nImportant: The helper function must escape user-provided strings (clientName, location, etc.) to prevent XSS. Use a simple inline escape function since `api/utils/html.js` is server-side only.\n\nThe portal URL will come from the API (share-url endpoint for handleSendProposal, or the quote creation response URL for handleCreateQuote).",
+  "activeForm": "Upgrading proposal email templates to branded bilingual HTML",
+  "owner": "email-template-upgrader",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": []
+}

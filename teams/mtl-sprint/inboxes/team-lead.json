@@ -1,0 +1,67 @@
+[
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"1\",\"subject\":\"Stash unstaged work and clean working tree\",\"description\":\"In /Users/ashleytower/mtl-craft-cocktails-ai, there are 15 modified files and 3 untracked files from prior work (email components, PRD files, a migration). Stash all unstaged changes with `git stash push -m \\\"pre-sprint: email draft components + PRD updates\\\"`. Do NOT discard anything. Then verify `git status` shows a clean tree. The untracked migration `031_add_draft_needs_review_status.sql` and other untracked files should remain (stash doesn't touch untracked unless -u flag). That's fine for now.\",\"assignedBy\":\"team-lead\",\"timestamp\":\"2026-02-07T02:27:47.331Z\"}",
+    "timestamp": "2026-02-07T02:27:47.331Z",
+    "read": true
+  },
+  {
+    "from": "brief-wirer",
+    "text": "Task #5 completed: Wired daily brief with real SMS and invoice data from Supabase.\n\n**What was done:**\n\n1. **Created `hooks/useDailyBriefData.ts`** - New hook that fetches real data:\n   - **SMS**: Queries `sms_messages` table for today's messages (`gte created_at today`). Counts total and unread (inbound + received status).\n   - **Calls**: Set to `{ count: 0, missed: 0 }` with comment \"Call tracking not yet integrated\" -- no fake data.\n   - **Invoices**: Queries `quotes` table for pending quotes (status `sent` or `viewed`), sums their amounts, formats as `$X,XXX`.\n\n2. **Updated `components/daily-brief.tsx`**:\n   - Added import for `useDailyBriefData` hook\n   - Replaced three hardcoded values (line 66 texts, line 68 calls, line 74 invoices) with `briefData.texts`, `briefData.calls`, `briefData.invoices`\n   - Hook uses `useEffect` + `useState` pattern matching the codebase conventions\n   - Supabase import pattern: `import { supabase } from '../utils/supabaseClient'`\n\n3. **Created `tests/hooks/useDailyBriefData.test.ts`** - 7 tests, all passing:\n   - Default zero values on empty data\n   - SMS count and unread filtering\n   - Calls always return zero\n   - Pending invoice count and amount summing\n   - Graceful error handling for SMS errors\n   - Graceful error handling for quotes errors\n   - Amount formatting with commas\n\n**Test results**: 7/7 new tests pass. Existing `useDailyBrief.test.ts` 8/8 still pass. 16 pre-existing test failures in other files (unrelated -- salesAgent, memoryIngestion, etc.)\n\n**Files changed:**\n- `/Users/ashleytower/mtl-craft-cocktails-ai/hooks/useDailyBriefData.ts` (new)\n- `/Users/ashleytower/mtl-craft-cocktails-ai/tests/hooks/useDailyBriefData.test.ts` (new)\n- `/Users/ashleytower/mtl-craft-cocktails-ai/components/daily-brief.tsx` (modified)",
+    "summary": "Task #5 done: daily brief wired with real SMS + invoice data",
+    "timestamp": "2026-02-07T02:34:12.866Z",
+    "color": "purple",
+    "read": true
+  },
+  {
+    "from": "brief-wirer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"brief-wirer\",\"timestamp\":\"2026-02-07T02:34:19.383Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-07T02:34:19.383Z",
+    "color": "purple",
+    "read": true
+  },
+  {
+    "from": "brief-wirer",
+    "text": "Task #5 is already completed. I received a duplicate assignment message. No unblocked pending tasks remain for me -- #8 is blocked by #7 (stripe-agent) and #9 is blocked by #3 and #4 (crm-wirer, event-wirer). Standing by for further instructions or shutdown.",
+    "summary": "Task #5 already done, no unblocked tasks, standing by",
+    "timestamp": "2026-02-07T02:34:36.691Z",
+    "color": "purple",
+    "read": true
+  },
+  {
+    "from": "brief-wirer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"brief-wirer\",\"timestamp\":\"2026-02-07T02:34:40.859Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-07T02:34:40.859Z",
+    "color": "purple",
+    "read": true
+  },
+  {
+    "from": "test-fixer",
+    "text": "Task #2 complete. All 3 failing tests are fixed (65 tests, 0 failures):\n\n**1. agentWiring.test.ts** (3 test failures fixed):\n- Added `await` to `coordinator.listActiveWorkflows()` calls at lines 239 and 252\n- Added `await` to `coordinator.getPendingApprovals()` call at line 264\n- Both methods are async (return Promise) but were called synchronously\n- Also added mocks for `proposalService` and `quoteService` -- another teammate's changes to `proposalService.ts` introduced a module-level `GoogleGenAI` instantiation that broke the import chain (`salesAgent -> proposalService -> GoogleGenAI`)\n\n**2. voiceTeachingIntegration.test.ts** (4 tests fixed):\n- Added mock for `behaviorInjectionService` -- `claudeVoicePipeline` imports it, and it imports the real `supabaseClient`, triggering \"Invalid supabaseUrl\" error\n\n**3. quoteService.test.ts** (31 tests fixed):\n- Added mock for `leadNurturingService` -- `quoteService` imports it, which chains to `draftService -> memoryIngestion -> GoogleGenAI`, triggering \"API key must be set\" error\n\nSaved two gotcha notes to `~/.claude/memory/topics/general.md` about the module-level GoogleGenAI instantiation pattern and the async WorkflowCoordinator methods.",
+    "summary": "Task #2 done: all 3 test files fixed, 65 tests pass",
+    "timestamp": "2026-02-07T02:41:44.512Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "test-fixer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"test-fixer\",\"timestamp\":\"2026-02-07T02:41:51.300Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-07T02:41:51.300Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "test-fixer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"test-fixer\",\"timestamp\":\"2026-02-07T02:42:07.269Z\",\"idleReason\":\"available\",\"summary\":\"[to test-fixer] Task #2 already completed, no action needed\"}",
+    "timestamp": "2026-02-07T02:42:07.269Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "test-fixer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"test-fixer\",\"timestamp\":\"2026-02-07T02:42:11.469Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-07T02:42:11.469Z",
+    "color": "blue",
+    "read": true
+  }
+]

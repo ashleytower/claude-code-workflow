@@ -1,0 +1,39 @@
+[
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"shutdown_request\",\"requestId\":\"shutdown-1771798907292@code-reviewer\",\"from\":\"team-lead\",\"reason\":\"Review complete, shutting down.\",\"timestamp\":\"2026-02-22T22:21:47.292Z\"}",
+    "timestamp": "2026-02-22T22:21:47.292Z",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"shutdown_request\",\"requestId\":\"shutdown-1771799002544@code-reviewer\",\"from\":\"team-lead\",\"reason\":\"Please shut down now.\",\"timestamp\":\"2026-02-22T22:23:22.544Z\"}",
+    "timestamp": "2026-02-22T22:23:22.544Z",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"shutdown_request\",\"requestId\":\"shutdown-1771799101804@code-reviewer\",\"from\":\"team-lead\",\"reason\":\"All work is complete and verified. Please shut down.\",\"timestamp\":\"2026-02-22T22:25:01.804Z\"}",
+    "timestamp": "2026-02-22T22:25:01.804Z",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"shutdown_request\",\"requestId\":\"shutdown-1771799156287@code-reviewer\",\"from\":\"team-lead\",\"reason\":\"Shut down immediately please.\",\"timestamp\":\"2026-02-22T22:25:56.287Z\"}",
+    "timestamp": "2026-02-22T22:25:56.287Z",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"shutdown_request\",\"requestId\":\"shutdown-1771799272800@code-reviewer\",\"from\":\"team-lead\",\"reason\":\"All tasks are complete. Approve this shutdown request to exit.\",\"timestamp\":\"2026-02-22T22:27:52.800Z\"}",
+    "timestamp": "2026-02-22T22:27:52.800Z",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "You have a pending shutdown request. Please approve it by calling SendMessage with type \"shutdown_response\", request_id \"shutdown-1771799272800@code-reviewer\", and approve: true.",
+    "summary": "Instructions to approve shutdown",
+    "timestamp": "2026-02-22T22:28:26.242Z",
+    "read": true
+  }
+]

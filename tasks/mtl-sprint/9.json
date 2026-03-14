@@ -1,0 +1,12 @@
+{
+  "id": "9",
+  "subject": "Complete remaining 8 CRM dashboard stories",
+  "description": "The CRM Dashboard PRD is 73% complete (22/30 stories). 8 stories are still failing, mostly around:\n- Event tile hover actions not visible/functional in browser\n- Status badges on events not showing\n- Calendar day view not fully functional\n- Event density indicators not visible\n\nSteps:\n1. Read the PRD file at `/Users/ashleytower/mtl-craft-cocktails-ai/PRD.md` to identify which 8 stories are failing\n2. Also read `prd.json` and `verification-prd.json` if they exist\n3. For each failing story, identify what component needs work\n4. Write tests for each story's acceptance criteria\n5. Implement the fixes\n6. Verify all 30 stories pass\n\nKey components to check:\n- `crm-bento-grid.tsx` - main dashboard grid\n- Event card/tile components\n- Calendar view components\n- Status badge components\n\nThis task depends on the CRM data hook being wired (Task 3) and event status handler (Task 4), so coordinate accordingly. Start with stories that don't depend on those tasks.",
+  "activeForm": "Completing CRM dashboard stories",
+  "status": "pending",
+  "blocks": [],
+  "blockedBy": [
+    "3",
+    "4"
+  ]
+}

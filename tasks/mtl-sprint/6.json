@@ -1,0 +1,12 @@
+{
+  "id": "6",
+  "subject": "Bundle optimization: lazy loading, code splitting, App.tsx cleanup",
+  "description": "Current state: Main chunk is 722KB (190KB gzipped), vendor chunk is 1032KB (300KB gzipped). App.tsx is 1,554 lines with 50+ imports.\n\nTasks:\n1. **Lazy load heavy panels**: Use `React.lazy()` + `Suspense` for:\n   - EmailPanel (likely large with email rendering)\n   - ProposalBuilder\n   - MenuModal\n   - Any other large component not needed on initial render\n2. **Split App.tsx**: Extract voice handler implementations into separate files:\n   - Group by domain: email handlers, event handlers, calendar handlers, etc.\n   - Import them as modules in App.tsx\n3. **Review vite.config.ts**: Check if `manualChunks` can be improved\n4. **Dynamic imports for services**: Agent services (salesAgent, operationsAgent, directorAgent) should be dynamically imported since they're not needed until triggered\n\nTarget: Main chunk under 400KB (100KB gzipped).\n\nWrite NO new tests for this (it's refactoring, existing tests should pass). Run `npm run build` before and after to measure improvement. Run `npx vitest run` to confirm no regressions.\n\nRead `vite.config.ts` and `App.tsx` first to understand current structure before making changes.",
+  "activeForm": "Optimizing bundle size",
+  "status": "in_progress",
+  "blocks": [],
+  "blockedBy": [
+    "1"
+  ],
+  "owner": "perf-agent"
+}

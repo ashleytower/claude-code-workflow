@@ -1,6 +1,6 @@
 ---
 name: nexus-sprint
-description: Activate NEXUS-Sprint mode for building a feature or MVP (2-6 weeks). Coordinates 15-25 agents through structured phases with quality gates and Dev-QA loops. Use for any non-trivial feature build or MVP.
+description: Use when starting a new feature, MVP, or multi-week build that requires design + engineering + QA coordination. Activates NEXUS-Sprint: 5-phase pipeline (Strategy -> Foundation -> Build -> Quality -> Launch), assigns agents by task type, enforces phase gates so no phase advances without passing quality criteria, and runs Dev-QA loops with 3-retry escalation to Orchestrator. Do NOT use for bug fixes or single-day tasks — use nexus-micro instead.
 ---
 
 # NEXUS-Sprint Mode
@@ -139,3 +139,20 @@ Sprint Prioritizer should produce RICE-scored backlog:
 3. Every handoff carries full context (agents do not share memory)
 4. Max 3 retries per task before escalation
 5. Reality Checker defaults to NEEDS WORK — requires overwhelming evidence for PASS
+
+## Evals
+
+### Eval 1: Basic sprint activation
+Prompt: "I want to build a maps feature for my travel app — show nearby restaurants and points of interest on a map. We have about 3 weeks."
+Expected: Activates NEXUS-Sprint, outputs Phase 1 agent assignments including Sprint Prioritizer and UX Architect, mentions quality gates and Dev-QA loop, includes sprint team composition.
+Pass if: Mentions NEXUS-Sprint mode, includes Phase 1 as starting point, references Dev-QA loop or quality gates, assigns appropriate agents (Sprint Prioritizer, UX Architect, Backend Architect minimum).
+
+### Eval 2: Quality gate enforcement — user tries to skip Reality Checker
+Prompt: "The backend API looks pretty good, let's skip the Reality Checker and go straight to launch. We're behind schedule."
+Expected: Refuses to skip the Phase 4 -> 5 gate. Explains that Reality Checker PASS is required before launch. Does not advance to Phase 5. Offers to expedite the Reality Checker process instead.
+Pass if: Does not agree to skip Reality Checker, explains the gate requirement, does not proceed to Phase 5/launch, references the gate rules.
+
+### Eval 3: Escalation after 3 Dev-QA failures
+Prompt: "The Frontend Developer has failed QA 3 times on the map tile rendering task. Evidence Collector keeps flagging that markers don't appear on iOS. What do we do?"
+Expected: Triggers the escalation path. Presents the 5 escalation options to the user (reassign agent, decompose task, revise architecture, accept with limitations, defer). Does not silently retry a 4th time.
+Pass if: Presents escalation options explicitly, references the 3-retry limit, asks user to choose a resolution path rather than automatically retrying.

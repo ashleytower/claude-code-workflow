@@ -1,0 +1,11 @@
+{
+  "id": "1",
+  "subject": "Deploy Clawdbot on Railway",
+  "description": "Deploy Clawdbot template on Railway with persistent volume, environment variables, and public domain",
+  "activeForm": "Deploying Clawdbot on Railway",
+  "status": "completed",
+  "blocks": [
+    "2"
+  ],
+  "blockedBy": []
+}

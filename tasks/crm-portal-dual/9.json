@@ -1,0 +1,13 @@
+{
+  "id": "9",
+  "subject": "Portal Phase 3: AI copy polish endpoint",
+  "description": "Create /api/polish endpoint. Claude personalizes template copy per client (references their questions, event details, conversation history). Cache polished copy in Supabase. Fallback to template on failure.",
+  "activeForm": "Building AI copy polish API",
+  "status": "pending",
+  "blocks": [
+    "10"
+  ],
+  "blockedBy": [
+    "8"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "4",
+  "subject": "CRM Phase 1B-Impl: Calendar redesign (Stories 17, 20)",
+  "description": "Rebuild CRM calendar with Apple macOS Calendar design + Liquid Glass effects. Story 17: density indicators via glass opacity. Story 20: QuickAddEventModal with headcount + location + DB persistence. Blocked on Phase 1B-Research user approval.",
+  "activeForm": "Rebuilding calendar with Apple design",
+  "status": "pending",
+  "blocks": [],
+  "blockedBy": [
+    "3"
+  ]
+}

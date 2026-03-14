@@ -1,0 +1,13 @@
+{
+  "id": "2",
+  "subject": "Configure environment variables",
+  "description": "Set SETUP_PASSWORD, PORT, CLAWDBOT_STATE_DIR, CLAWDBOT_WORKSPACE_DIR, ANTHROPIC_API_KEY",
+  "activeForm": "Configuring environment variables",
+  "status": "completed",
+  "blocks": [
+    "3"
+  ],
+  "blockedBy": [
+    "1"
+  ]
+}

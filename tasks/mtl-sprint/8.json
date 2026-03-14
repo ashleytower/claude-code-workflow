@@ -1,0 +1,11 @@
+{
+  "id": "8",
+  "subject": "Implement quote and invoice approval in approvalQueueService",
+  "description": "File: `/Users/ashleytower/mtl-craft-cocktails-ai/services/approvalQueueService.ts`\n\nLines 101-106 have two TODOs:\n- Quote approval: returns \"Quote approval not yet implemented\"\n- Invoice approval: returns \"Invoice approval not yet implemented\"\n\nImplement both:\n1. **Quote approval**: Fetch quote from DB (check quotes table in migrations), extract draft content, create approval entry\n2. **Invoice approval**: Fetch invoice data, create approval entry with amount/line items\n3. Both should follow the same pattern as email approval (lines 90-100)\n\nThe approval queue is in-memory (Map). That's fine for now. The flow is:\n- `addToQueue(entityId, 'quote', context)` → fetches quote, creates PendingApproval\n- `addToQueue(entityId, 'invoice', context)` → fetches invoice, creates PendingApproval\n\nCheck:\n- What tables exist for quotes (look at migrations 003, 004, 006 for quote schemas)\n- What the quote object looks like\n- Whether there's a separate invoices table or if invoices are a type of quote\n\nWrite tests first. The approval queue already has good patterns for email - extend the same for quotes/invoices.",
+  "activeForm": "Implementing quote/invoice approval",
+  "status": "pending",
+  "blocks": [],
+  "blockedBy": [
+    "7"
+  ]
+}

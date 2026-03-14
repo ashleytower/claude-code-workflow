@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-01-27T14:36:58-05:00",
+  "project": "invoice-app",
+  "working_dir": "/Users/ashleytower/Documents/GitHub/invoice-app",
+  "git_branch": "main",
+  "git_status": " M .github/instructions/codacy.instructions.md| M drizzle/migrations/meta/_journal.json|?? drizzle/migrations/meta/0001_snapshot.json|"
+}

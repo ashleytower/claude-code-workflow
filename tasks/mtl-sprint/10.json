@@ -1,0 +1,11 @@
+{
+  "id": "10",
+  "subject": "test-fixer",
+  "description": "You are on team mtl-sprint. Your task is Task #2: Fix 3 failing tests.\n\nProject: /Users/ashleytower/",
+  "status": "in_progress",
+  "blocks": [],
+  "blockedBy": [],
+  "metadata": {
+    "_internal": true
+  }
+}

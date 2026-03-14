@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-02-12T12:42:51-05:00",
+  "project": "lead-calendar-sync",
+  "working_dir": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/.worktrees/lead-calendar-sync",
+  "git_branch": "fix/webflow-webhook-payload",
+  "git_status": " M .claude/agent-state.json|?? docs/plans/2026-02-12-lead-calendar-sync.md|"
+}

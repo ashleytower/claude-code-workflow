@@ -1,0 +1,14 @@
+{
+  "id": "3",
+  "subject": "Wire use-crm-data.ts with real Supabase queries",
+  "description": "File: `/Users/ashleytower/mtl-craft-cocktails-ai/hooks/use-crm-data.ts`\n\nCurrently the file is completely stubbed:\n- `useSWR` is a fake stub (lines 11-18) returning undefined\n- `fetcher` returns `[]` for everything (line 51)\n\nFix:\n1. Install SWR if not already a dependency (`npm list swr`)\n2. Import the real supabase client from `../../utils/supabaseClient` (check how other files import it)\n3. Replace the stub `useSWR` with the real SWR import\n4. Implement the `fetcher` function to parse keys and make real Supabase queries:\n   - `events` → `supabase.from('events').select('*')`\n   - `events/{id}` → `supabase.from('events').select('*').eq('id', id).single()`\n   - `todos` → `supabase.from('todos').select('*')`\n   - `emails` → `supabase.from('emails').select('*')`\n   - `sms_conversations` → `supabase.from('sms_messages').select('*')` (shared table from other app)\n   - `invoices` → `supabase.from('quotes').select('*').eq('type', 'invoice')` or check if there's an invoices table\n   - `calendar` → `supabase.from('events').select('*').gte('event_date', start).lte('event_date', end)`\n   - `staff` → check if a staff table exists, otherwise from events/assignments\n   - `domain_memory` → `supabase.from('domain_memory').select('*')`\n5. Parse URL params from the key to apply as filters\n\nWrite tests FIRST in a new test file before implementing. Check existing Supabase table names by looking at migration files in `supabase_migrations/`. Check how `supabase` is imported in other hooks/services.",
+  "activeForm": "Wiring use-crm-data.ts with real Supabase queries",
+  "status": "in_progress",
+  "blocks": [
+    "9"
+  ],
+  "blockedBy": [
+    "1"
+  ],
+  "owner": "crm-wirer"
+}

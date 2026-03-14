@@ -1,8 +1,8 @@
-# Session Handoff - Tue Feb 10 12:30:46 EST 2026
+# Session Handoff - Fri 13 Mar 2026 20:30:38 EDT
 
 ## Project
-- **Name:** max-ai-employee
-- **Path:** /Users/ashleytower/Documents/GitHub/max-ai-employee
+- **Name:** mtl-craft-cocktails-ai
+- **Path:** /Users/ashleytower/mtl-craft-cocktails-ai
 - **Branch:** main
 
 ## Context Compacted

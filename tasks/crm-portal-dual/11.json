@@ -1,0 +1,11 @@
+{
+  "id": "11",
+  "subject": "Portal Phase 5: Deploy to Vercel",
+  "description": "Deploy portal to Vercel. Set env vars (Supabase, Claude API key). Configure domain (portal.mtlcraftcocktails.com). Test end-to-end with real quote data.",
+  "activeForm": "Deploying portal to Vercel",
+  "status": "pending",
+  "blocks": [],
+  "blockedBy": [
+    "10"
+  ]
+}

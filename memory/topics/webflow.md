@@ -1,0 +1,3 @@
+
+### 2026-02-12 - Webflow webhook for form submissions
+[config] Webflow site "MTL Craft Cocktails" (ID: 67daedeff9385fc706cfe642) has a webhook (ID: 698df8dc6ebc259293da68b4) that fires on form_submission and POSTs to https://mtl-craft-cocktails-ai.vercel.app/api/leads. The Book Form at /book sends fields: Name, Last Name, Email, Phone Number, Service, Event Type, Person Count, Location, Venue, Start Date, Start Time, End Date, End Time, Company, Additional Details. The normalizeWebflowPayload() function in api/leads.js maps these to standard field names. Secret key for signature verification: 514cc954408597d4fbbd97f4bdf7b7bd62fb3ca435ef7b4f049c39aa27b0c919.

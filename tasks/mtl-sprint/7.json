@@ -1,0 +1,14 @@
+{
+  "id": "7",
+  "subject": "Implement Stripe quote/invoice integration in salesAgent",
+  "description": "File: `/Users/ashleytower/mtl-craft-cocktails-ai/services/agents/salesAgent.ts`\n\nSeven TODOs to wire real integrations:\n1. Line 444: Integrate with actual proposalService\n2. Line 447: Integrate with Stripe API for quote creation\n3. Line 450: Use payment link service\n4. Line 553: Integrate with unified memory system to store patterns\n5. Line 560: Update confidence scores in knowledge base\n6. Line 595: Use Gemini for natural language understanding\n7. Line 690: Store in unified memory\n\nPriority order:\n- First: Stripe integration (lines 444, 447, 450) - this is core business flow\n- Second: Memory integration (553, 560, 690) - store learning\n- Third: Gemini NLU (595) - can remain manual for now\n\nFor Stripe:\n- Check existing Stripe usage in the codebase (`grep -r \"stripe\" --include=\"*.ts\"`)\n- The app already has `stripe` v20.3.1 as a dependency\n- Look for existing quoteService, paymentService, or similar\n- The flow should be: salesAgent generates quote → creates Stripe Quote object → generates payment link → stores in DB\n\nWrite tests FIRST for each integration point. Mock Stripe API calls in tests. Check `services/` for any existing Stripe service files.",
+  "activeForm": "Integrating Stripe with sales agent",
+  "status": "in_progress",
+  "blocks": [
+    "8"
+  ],
+  "blockedBy": [
+    "1"
+  ],
+  "owner": "stripe-agent"
+}

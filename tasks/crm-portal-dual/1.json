@@ -1,0 +1,12 @@
+{
+  "id": "1",
+  "subject": "CRM Phase 0: Fix voice wiring (Story 11 openEventByClient)",
+  "description": "Add missing `openEventByClient` case to toolExecutor.ts switch statement. Handler exists in interface (line 30) but no case in the switch. Also verify stories 21 (getDailyBrief), 23 (getQuoteStatus), 25 (lookupCocktailRecipe) work end-to-end. Run npm run build && npm test.",
+  "activeForm": "Fixing voice wiring in toolExecutor.ts",
+  "owner": "lead",
+  "status": "completed",
+  "blocks": [
+    "2"
+  ],
+  "blockedBy": []
+}

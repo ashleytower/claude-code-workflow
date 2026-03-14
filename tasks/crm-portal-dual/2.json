@@ -1,0 +1,14 @@
+{
+  "id": "2",
+  "subject": "CRM Phase 1A: Event card enhancements (Stories 9, 10)",
+  "description": "Story 9: Add Edit button + quick action dock (Phone/Email/Map) to EventCardHover.tsx. Story 10: Create StatusDropdown.tsx with 5 statuses (Inquiry/Proposal Sent/Booked/Ready for Prep/Completed) as clickable dropdown replacing static badge. Use shadcn Select. Wire through crm-bento-grid.tsx.",
+  "activeForm": "Building event card UI enhancements",
+  "owner": "crm-frontend-A",
+  "status": "completed",
+  "blocks": [
+    "5"
+  ],
+  "blockedBy": [
+    "1"
+  ]
+}

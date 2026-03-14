@@ -1,0 +1,128 @@
+[
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"3\",\"subject\":\"Update .env.example with CLIENT_PORTAL_URL\",\"description\":\"Add `CLIENT_PORTAL_URL=https://portal.mtlcraftcocktails.com` to `.env.example` with a comment section.\\n\\nAdd under a new section after the \\\"Base URL for link generation\\\" section (around line 65-67):\\n```\\n# ============================================\\n# Client Portal (External Next.js App)\\n# ============================================\\n# External portal URL for client-facing proposal links\\n# The client portal is a separate Next.js app at portal.mtlcraftcocktails.com\\nCLIENT_PORTAL_URL=https://portal.mtlcraftcocktails.com\\n```\",\"assignedBy\":\"team-lead\",\"timestamp\":\"2026-02-22T21:57:28.703Z\"}",
+    "timestamp": "2026-02-22T21:57:28.703Z",
+    "read": true
+  },
+  {
+    "from": "email-template-upgrader",
+    "text": "Task #2 complete. Upgraded proposal email templates in hooks/useProposalActions.ts.\n\nChanges made:\n1. Added `escapeHtml(str)` helper at line 28 - escapes &, <, >, \", ' characters\n2. Added `generateProposalEmailHtml(params)` function at line 37 - full branded bilingual HTML template matching the payment-link.js style exactly: same gradient header, same card layout, same colors, same footer with tax numbers and bottom links\n3. `handleCreateQuote` (around line 655) - replaced bare `<p>` HTML with `generateProposalEmailHtml(...)` call\n4. `handleSendProposal` (around line 986) - backward-compat: if `customMessage` exists use it (converted with `.replace(/\\n/g, '<br>')`), otherwise use `generateProposalEmailHtml(...)` with data from the quote object and `quoteUrl` from share-url response\n\nTypecheck: the one TS error in the file at line 549 (`payloadData as QuoteData`) is pre-existing and not introduced by my changes. All other errors are in unrelated files.",
+    "summary": "Task 2 complete - branded bilingual email templates added",
+    "timestamp": "2026-02-22T22:00:26.600Z",
+    "color": "green",
+    "read": true
+  },
+  {
+    "from": "email-template-upgrader",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"email-template-upgrader\",\"timestamp\":\"2026-02-22T22:00:40.259Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:00:40.259Z",
+    "color": "green",
+    "read": true
+  },
+  {
+    "from": "email-template-upgrader",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"email-template-upgrader\",\"timestamp\":\"2026-02-22T22:00:46.651Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:00:46.651Z",
+    "color": "green",
+    "read": true
+  },
+  {
+    "from": "api-url-fixer",
+    "text": "Task #1 complete. Fixed portal URL generation in all four files:\n\n1. `api/quotes/[id]/share-url.js` - Replaced `getPortalBase(req)` with `getPortalBase()` that returns `(process.env.CLIENT_PORTAL_URL || 'https://portal.mtlcraftcocktails.com').replace(/\\/+$/, '')`. Removed `ensureQuotePath`. Kept `normalizeBaseUrl`, `isUuid`, `tryCreateAccess`.\n\n2. `api/quotes/[id]/portal-links.js` - Same change as share-url.js.\n\n3. `api/lib/autoProposal.js` - Replaced `getPortalQuoteBase()` with the same env-var-based pattern. Removed unused `normalizeBaseUrl` since it was only defined, not called.\n\n4. `api/quotes/index.js` - Changed URL generation from `resolveBaseUrl(req)` + `/quote/${id}` + access token to `${portalBase}/${quote.id}` using `CLIENT_PORTAL_URL`. Removed `access` from response (was only used for URL building). Removed now-unused `resolveBaseUrl` function and `createPortalAccessForQuote`/`buildPortalAccessQuery` import.",
+    "summary": "Task 1 complete - portal URL generation fixed",
+    "timestamp": "2026-02-22T22:01:02.753Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "api-url-fixer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"api-url-fixer\",\"timestamp\":\"2026-02-22T22:01:11.993Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:01:11.993Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "api-url-fixer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"api-url-fixer\",\"timestamp\":\"2026-02-22T22:01:25.726Z\",\"idleReason\":\"available\",\"summary\":\"[to api-url-fixer] Task 1 already completed\"}",
+    "timestamp": "2026-02-22T22:01:25.726Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "api-url-fixer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"api-url-fixer\",\"timestamp\":\"2026-02-22T22:01:31.113Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:01:31.113Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"4\",\"subject\":\"Write regression tests for portal URL and email template changes\",\"description\":\"Write two test files:\\n\\n1. `tests/api/quotes-share-url-portal.test.ts` - Test portal URL generation:\\n   - share-url returns external portal URL when CLIENT_PORTAL_URL is set\\n   - URL format is `https://portal.mtlcraftcocktails.com/{id}` (no `/quote/` prefix)\\n   - Hash fragments work (#menu, #contract)\\n   - Fallback to default `https://portal.mtlcraftcocktails.com` when CLIENT_PORTAL_URL is not set\\n   - Uses same test patterns as existing `tests/api/quotes-share-url.test.ts`\\n\\n2. `tests/hooks/useProposalActions-email.test.ts` - Test email template:\\n   - `handleCreateQuote` with `sendToClient=true` sends branded email (not bare text)\\n   - `handleSendProposal` sends branded email with portal link\\n   - Email contains both EN and FR text (bilingual)\\n   - Email contains event details (date, headcount, event type)\\n   - Email contains CTA button with portal URL\\n   - Uses same test patterns as existing `tests/hooks/useProposalActions.test.ts`\\n\\nMock patterns: vi.mock for authMiddleware, portalAccess, supabaseClient, apiFetch, emailService.\\nFollow existing test file naming conventions and vitest patterns.\",\"assignedBy\":\"team-lead\",\"timestamp\":\"2026-02-22T22:02:52.563Z\"}",
+    "timestamp": "2026-02-22T22:02:52.563Z",
+    "read": true
+  },
+  {
+    "from": "api-url-fixer",
+    "text": "{\"type\":\"shutdown_approved\",\"requestId\":\"shutdown-1771798597375@api-url-fixer\",\"from\":\"api-url-fixer\",\"timestamp\":\"2026-02-22T22:16:42.964Z\",\"paneId\":\"in-process\",\"backendType\":\"in-process\"}",
+    "timestamp": "2026-02-22T22:16:42.964Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "email-template-upgrader",
+    "text": "{\"type\":\"shutdown_approved\",\"requestId\":\"shutdown-1771798597900@email-template-upgrader\",\"from\":\"email-template-upgrader\",\"timestamp\":\"2026-02-22T22:16:47.497Z\",\"paneId\":\"in-process\",\"backendType\":\"in-process\"}",
+    "timestamp": "2026-02-22T22:16:47.497Z",
+    "color": "green",
+    "read": true
+  },
+  {
+    "from": "code-reviewer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"code-reviewer\",\"timestamp\":\"2026-02-22T22:17:18.894Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:17:18.894Z",
+    "color": "yellow",
+    "read": true
+  },
+  {
+    "from": "code-reviewer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"code-reviewer\",\"timestamp\":\"2026-02-22T22:21:52.839Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:21:52.839Z",
+    "color": "yellow",
+    "read": true
+  },
+  {
+    "from": "code-reviewer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"code-reviewer\",\"timestamp\":\"2026-02-22T22:23:28.418Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:23:28.418Z",
+    "color": "yellow",
+    "read": true
+  },
+  {
+    "from": "code-reviewer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"code-reviewer\",\"timestamp\":\"2026-02-22T22:25:08.409Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:25:08.409Z",
+    "color": "yellow",
+    "read": true
+  },
+  {
+    "from": "code-reviewer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"code-reviewer\",\"timestamp\":\"2026-02-22T22:26:02.189Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:26:02.189Z",
+    "color": "yellow",
+    "read": true
+  },
+  {
+    "from": "code-reviewer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"code-reviewer\",\"timestamp\":\"2026-02-22T22:27:58.663Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:27:58.663Z",
+    "color": "yellow",
+    "read": true
+  },
+  {
+    "from": "code-reviewer",
+    "text": "{\"type\":\"idle_notification\",\"from\":\"code-reviewer\",\"timestamp\":\"2026-02-22T22:28:32.579Z\",\"idleReason\":\"available\"}",
+    "timestamp": "2026-02-22T22:28:32.579Z",
+    "color": "yellow",
+    "read": true
+  }
+]

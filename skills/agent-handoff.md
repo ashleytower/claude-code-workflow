@@ -1,6 +1,6 @@
 ---
 name: agent-handoff
-description: Generate a properly formatted NEXUS handoff document when transitioning work between agents. Ensures context continuity — the primary cause of multi-agent coordination failure.
+description: Use any time work passes from one agent to another in a NEXUS pipeline: engineering to QA, QA failure back to developer, phase gate transition (Phase N to N+1), or escalation after 3 QA failures. Generates the correct template (Standard / QA PASS / QA FAIL / Escalation / Phase Gate) with full context so receiving agents do not lose state. Without this, agents lose context at boundaries and coordination breaks down.
 ---
 
 # NEXUS Agent Handoff
@@ -243,3 +243,20 @@ Use when transitioning between NEXUS phases.
 | QA rejected | Template 3 (FAIL) |
 | 3 retries exhausted | Template 4 (Escalation) |
 | Moving between phases | Template 5 (Phase Gate) |
+
+## Evals
+
+### Eval 1: Standard agent-to-agent handoff
+Prompt: "The Backend Architect just finished implementing the trip-sharing API endpoint. Now the API Tester needs to validate it. Generate the handoff."
+Expected: Generates a Template 1 (Standard) handoff document. Includes FROM: Backend Architect, TO: API Tester. Populates Context, Deliverable Request, and Acceptance Criteria sections. Asks for relevant files and specific acceptance criteria if not already provided.
+Pass if: Uses correct template structure with all required fields (From, To, Phase, Task, Context, Deliverable Request, Quality Expectations), includes measurable acceptance criteria.
+
+### Eval 2: QA FAIL handoff with specific issues
+Prompt: "Evidence Collector found two issues on attempt 2: the save button is missing on tablet layout, and the loading spinner doesn't show during async operations. Generate the QA FAIL handoff back to the Frontend Developer."
+Expected: Generates a Template 3 (QA FAIL) handoff. Sets Attempt to 2 of 3. Lists both issues with Category and Severity. Includes specific Fix instructions and file references. Notes this is attempt 2 and warns that attempt 3 would escalate.
+Pass if: Uses Template 3, correctly shows attempt number, lists each issue with description/expected/actual/fix format, references the 3-attempt limit.
+
+### Eval 3: Phase Gate transition
+Prompt: "Phase 2 (Foundation) is complete. CI/CD is operational, the design system is in place, and we're ready to move to Phase 3 (Build). Generate the phase gate handoff."
+Expected: Generates a Template 5 (Phase Gate) handoff. Shows Phase 2 -> Phase 3 transition with PASSED gate result. Includes gate criteria results table. Lists documents carried forward and agents needed for Phase 3 build work.
+Pass if: Uses Template 5, includes gate criteria table with PASS results, documents Phase 3 agent assignments, carries forward relevant constraints or risks.

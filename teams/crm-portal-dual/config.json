@@ -1,0 +1,79 @@
+{
+  "name": "crm-portal-dual",
+  "description": "Dual workstream: CRM Dashboard PRD completion (9 stories) + Client Portal Proposal System",
+  "createdAt": 1770442897859,
+  "leadAgentId": "team-lead@crm-portal-dual",
+  "leadSessionId": "40b52854-e27a-497b-aea8-36c8dd23416d",
+  "members": [
+    {
+      "agentId": "team-lead@crm-portal-dual",
+      "name": "team-lead",
+      "agentType": "lead",
+      "model": "claude-opus-4-6",
+      "joinedAt": 1770442897859,
+      "tmuxPaneId": "",
+      "cwd": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai",
+      "subscriptions": []
+    },
+    {
+      "agentId": "portal-researcher@crm-portal-dual",
+      "name": "portal-researcher",
+      "agentType": "Explore",
+      "model": "claude-opus-4-6",
+      "prompt": "Research and audit the client portal rough copy for the MTL Craft Cocktails project. I need a comprehensive analysis of:\n\n1. **Rough copy audit** - Read and catalog every file in `~/Downloads/client-portal-proposal/`. For each file, note:\n   - What it does\n   - What can be kept vs needs rebuilding\n   - Dependencies used\n\n2. **Main app portal components** - Read these files in the main app at `/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/`:\n   - `config/event-configs.ts` - The 7 event type configurations\n   - `components/portal/ProposalTab.tsx` - Existing proposal renderer\n   - `types.ts` - Look for Quote type definition\n   - Check for any `quotes` table schema in `supabase_migrations/`\n\n3. **Schema mapping** - Compare the rough copy's ProposalData interface with the main app's Quote type. Document the field mapping.\n\n4. **Key questions to answer:**\n   - What Next.js version does the rough copy use?\n   - Does it use App Router or Pages Router?\n   - What UI framework (Tailwind, shadcn, etc)?\n   - What's the SWR setup look like?\n   - Is there a real Supabase client or just mock data?\n   - What does the MixologistChat component look like?\n\nBe very thorough. Read every file you can find. This research will inform all Portal phases.",
+      "color": "blue",
+      "planModeRequired": false,
+      "joinedAt": 1770443003983,
+      "tmuxPaneId": "%1",
+      "cwd": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "tmux",
+      "isActive": false
+    },
+    {
+      "agentId": "calendar-researcher@crm-portal-dual",
+      "name": "calendar-researcher",
+      "agentType": "Explore",
+      "model": "claude-opus-4-6",
+      "prompt": "Research Apple Calendar + Liquid Glass UI libraries for the CRM Dashboard calendar redesign. This is a React 19 + Vite 6 + Tailwind CSS project.\n\n1. **Current calendar implementation** - Read these files at `/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/`:\n   - `components/CalendarWidget.tsx` - Current calendar component\n   - `components/crm-bento-grid.tsx` - Dashboard layout (especially calendar section and convertEventsToCalendarFormat)\n   - `components/QuickAddEventModal.tsx` or similar - Check if quick add modal exists\n   - Check `package.json` for current calendar-related dependencies\n\n2. **Library research** - Search the web for:\n   - `macos-calendar` React component (github.com/macos-components/macos-calendar) - API, props, customization, React 19 compatibility\n   - `liquid-glass-react` (github.com/rdev/liquid-glass-react) - Glass effects, CSS backdrop-filter, React 19 compatibility\n   - Aceternity UI Pro glass/frosted components - What's available for Pro license holders\n   - Any Apple Calendar-style React libraries on npm\n\n3. **Key questions:**\n   - Does macos-calendar work with React 19?\n   - Does liquid-glass-react work with Vite 6?\n   - What Aceternity Pro components could provide glass effects?\n   - How does the current calendar render events? What data format does it expect?\n   - Does QuickAddEventModal exist? What fields does it have?\n\n4. **Fallback evaluation** - If macos-calendar + liquid-glass don't work, evaluate:\n   - Hand-building Apple Calendar-style with just Tailwind + Aceternity Pro\n   - Using CSS backdrop-filter directly for glass effects\n   - Any other Apple-inspired calendar libraries\n\nSave findings in a structured format. Be thorough - this research determines whether we use community libraries or build custom.",
+      "color": "green",
+      "planModeRequired": false,
+      "joinedAt": 1770443015443,
+      "tmuxPaneId": "%2",
+      "cwd": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "tmux",
+      "isActive": false
+    },
+    {
+      "agentId": "crm-frontend-A@crm-portal-dual",
+      "name": "crm-frontend-A",
+      "agentType": "frontend",
+      "model": "claude-opus-4-6",
+      "prompt": "## CRM Phase 1A: Event Card Enhancements (Stories 9 and 10)\n\nYou are working on the MTL Craft Cocktails AI CRM Dashboard. This is a React 19 + Vite 6 + Tailwind CSS + Framer Motion project.\n\n### What Already Exists\n\n**EventTilesSkeleton in crm-bento-grid.tsx (line 956-1194)** already has:\n- Quick action hover buttons: Phone, Email, Map (lines 1127-1166)\n- `handleQuickAction` function (lines 1043-1064) with `tel:`, `mailto:`, Google Maps\n- A native HTML `<select>` for status dropdown (lines 1093-1110) with 5 statuses\n- `handleStatusChange` (line 1066-1070) that only console.logs -- NOT wired to actual handler\n\n**EventCardHover.tsx** (the full-size event cards in Dashboard view):\n- Has archive/unarchive + create proposal buttons on hover (lines 264-314)\n- NO quick actions (phone/email/map)\n- NO status dropdown\n- NO edit button\n\n**EventData type** (types.ts line 68):\n```typescript\nstatus: \"Inquiry\" | \"Proposal Sent\" | \"Booked\" | \"Ready for Prep\" | \"Completed\";\n```\n\n### What You Need to Do\n\n#### Story 9: Quick Action Enhancements\n\n1. **In EventTilesSkeleton (crm-bento-grid.tsx)**:\n   - Add an Edit button (Pencil icon) to the hover quick actions alongside Phone/Email/Map\n   - The Edit button should call `onEventClick` to open the event for editing\n\n2. **In EventCardHover.tsx**:\n   - Add a quick action dock at the bottom of the hover overlay with: Phone (`tel:`), Email (`mailto:`), Map (Google Maps), Edit (opens event)\n   - These should appear when hovering, using the same pattern as the bento grid's quick actions\n   - Use `e.stopPropagation()` on all action buttons to prevent triggering onSelect\n\n3. **CRMBentoGridProps** needs NO changes for quick actions - the onEventClick handler serves as the Edit action.\n\n#### Story 10: Status Dropdown Wiring\n\n1. **In CRMBentoGridProps (crm-bento-grid.tsx line 27)**:\n   - Add `onUpdateEventStatus?: (eventId: string, newStatus: EventData['status']) => void`\n\n2. **Wire handleStatusChange (line 1066-1070)**:\n   - Replace the console.log with actual handler call:\n   ```typescript\n   const handleStatusChange = (e: React.MouseEvent, eventId: string, newStatus: EventData['status']) => {\n     e.stopPropagation()\n     onUpdateEventStatus?.(eventId, newStatus)\n   }\n   ```\n\n3. **Upgrade the native `<select>` to a styled component**:\n   - Replace the bare HTML `<select>` (lines 1093-1110) with a custom dropdown\n   - Use a button that shows current status color + label\n   - On click, show a small dropdown menu with the 5 statuses, each with its color\n   - Status colors:\n     - Inquiry: blue (bg-blue-500)\n     - Proposal Sent: amber (bg-amber-500)\n     - Booked: green (bg-green-500)\n     - Ready for Prep: purple (bg-purple-500)\n     - Completed: slate (bg-slate-500)\n   - Use `e.stopPropagation()` and close on selection\n   - Use Framer Motion AnimatePresence for open/close animation\n\n4. **In EventCardHover.tsx**:\n   - Add the same styled status dropdown in the hover overlay\n   - Add `onUpdateStatus?: (eventId: string, newStatus: EventData['status']) => void` to props\n\n### Important Rules\n\n- Read ALL files before editing (use Read tool)\n- This project uses lucide-react for icons (already imported in crm-bento-grid.tsx: Pencil, Phone, Mail, MapPin)\n- Use Framer Motion for animations (already imported)\n- Keep the inline status dropdown small -- these event tiles are only 128px tall\n- The `EventCardHover` hover overlay already exists (lines 173-261) -- add quick actions INSIDE the overlay\n- DO NOT modify voice tools or backend services\n- Run `npm run build` after changes to verify no build errors\n\n### Files to Modify\n- `/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/components/crm-bento-grid.tsx`\n- `/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/components/EventCardHover.tsx`\n\n### Verification\nAfter changes, run `npm run build` and confirm it passes.",
+      "color": "yellow",
+      "planModeRequired": false,
+      "joinedAt": 1770443097551,
+      "tmuxPaneId": "%3",
+      "cwd": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "tmux",
+      "isActive": false
+    },
+    {
+      "agentId": "portal-backend@crm-portal-dual",
+      "name": "portal-backend",
+      "agentType": "backend",
+      "model": "claude-opus-4-6",
+      "prompt": "## Portal Phase 1: Wire Client Portal to Supabase\n\nYou are building the backend for the MTL Craft Cocktails client portal. The portal is a separate Next.js 16 app at `~/Downloads/client-portal-proposal/`. You need to replace mock API routes with real Supabase integration.\n\n### Context\n\nThe portal is a client-facing proposal viewer. Clients receive a link with a quote token (the quote ID) and can:\n- View their proposal (pricing, packages, add-ons)\n- Edit missing fields (email, phone, address, start/end time)\n- Toggle add-ons\n- Chat with MixologistChat\n- Accept the proposal (Stripe)\n\n### Current State (Mock)\n- `app/api/proposal/route.ts` - In-memory mock ProposalData with GET/PATCH\n- `app/api/chat/route.ts` - Uses `openai/gpt-4o-mini` string (broken - no API key)\n- `app/api/menu/route.ts` - In-memory mock cocktails\n- `app/api/menu/chat/route.ts` - Menu-specific chat\n- `components/proposal/proposal-provider.tsx` - SWR fetching from `/api/proposal`\n\n### What You Need to Build\n\n#### 1. Supabase Client (`lib/supabase.ts`)\nCreate a Supabase client for server-side use:\n```typescript\nimport { createClient } from '@supabase/supabase-js'\n\n// Server-side client with service key for API routes\nexport function createServerClient() {\n  return createClient(\n    process.env.NEXT_PUBLIC_SUPABASE_URL!,\n    process.env.SUPABASE_SERVICE_KEY!\n  )\n}\n\n// Client-side client for real-time (if needed)\nexport function createBrowserClient() {\n  return createClient(\n    process.env.NEXT_PUBLIC_SUPABASE_URL!,\n    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!\n  )\n}\n```\n\n#### 2. Quote-to-ProposalData Mapper (`lib/quote-mapper.ts`)\nCreate a mapper function that converts the Supabase `quotes` row to `ProposalData`.\n\n**Schema mapping (from research):**\n| Quote field | ProposalData field | Transform |\n|---|---|---|\n| `data.clientName` | `clientName: { value, source: \"backend\" }` | Wrap |\n| `client_email` | `clientEmail: { value, source: \"backend\" }` | Wrap |\n| `data.clientPhone` | `clientPhone: { value, source: \"backend\" }` | Wrap |\n| `event_date` | `eventDate: { value, source: \"backend\" }` | Wrap, format |\n| `data.eventTime` | `startTime: { value, source: \"backend\" }` | Wrap |\n| `data.endTime` | `endTime: { value, source: \"backend\" }` | Wrap |\n| `data.headcount` | `guests: { value, source: \"backend\" }` | Wrap |\n| `data.location` | `location: { value, source: \"backend\" }` | Wrap |\n| `data.address` or null | `address: { value, source }` | Wrap, fallback null |\n| Config-driven | `packageName`, `packageDescription`, `pricePerPerson`, `inclusions` | From event config |\n| `data.selectedAddons` | `addOns: AddOnData[]` | Lookup addons table |\n| Calculated | `staffing` | From staffing rules |\n\nFor client edits stored in `data.clientEdits`, those should override backend values with `source: \"user\"`.\n\nThe `Quote` type is defined as:\n```typescript\ninterface Quote {\n  id: string;\n  client_email: string;\n  event_date?: string;\n  status: 'draft' | 'sent' | 'viewed' | 'accepted' | 'expired' | 'declined';\n  amount: number;\n  template_type: string;\n  language: 'en' | 'fr';\n  data: QuoteData; // JSONB\n  event_id?: string;\n  email_id?: string;\n  expires_at?: string;\n  created_at: string;\n  updated_at: string;\n}\n```\n\nWhere `QuoteData` has:\n```typescript\ninterface QuoteData {\n  clientName: string;\n  clientEmail: string;\n  clientPhone?: string;\n  eventDate?: string;\n  eventTime?: string;\n  endTime?: string;\n  location?: string;\n  headcount: number;\n  eventType: 'wedding' | 'corporate' | 'private' | 'workshop';\n  lineItems: QuoteLineItem[];\n  subtotal: number;\n  total: number;\n  depositAmount: number;\n  selectedAddons: string[];\n  cocktailSelections?: string[];\n  notes?: string;\n}\n```\n\n#### 3. Rewrite API Route (`app/api/proposal/route.ts`)\n\n**GET** `/api/proposal?token=[quote-id]`:\n1. Extract `token` from query params\n2. Query Supabase: `select * from quotes where id = token`\n3. Record a view in `quote_views` table\n4. If quote status is 'sent', update to 'viewed' (first view)\n5. Map Quote -> ProposalData using the mapper\n6. Return ProposalData\n\n**PATCH** `/api/proposal?token=[quote-id]`:\n1. Extract token and request body\n2. Store client edits in `quotes.data.clientEdits` JSONB\n3. For add-on toggles, update `quotes.data.selectedAddons`\n4. For staffing changes, update `quotes.data.staffing`\n5. Return updated ProposalData\n\n#### 4. Quote Access Auth\nSimple token-based auth:\n- Quote ID in URL serves as access token (UUID, not guessable)\n- Optionally verify client email as second factor (future)\n- No login/session needed -- it's a magic link\n\n#### 5. Update ProposalProvider\nModify `components/proposal/proposal-provider.tsx` to:\n- Accept a `token` prop (quote ID from URL)\n- Fetch from `/api/proposal?token={token}` instead of `/api/proposal`\n- Pass token in PATCH requests\n\n#### 6. Update page.tsx\nModify `app/page.tsx` to:\n- Accept dynamic route params or search params for the token\n- OR better: make it `app/[token]/page.tsx` for clean URLs like `portal.mtlcraftcocktails.com/abc123`\n\n### Important Notes\n- Install `@supabase/supabase-js` in the portal project: `cd ~/Downloads/client-portal-proposal && pnpm add @supabase/supabase-js`\n- DO NOT modify the main app at `/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/`\n- The portal is at `~/Downloads/client-portal-proposal/`\n- Create `.env.local.example` with the required env vars\n- Use proper error handling for missing tokens, expired quotes, etc.\n- The staffing calculation follows the rule: 1 mixologist per 40 guests, $40/hour, setup 1h, teardown 1h\n- Keep the SWR pattern but update the fetcher URL\n\n### Verification\nRun `cd ~/Downloads/client-portal-proposal && pnpm build` to verify the build passes.",
+      "color": "purple",
+      "planModeRequired": false,
+      "joinedAt": 1770443259497,
+      "tmuxPaneId": "%4",
+      "cwd": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "tmux",
+      "isActive": false
+    }
+  ]
+}

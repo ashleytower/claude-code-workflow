@@ -1,0 +1,14 @@
+[
+  {
+    "from": "team-lead",
+    "text": "Research and audit the client portal rough copy for the MTL Craft Cocktails project. I need a comprehensive analysis of:\n\n1. **Rough copy audit** - Read and catalog every file in `~/Downloads/client-portal-proposal/`. For each file, note:\n   - What it does\n   - What can be kept vs needs rebuilding\n   - Dependencies used\n\n2. **Main app portal components** - Read these files in the main app at `/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai/`:\n   - `config/event-configs.ts` - The 7 event type configurations\n   - `components/portal/ProposalTab.tsx` - Existing proposal renderer\n   - `types.ts` - Look for Quote type definition\n   - Check for any `quotes` table schema in `supabase_migrations/`\n\n3. **Schema mapping** - Compare the rough copy's ProposalData interface with the main app's Quote type. Document the field mapping.\n\n4. **Key questions to answer:**\n   - What Next.js version does the rough copy use?\n   - Does it use App Router or Pages Router?\n   - What UI framework (Tailwind, shadcn, etc)?\n   - What's the SWR setup look like?\n   - Is there a real Supabase client or just mock data?\n   - What does the MixologistChat component look like?\n\nBe very thorough. Read every file you can find. This research will inform all Portal phases.",
+    "timestamp": "2026-02-07T05:43:23.983Z",
+    "read": true
+  },
+  {
+    "from": "team-lead",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"6\",\"subject\":\"Portal Phase 0: Research and audit rough copy\",\"description\":\"Audit ~/Downloads/client-portal-proposal/ vs main app's components/portal/ProposalTab.tsx. Map quotes table schema to ProposalData. Check Remotion for SVG cocktail generation. Evaluate what can be kept vs rebuilt. Save findings to ~/.claude/memory/research/2026-02-07-portal-research.md.\",\"assignedBy\":\"team-lead\",\"timestamp\":\"2026-02-07T05:43:39.961Z\"}",
+    "timestamp": "2026-02-07T05:43:39.961Z",
+    "read": true
+  }
+]

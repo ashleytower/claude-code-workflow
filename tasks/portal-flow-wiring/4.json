@@ -1,0 +1,10 @@
+{
+  "id": "4",
+  "subject": "Write regression tests for portal URL and email template changes",
+  "description": "Write two test files:\n\n1. `tests/api/quotes-share-url-portal.test.ts` - Test portal URL generation:\n   - share-url returns external portal URL when CLIENT_PORTAL_URL is set\n   - URL format is `https://portal.mtlcraftcocktails.com/{id}` (no `/quote/` prefix)\n   - Hash fragments work (#menu, #contract)\n   - Fallback to default `https://portal.mtlcraftcocktails.com` when CLIENT_PORTAL_URL is not set\n   - Uses same test patterns as existing `tests/api/quotes-share-url.test.ts`\n\n2. `tests/hooks/useProposalActions-email.test.ts` - Test email template:\n   - `handleCreateQuote` with `sendToClient=true` sends branded email (not bare text)\n   - `handleSendProposal` sends branded email with portal link\n   - Email contains both EN and FR text (bilingual)\n   - Email contains event details (date, headcount, event type)\n   - Email contains CTA button with portal URL\n   - Uses same test patterns as existing `tests/hooks/useProposalActions.test.ts`\n\nMock patterns: vi.mock for authMiddleware, portalAccess, supabaseClient, apiFetch, emailService.\nFollow existing test file naming conventions and vitest patterns.",
+  "activeForm": "Writing regression tests",
+  "owner": "team-lead",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": []
+}

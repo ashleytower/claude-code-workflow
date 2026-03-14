@@ -1,0 +1,13 @@
+{
+  "id": "5",
+  "subject": "Set up morning briefing cron",
+  "description": "Create 8 AM daily cron job for morning briefing delivered to WhatsApp",
+  "activeForm": "Setting up morning briefing",
+  "status": "pending",
+  "blocks": [
+    "6"
+  ],
+  "blockedBy": [
+    "4"
+  ]
+}

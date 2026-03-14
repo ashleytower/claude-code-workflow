@@ -1,0 +1,12 @@
+{
+  "id": "6",
+  "subject": "Portal Phase 0: Research and audit rough copy",
+  "description": "Audit ~/Downloads/client-portal-proposal/ vs main app's components/portal/ProposalTab.tsx. Map quotes table schema to ProposalData. Check Remotion for SVG cocktail generation. Evaluate what can be kept vs rebuilt. Save findings to ~/.claude/memory/research/2026-02-07-portal-research.md.",
+  "activeForm": "Researching portal architecture",
+  "owner": "portal-researcher",
+  "status": "completed",
+  "blocks": [
+    "7"
+  ],
+  "blockedBy": []
+}

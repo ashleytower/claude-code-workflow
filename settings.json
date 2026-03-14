@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "permissions": {
     "allow": [
       "Bash",
@@ -18,11 +21,12 @@
       "NotebookEdit",
       "KillShell",
       "TaskOutput",
-      "mcp__rube__*",
       "mcp__context7__*",
       "mcp__github__*",
       "mcp__sequential-thinking__*",
-      "mcp__claude-in-chrome__*"
+      "mcp__claude-in-chrome__*",
+      "mcp__kie-ai__*",
+      "mcp__vapi__list_assistants"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -42,14 +46,6 @@
       "mcp__rube__*EMAIL*SEND*"
     ],
     "defaultMode": "dontAsk"
-  },
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
-  },
-  "enabledPlugins": {
-    "document-skills@anthropic-agent-skills": true,
-    "example-skills@anthropic-agent-skills": false,
-    "superpowers@superpowers-marketplace": true
   },
   "hooks": {
     "SessionStart": [
@@ -185,6 +181,15 @@
             "command": "bash ~/.claude/scripts/sync-skills.sh --quiet &"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/skills/self-improving-agent/hooks/post-bash.sh &"
+          }
+        ]
       }
     ],
     "Stop": [
@@ -198,6 +203,10 @@
           {
             "type": "command",
             "command": "~/.claude/scripts/check-console-logs.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/skills/self-improving-agent/hooks/session-end.sh &"
           }
         ]
       }
@@ -217,5 +226,23 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": true,
+    "superpowers@superpowers-marketplace": true,
+    "claude-mem@claude-mem-marketplace": true,
+    "superpowers-chrome@superpowers-marketplace": true,
+    "claude-mem-plugin@claude-mem-marketplace": true,
+    "playground@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    }
+  },
+  "effortLevel": "high"
 }

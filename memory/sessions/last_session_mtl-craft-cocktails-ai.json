@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-03-13T20:30:38-04:00",
+  "project": "mtl-craft-cocktails-ai",
+  "working_dir": "/Users/ashleytower/mtl-craft-cocktails-ai",
+  "git_branch": "main",
+  "git_status": " M .claude/agent-state.json| M App.tsx| M api/cron/balance-reminder.js| M components/EventDetailView.tsx| M types.ts| M utils/actionLogHelpers.ts|?? .claude/fixes/|?? .claude/plans/four-tier-service-model.md|?? api/lib/balanceReminderEmail.js|?? api/send-balance-reminder.js|?? assets/|?? hooks/useDailyBriefData.ts|?? scripts/check-event-cocktails.ts|?? scripts/check-payment.ts|?? scripts/check-payment2.ts|?? scripts/check-quote-cocktails.ts|?? scripts/check-quote-data.ts|?? scripts/check-quote.ts|?? scripts/check-sarah.ts|?? scripts/fix-test-quote.ts|"
+}

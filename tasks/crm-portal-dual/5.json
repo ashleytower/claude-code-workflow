@@ -1,0 +1,11 @@
+{
+  "id": "5",
+  "subject": "CRM Phase 2: Email-to-event auto-linking (Story 12)",
+  "description": "Create services/emailLinkingService.ts with fuzzy matching. Add linkEmailToEvent() to emailInboxService.ts. Add email count badge to EventCardHover.tsx. Email table already has event_id column. Add voice query tool.",
+  "activeForm": "Building email-to-event linking service",
+  "status": "pending",
+  "blocks": [],
+  "blockedBy": [
+    "2"
+  ]
+}

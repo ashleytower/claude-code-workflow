@@ -1,0 +1,33 @@
+{
+  "name": "portal-flow-wiring",
+  "description": "Wire voice-to-portal proposal flow: fix portal URLs and upgrade email templates",
+  "createdAt": 1771797400705,
+  "leadAgentId": "team-lead@portal-flow-wiring",
+  "leadSessionId": "65f02c3b-a622-4a99-aace-399343480ed2",
+  "members": [
+    {
+      "agentId": "team-lead@portal-flow-wiring",
+      "name": "team-lead",
+      "agentType": "team-lead",
+      "model": "claude-opus-4-6",
+      "joinedAt": 1771797400705,
+      "tmuxPaneId": "",
+      "cwd": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai",
+      "subscriptions": []
+    },
+    {
+      "agentId": "code-reviewer@portal-flow-wiring",
+      "name": "code-reviewer",
+      "agentType": "superpowers:code-reviewer",
+      "model": "inherit",
+      "prompt": "Review the following changes made to wire the voice-to-portal proposal flow. Focus on correctness, security, and consistency.\n\nCHANGES SUMMARY:\n1. Portal URL generation now uses `CLIENT_PORTAL_URL` env var (default: `https://portal.mtlcraftcocktails.com`) instead of in-app URLs\n2. Email templates upgraded from bare text to branded bilingual HTML matching the payment-link template style\n3. New regression tests added\n\nFILES MODIFIED:\n- `api/quotes/[id]/share-url.js` - Changed `getPortalBase()` to use CLIENT_PORTAL_URL, removed ensureQuotePath()\n- `api/quotes/[id]/portal-links.js` - Same portal URL change\n- `api/lib/autoProposal.js` - Changed `getPortalQuoteBase()` to use CLIENT_PORTAL_URL\n- `api/quotes/index.js` (line ~384-385) - Changed URL in POST response to use CLIENT_PORTAL_URL\n- `hooks/useProposalActions.ts` - Added `escapeHtml()`, `generateProposalEmailHtml()`, updated handleCreateQuote and handleSendProposal to use branded template\n- `.env.example` - Added CLIENT_PORTAL_URL\n- `tests/api/quotes-share-url.test.ts` - Updated env var and URLs\n- `tests/api/quotes-portal-links.test.ts` - Updated env var and URLs\n- `tests/api/lib/autoProposal.test.ts` - Updated env var\n- `tests/api/quotes-share-url-portal.test.ts` - NEW: portal URL regression tests\n- `tests/hooks/useProposalActions-email.test.ts` - NEW: email template regression tests\n\nREVIEW CHECKLIST:\n1. Security: Does escapeHtml properly prevent XSS in email templates?\n2. Consistency: Do all URL generation points use the same pattern?\n3. Backward compat: Does customMessage still work in handleSendProposal?\n4. Email template: Does it match the payment-link template style?\n5. Tests: Do they cover the key scenarios?\n\nRead the changed files and provide a concise review.",
+      "color": "yellow",
+      "planModeRequired": false,
+      "joinedAt": 1771798633474,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/ashleytower/Documents/GitHub/mtl-craft-cocktails-ai/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "in-process"
+    }
+  ]
+}

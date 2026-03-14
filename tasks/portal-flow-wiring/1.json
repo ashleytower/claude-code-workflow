@@ -1,0 +1,10 @@
+{
+  "id": "1",
+  "subject": "Fix portal URL generation in share-url.js, portal-links.js, and autoProposal.js",
+  "description": "Change all portal URL generation to use CLIENT_PORTAL_URL env var instead of in-app URLs.\n\nFiles to change:\n1. `api/quotes/[id]/share-url.js` - Replace `getPortalBase()` to return external portal URL. Remove `ensureQuotePath()` logic. Use `process.env.CLIENT_PORTAL_URL || 'https://portal.mtlcraftcocktails.com'`. URL format: `{portalBase}/{quoteId}` (no `/quote/` prefix).\n2. `api/quotes/[id]/portal-links.js` - Same change as share-url.js for consistency.\n3. `api/lib/autoProposal.js` - Change `getPortalQuoteBase()` to use `CLIENT_PORTAL_URL` env var. Remove the `/quote` suffix appending. URL format: `{portalBase}/{quoteId}`.\n4. `api/quotes/index.js` (line 397-399) - Change URL generation to use `CLIENT_PORTAL_URL` env var. Replace `${baseUrl}/quote/${quote.id}?${buildPortalAccessQuery(access)}` with `${portalBase}/${quote.id}` using external portal URL. No portal access query params needed.\n\nThe external portal uses `/{token}` routes directly, NOT `/quote/{id}`.\nDefault: `https://portal.mtlcraftcocktails.com`",
+  "activeForm": "Fixing portal URL generation in API files",
+  "owner": "api-url-fixer",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": []
+}

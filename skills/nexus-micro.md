@@ -1,6 +1,6 @@
 ---
 name: nexus-micro
-description: Activate NEXUS-Micro mode for targeted tasks (1-5 days). Use for bug fixes, single features, audits, and focused improvements. Streamlined pipeline with stall detection.
+description: Use when fixing a specific bug, adding a single self-contained feature, running an audit (performance, accessibility, compliance), or investigating an isolated issue — any task completable in 1-5 days by a small agent team. Runs PLAN -> BUILD -> QA -> SHIP pipeline with stall detection (2 identical outputs = halt) and a 1-retry Dev-QA loop that escalates to the user on second failure. Do NOT use for multi-week builds — use nexus-sprint instead.
 ---
 
 # NEXUS-Micro Mode
@@ -137,3 +137,20 @@ When NEXUS-Micro completes:
 - Files changed
 - QA evidence (pass/fail status)
 - Any remaining concerns flagged
+
+## Evals
+
+### Eval 1: Bug fix activation
+Prompt: "There's a bug where the trip detail screen crashes when a trip has no itinerary items. It throws a TypeError. Can you fix it?"
+Expected: Activates NEXUS-Micro in bug fix scenario. Assigns Frontend Developer or Backend Architect to investigate, followed by Evidence Collector for QA. Runs CI checks (typecheck, test, lint) before marking complete. Does not set up multi-week Sprint phases.
+Pass if: Uses Micro pipeline (PLAN -> BUILD -> QA -> SHIP), not Sprint, assigns appropriate developer agent plus a QA agent, includes CI verification.
+
+### Eval 2: Stall detection — two identical outputs
+Prompt: "The Backend Architect tried to add a database index but got 'column does not exist' twice in a row and produced the same error output both times. What do we do?"
+Expected: Recognizes the stall condition (2 identical outputs = halt). Stops the agent. Reports to the user what was attempted and what stalled. Asks for direction before continuing. Does not attempt a third identical run automatically.
+Pass if: Halts the agent, reports the stall to the user, asks for direction rather than retrying, references the stall detection rule.
+
+### Eval 3: Micro vs Sprint routing — single feature
+Prompt: "I want to add a dark mode toggle to the settings screen. The user flips a switch and the whole app changes theme."
+Expected: Recognizes this as a self-contained single feature within 1-5 day scope. Activates NEXUS-Micro with Frontend Developer as primary and Evidence Collector for QA. Does not activate full NEXUS-Sprint with multi-week phases.
+Pass if: Chooses Micro mode explicitly, does not spin up Sprint phase structure, assigns Frontend Developer and Evidence Collector as the agent pair.

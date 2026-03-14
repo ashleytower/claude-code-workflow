@@ -1,0 +1,13 @@
+{
+  "id": "8",
+  "subject": "Portal Phase 2: Multi-template support (7 event types)",
+  "description": "Import event configs from main app. Make HeroCard, PackageCard, AddOnsCard template-aware. Workshop templates need different layout (no staffing card, per-person flat rate). 7 types: private_bar, corporate_bar, wedding_bar, wedding_morning, corporate_workshop, bachelorette_workshop, private_workshop.",
+  "activeForm": "Building multi-template portal components",
+  "status": "pending",
+  "blocks": [
+    "9"
+  ],
+  "blockedBy": [
+    "7"
+  ]
+}

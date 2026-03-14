@@ -1,0 +1,10 @@
+{
+  "id": "3",
+  "subject": "Update .env.example with CLIENT_PORTAL_URL",
+  "description": "Add `CLIENT_PORTAL_URL=https://portal.mtlcraftcocktails.com` to `.env.example` with a comment section.\n\nAdd under a new section after the \"Base URL for link generation\" section (around line 65-67):\n```\n# ============================================\n# Client Portal (External Next.js App)\n# ============================================\n# External portal URL for client-facing proposal links\n# The client portal is a separate Next.js app at portal.mtlcraftcocktails.com\nCLIENT_PORTAL_URL=https://portal.mtlcraftcocktails.com\n```",
+  "activeForm": "Updating .env.example",
+  "owner": "team-lead",
+  "status": "completed",
+  "blocks": [],
+  "blockedBy": []
+}

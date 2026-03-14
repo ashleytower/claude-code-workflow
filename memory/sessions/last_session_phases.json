@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-02-08T19:16:32-05:00",
+  "project": "phases",
+  "working_dir": "/Users/ashleytower/Documents/GitHub/max-ai-employee/skills/reddit-engage/scripts/phases",
+  "git_branch": "main",
+  "git_status": " M moltbot.json| M skills/email-drafter/scripts/email-drafter.sh| M skills/fb-group-monitor/scripts/phases/05-engage-posts.sh| M skills/reddit-engage/scripts/phases/03-engage.sh| M skills/twilio-sms/src/routes/approval.js| M skills/twilio-sms/src/services/claude.js| M skills/twilio-sms/src/services/smsProcessor.js| M workspace/HEARTBEAT.md| M workspace/MEMORY.md| M workspace/TOOLS.md|?? skills/email-drafter/scripts/check-email-corrections.sh|?? skills/shared/lib/corrections.sh|?? skills/shared/scripts/|?? skills/twilio-sms/src/services/corrections.js|?? supabase/migrations/20260209000001_draft_corrections.sql|"
+}

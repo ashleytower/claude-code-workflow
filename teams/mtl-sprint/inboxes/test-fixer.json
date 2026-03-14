@@ -1,0 +1,17 @@
+[
+  {
+    "from": "test-fixer",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"2\",\"subject\":\"Fix 3 failing tests (agentWiring, voiceTeaching, quoteService)\",\"description\":\"Three tests are failing:\\n\\n1. **agentWiring.test.ts** (the real bug): `listActiveWorkflows()` and `getPendingApprovals()` on WorkflowCoordinator became async when persistence was added (they now return Promise). But tests at lines 239 and 264 call them WITHOUT `await`. Fix: add `await` to those calls and make the test callbacks `async`. File: `/Users/ashleytower/mtl-craft-cocktails-ai/tests/services/agentWiring.test.ts`\\n\\n2. **voiceTeachingIntegration.test.ts**: Invalid Supabase URL in test env. The test needs proper mocking of supabase client. Check if the mock is missing or incomplete.\\n\\n3. **quoteService.test.ts**: Gemini API key required. The test should mock the Gemini call, not require a real key.\\n\\nTDD approach: First verify the failures with `npx vitest run tests/services/agentWiring.test.ts`, then fix, then verify green. Same for the other two. Then run the full suite to confirm no regressions: `npx vitest run`\",\"assignedBy\":\"test-fixer\",\"timestamp\":\"2026-02-07T02:28:32.575Z\"}",
+    "timestamp": "2026-02-07T02:28:32.575Z",
+    "color": "blue",
+    "read": true
+  },
+  {
+    "from": "test-fixer",
+    "text": "I already completed Task #2. All 3 test files are fixed and verified green (65 tests, 0 failures). The task is marked completed. No further action needed on this.",
+    "summary": "Task #2 already completed, no action needed",
+    "timestamp": "2026-02-07T02:41:58.554Z",
+    "color": "blue",
+    "read": true
+  }
+]

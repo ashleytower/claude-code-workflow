@@ -1,0 +1,9 @@
+[
+  {
+    "from": "brief-wirer",
+    "text": "{\"type\":\"task_assignment\",\"taskId\":\"5\",\"subject\":\"Wire daily brief with real SMS and invoice data from Supabase\",\"description\":\"File: `/Users/ashleytower/mtl-craft-cocktails-ai/components/daily-brief.tsx`\\n\\nThree hardcoded values need real data:\\n- Line 66: `texts: { count: 3, unread: 1 }` → Query `sms_messages` table (shared Supabase table from another app, schema: id, direction, status, from_number, to_number, body, provider, created_at). Count total today + unread (status='received' and no read marker, or just received today).\\n- Line 68: `calls: { count: 2, missed: 1 }` → For now, set to `{ count: 0, missed: 0 }` with a comment \\\"// Call tracking not yet available\\\" rather than showing fake numbers.\\n- Line 74: `invoices: { pending: 3, amount: \\\"$4,200\\\" }` → Query quotes table for invoices or check what table holds invoice data. If no invoice table exists yet, query `quotes` table for status='sent' or 'accepted'.\\n\\nThe DailyBrief component receives `events`, `todos`, `emails` as props. For SMS and invoices, either:\\na) Add new props (smsCount, invoiceData) and have the parent pass them, OR\\nb) Query Supabase directly inside the component using the hooks from use-crm-data.ts (preferred since that's what the hooks are for)\\n\\nWrite tests first. Check how the DailyBrief is rendered in the parent (likely App.tsx or a dashboard component) to understand what props are available.\",\"assignedBy\":\"brief-wirer\",\"timestamp\":\"2026-02-07T02:29:09.956Z\"}",
+    "timestamp": "2026-02-07T02:29:09.956Z",
+    "color": "purple",
+    "read": true
+  }
+]

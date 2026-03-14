@@ -353,6 +353,97 @@ cmd = "python main.py"
 Or use Railway's root directory setting:
 - Service Settings → Root Directory → `/backend`
 
+## Multi-Repo Service Pattern (twilio-sms)
+
+When a Railway service deploys from a **separate repo** (not the monorepo), code changes in the monorepo must be synced manually.
+
+### Architecture
+
+```
+max-ai-employee (monorepo)          ashleytower/twilio-sms-webhook (deploy repo)
+├── skills/twilio-sms/              ├── Dockerfile
+│   ├── Dockerfile                  ├── package.json
+│   ├── package.json                ├── railway.json
+│   ├── railway.json                └── src/
+│   └── src/                            ├── index.js
+│       ├── index.js                    ├── routes/
+│       ├── routes/                     ├── services/
+│       ├── services/                   └── utils/
+│       └── utils/
+├── Dockerfile          ← OpenClaw gateway (NOT twilio-sms)
+└── src/server.js       ← OpenClaw gateway wrapper
+```
+
+### Deploy Workflow
+
+```bash
+# 1. Make changes in monorepo
+#    Edit skills/twilio-sms/src/...
+
+# 2. Commit to monorepo
+git add skills/twilio-sms/ && git commit -m "feat: ..." && git push
+
+# 3. Sync to deploy repo
+git clone https://github.com/ashleytower/twilio-sms-webhook.git /tmp/twilio-sync
+rsync -av --exclude='node_modules' --exclude='.git' --exclude='.env' \
+  skills/twilio-sms/ /tmp/twilio-sync/
+cd /tmp/twilio-sync && git add -A && git commit -m "sync from monorepo" && git push
+
+# 4. Railway auto-deploys from twilio-sms-webhook push
+```
+
+### Railway Service Config
+
+| Setting | Value |
+|---------|-------|
+| Source Repo | `ashleytower/twilio-sms-webhook` |
+| Branch | `main` |
+| Root Directory | (blank -- repo root IS the app) |
+| Builder | `DOCKERFILE` |
+| Healthcheck | `/health` |
+
+### twilio-sms Dockerfile
+
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+EXPOSE 5000
+CMD ["npm", "start"]
+```
+
+### Gotchas
+
+#### 8. Monorepo Push Does NOT Deploy twilio-sms
+**Symptom**: Push to `max-ai-employee` main, twilio-sms service doesn't update.
+
+**Cause**: twilio-sms deploys from `ashleytower/twilio-sms-webhook`, not the monorepo. The monorepo push only affects the OpenClaw gateway service.
+
+**Fix**: Always sync to the deploy repo after monorepo changes (see workflow above).
+
+#### 9. Connecting Monorepo to twilio-sms Service Deploys Gateway
+**Symptom**: After connecting `ashleytower/max-ai-employee` to twilio-sms service, it shows `[wrapper] setup wizard` logs instead of Express server.
+
+**Cause**: Railway finds the ROOT Dockerfile (`CMD ["node", "src/server.js"]` = OpenClaw gateway). Even with `RAILWAY_ROOT_DIRECTORY=skills/twilio-sms`, the root Dockerfile takes precedence during auto-deploy.
+
+**Fix**: Keep the separate deploy repo. Never connect the monorepo to the twilio-sms service.
+
+#### 10. `railway up` From Subdirectory Still Uses Wrong Dockerfile
+**Symptom**: Running `railway up` from `skills/twilio-sms/` still deploys the gateway wrapper.
+
+**Cause**: When a GitHub source was connected, Railway's auto-deploy from the push overrides the `railway up` deployment. The auto-deploy builds from the connected repo (which was stale/wrong).
+
+**Fix**: Disconnect the GitHub source before using `railway up`, or keep the source connected and push to the correct repo instead.
+
+#### 11. `railway variables` Truncates Long Values
+**Symptom**: API key copied from `railway variables` table output is rejected (401 Unauthorized).
+
+**Cause**: The table display truncates long values to fit the terminal width.
+
+**Fix**: Use `railway variables --json | python3 -c "import json,sys; print(json.load(sys.stdin)['VAR_NAME'])"` to get the full value.
+
 ---
 
-*Updated 2026-01-26: Added shared variables gotcha from cocktail-inventory debugging*
+*Updated 2026-02-16: Added twilio-sms multi-repo deployment pattern, monorepo vs deploy repo gotchas*

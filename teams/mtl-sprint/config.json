@@ -1,0 +1,103 @@
+{
+  "name": "mtl-sprint",
+  "description": "MTL Craft Cocktails AI - Sprint to production readiness: fix tests, wire real data, bundle optimization, Stripe/approval integration, complete CRM dashboard",
+  "createdAt": 1770431189376,
+  "leadAgentId": "team-lead@mtl-sprint",
+  "leadSessionId": "d4fbb980-1882-401f-bd31-d6295b40d1ff",
+  "members": [
+    {
+      "agentId": "team-lead@mtl-sprint",
+      "name": "team-lead",
+      "agentType": "lead",
+      "model": "claude-opus-4-6",
+      "joinedAt": 1770431189376,
+      "tmuxPaneId": "",
+      "cwd": "/Users/ashleytower",
+      "subscriptions": []
+    },
+    {
+      "agentId": "test-fixer@mtl-sprint",
+      "name": "test-fixer",
+      "agentType": "general-purpose",
+      "model": "claude-opus-4-6",
+      "prompt": "You are on team mtl-sprint. Your task is Task #2: Fix 3 failing tests.\n\nProject: /Users/ashleytower/mtl-craft-cocktails-ai\n\nRead ~/.claude/memory/INDEX.md and the project CLAUDE.md first.\n\nThree tests are failing. Fix them all:\n\n**1. agentWiring.test.ts** (the main bug):\nFile: `tests/services/agentWiring.test.ts`\n- `listActiveWorkflows()` and `getPendingApprovals()` on WorkflowCoordinator are async (return Promise) but tests call them without `await` at lines ~239 and ~264\n- Fix: add `await` to those calls, make the test callbacks `async` if not already\n- The source is at `services/agents/workflowCoordinator.ts` - confirm the methods are async\n\n**2. voiceTeachingIntegration.test.ts**:\n- Invalid Supabase URL in test env\n- Find the test file, check if it properly mocks supabase. Fix the mock.\n\n**3. quoteService.test.ts**:\n- Gemini API key required in test\n- Find the test, ensure Gemini calls are properly mocked\n\nProcess:\n1. Run `npx vitest run tests/services/agentWiring.test.ts` to see exact failures\n2. Fix agentWiring.test.ts\n3. Re-run to confirm green\n4. Run `npx vitest run` with grep for voiceTeaching and quoteService to find their exact paths\n5. Fix both\n6. Run full test suite: `npx vitest run` to confirm all passing\n7. Mark Task #2 as completed via TaskUpdate\n\nUse TDD discipline. Don't change source code, only fix the tests (they have bugs, the source is correct).",
+      "color": "blue",
+      "planModeRequired": false,
+      "joinedAt": 1770431290964,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/ashleytower/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "crm-wirer@mtl-sprint",
+      "name": "crm-wirer",
+      "agentType": "general-purpose",
+      "model": "claude-opus-4-6",
+      "prompt": "You are on team mtl-sprint. Your task is Task #3: Wire use-crm-data.ts with real Supabase queries.\n\nProject: /Users/ashleytower/mtl-craft-cocktails-ai\n\nRead ~/.claude/memory/INDEX.md and the project CLAUDE.md first.\n\nFile to modify: `hooks/use-crm-data.ts`\n\nCurrently completely stubbed - fake useSWR returning undefined, fetcher returning [].\n\nSteps:\n1. Check if SWR is installed: `npm list swr`\n2. If not installed, install it: `npm install swr`\n3. Check how supabase is imported in other hooks (look at hooks/*.ts files for import patterns)\n4. Look at supabase migration files to confirm table names: `ls supabase_migrations/`\n5. Read a few migrations to understand table schemas (events, todos, emails, quotes, sms_messages, domain_memory)\n6. Check if there's an invoices table or if invoices are in the quotes table\n\nThen implement:\n1. Replace stub useSWR with real SWR import\n2. Import supabase client (match the pattern used elsewhere)\n3. Implement the fetcher to parse keys and make real queries:\n   - Parse the key format: \"tablename\" or \"tablename?param=value\" or \"tablename/id\"\n   - Route to appropriate supabase queries\n   - Apply URL params as filters\n\nWrite tests FIRST in `tests/hooks/use-crm-data.test.ts`:\n- Test fetcher parses keys correctly\n- Test each hook returns expected shape\n- Mock supabase responses\n\nAfter implementing, run tests to verify, then run full suite for regression check.\n\nMark Task #3 as completed via TaskUpdate when done.",
+      "color": "green",
+      "planModeRequired": false,
+      "joinedAt": 1770431300414,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/ashleytower/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "event-wirer@mtl-sprint",
+      "name": "event-wirer",
+      "agentType": "general-purpose",
+      "model": "claude-opus-4-6",
+      "prompt": "You are on team mtl-sprint. Your task is Task #4: Wire event status update handler in crm-bento-grid.tsx.\n\nProject: /Users/ashleytower/mtl-craft-cocktails-ai\n\nRead ~/.claude/memory/INDEX.md and the project CLAUDE.md first.\n\nFile: `components/crm-bento-grid.tsx`\n\nTwo TODOs:\n1. Around line 664: Check if linked event is in 48hrs\n2. Around line 1069: Wire to actual status update handler\n\nSteps:\n1. Read `components/crm-bento-grid.tsx` to understand the full component\n2. Find the TODO locations and understand the surrounding code\n3. Look at event-related hooks: `hooks/useEventSelection.ts`, check how events are updated elsewhere\n4. Check events table schema from migrations (look for event status columns/values)\n5. Look at `services/actionLogService.ts` for how to log actions\n6. Check how other status updates work in the app (App.tsx voice handlers)\n\nImplement:\n1. **48-hour check**: Compare event date to now, flag if within 48 hours\n2. **Status update handler**: \n   - Accept eventId and newStatus\n   - Call supabase to update the event status\n   - Log the action via logAction\n   - Show feedback (use toast or similar pattern from the codebase)\n   - Optimistically update local state if using SWR mutate\n\nWrite a test FIRST in `tests/components/crm-bento-grid-status.test.ts` or similar:\n- Test the 48-hour check logic\n- Test the status update function (mock supabase)\n\nAfter implementing, run the component tests and full suite.\n\nMark Task #4 as completed via TaskUpdate when done.",
+      "color": "yellow",
+      "planModeRequired": false,
+      "joinedAt": 1770431308695,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/ashleytower/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "brief-wirer@mtl-sprint",
+      "name": "brief-wirer",
+      "agentType": "general-purpose",
+      "model": "claude-opus-4-6",
+      "prompt": "You are on team mtl-sprint. Your task is Task #5: Wire daily brief with real SMS and invoice data from Supabase.\n\nProject: /Users/ashleytower/mtl-craft-cocktails-ai\n\nRead ~/.claude/memory/INDEX.md and the project CLAUDE.md first.\n\nFile: `components/daily-brief.tsx`\n\nThree hardcoded values:\n- Line 66: `texts: { count: 3, unread: 1 }` - FAKE\n- Line 68: `calls: { count: 2, missed: 1 }` - FAKE  \n- Line 74: `invoices: { pending: 3, amount: \"$4,200\" }` - FAKE\n\nSMS table exists: `sms_messages` (id, direction, status, from_number, to_number, body, provider, created_at). This is a shared table from another app in the same Supabase.\n\nSteps:\n1. Read the DailyBrief component fully\n2. Find where DailyBrief is rendered (search for `<DailyBrief` in the codebase) to understand props\n3. Check supabase client import pattern used in other components\n4. Read the sms_messages migration at `supabase_migrations/029_sms_messages.sql`\n5. Check if quotes table can serve as invoices (read quote-related migrations)\n\nImplement:\n1. **SMS data**: Query `sms_messages` table directly in the component using supabase. Count today's messages and unread (status='received' from today).\n2. **Calls**: Set to `{ count: 0, missed: 0 }` with comment \"// Call tracking not yet integrated\" - don't show fake data.\n3. **Invoices**: Query quotes table for sent/pending quotes, sum their amounts. Check the quotes table schema first.\n\nUse `useEffect` + `useState` or a simple SWR hook to fetch data. Keep it simple. Match patterns from other components.\n\nWrite tests FIRST:\n- Test that SMS data is fetched and counted correctly (mock supabase)\n- Test that calls show 0 instead of fake data\n- Test that invoices query real data\n\nRun tests, then full suite.\n\nMark Task #5 as completed via TaskUpdate when done.",
+      "color": "purple",
+      "planModeRequired": false,
+      "joinedAt": 1770431318898,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/ashleytower/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "perf-agent@mtl-sprint",
+      "name": "perf-agent",
+      "agentType": "general-purpose",
+      "model": "claude-opus-4-6",
+      "prompt": "You are on team mtl-sprint. Your task is Task #6: Bundle optimization - lazy loading, code splitting, App.tsx cleanup.\n\nProject: /Users/ashleytower/mtl-craft-cocktails-ai\n\nRead ~/.claude/memory/INDEX.md and the project CLAUDE.md first.\n\nCurrent state: Main chunk 722KB (190KB gzip), vendor 1032KB (300KB gzip). App.tsx is 1,554 lines with 50+ imports.\n\nSteps:\n1. Run `npx vite build 2>&1` and capture the baseline chunk sizes\n2. Read `vite.config.ts` to understand current manual chunks config\n3. Read `App.tsx` to understand structure and imports\n4. Identify which imports are heavy/rarely-used\n\nImplement:\n1. **Lazy load heavy panels** with `React.lazy()` + `<Suspense>`:\n   - Find EmailPanel, ProposalBuilder, MenuModal and any other large secondary panels\n   - Wrap them in lazy() imports\n   - Add Suspense fallbacks (simple loading spinner or skeleton)\n\n2. **Extract voice handlers from App.tsx**:\n   - Group handler functions by domain (email, event, calendar, todo, etc.)\n   - Move them to separate files like `hooks/handlers/emailHandlers.ts`\n   - Import and spread them in App.tsx\n   - This is purely organizational, no behavior change\n\n3. **Dynamic imports for agent services**:\n   - salesAgent, operationsAgent, directorAgent should use dynamic import()\n   - These are only needed when triggered by workflows\n\n4. **Review vite.config.ts manual chunks**:\n   - Check if draftService/emailService can be split out of main bundle\n   - The build warned about dynamic/static import conflicts for these\n\n5. Run `npx vite build 2>&1` again and report the improvement\n6. Run `npx vitest run` to verify no regressions\n\nTarget: Main chunk under 400KB.\n\nThis is refactoring only - don't add new features or tests. Existing tests must continue passing.\n\nMark Task #6 as completed via TaskUpdate when done.",
+      "color": "orange",
+      "planModeRequired": false,
+      "joinedAt": 1770431329509,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/ashleytower/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "stripe-agent@mtl-sprint",
+      "name": "stripe-agent",
+      "agentType": "general-purpose",
+      "model": "claude-opus-4-6",
+      "prompt": "You are on team mtl-sprint. Your task is Task #7: Implement Stripe quote/invoice integration in salesAgent.\n\nProject: /Users/ashleytower/mtl-craft-cocktails-ai\n\nRead ~/.claude/memory/INDEX.md and the project CLAUDE.md first.\n\nFile: `services/agents/salesAgent.ts`\n\nSeven TODOs to address. Read the FULL salesAgent.ts file first (it's large, ~700 lines).\n\nThen explore:\n1. Search for existing Stripe usage: grep for \"stripe\" in all .ts files\n2. Check for existing quote/payment services in `services/`\n3. Read `services/quoteService.ts` if it exists\n4. Read the quotes migration files to understand the schema\n5. Check `.env.example` for Stripe-related env vars\n6. Look at `api/` directory for any Stripe API endpoints\n\nThen implement the TODOs in priority order:\n\n**Priority 1 - Core Stripe Integration (lines ~444, 447, 450):**\n- Wire the `act()` method to create real Stripe Quotes via the Stripe API\n- Use the existing Stripe SDK (v20.3.1 is installed)\n- Create quotes with line items based on the ProposalPlan\n- Generate payment links for approved quotes\n- Store the Stripe quote ID in the local DB\n\n**Priority 2 - Memory Integration (lines ~553, 560, 690):**\n- Wire the `learn()` method to store patterns in unified memory\n- Use the existing memoryIngestion service\n- Store win/loss data, pricing patterns, client preferences\n\n**Priority 3 - Gemini NLU (line ~595):**\n- If there's already a Gemini service, wire it for natural language understanding of emails\n- If not feasible quickly, leave a clean interface with a comment\n\nWrite tests FIRST for each integration point:\n- Test Stripe Quote creation (mock Stripe SDK)\n- Test payment link generation (mock Stripe)\n- Test memory storage (mock memoryIngestion)\n\nRun tests after each change. Run full suite at the end.\n\nIMPORTANT: Stripe calls must go through server-side API routes, not browser. Check if there's an existing API proxy pattern (look at `api/` directory). Never expose Stripe secret key to the browser.\n\nMark Task #7 as completed via TaskUpdate when done.",
+      "color": "pink",
+      "planModeRequired": false,
+      "joinedAt": 1770431341893,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/ashleytower/mtl-craft-cocktails-ai",
+      "subscriptions": [],
+      "backendType": "in-process"
+    }
+  ]
+}
