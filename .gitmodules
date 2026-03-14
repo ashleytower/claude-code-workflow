@@ -1,0 +1,18 @@
+[submodule "mcp-servers/v0-mcp"]
+	path = mcp-servers/v0-mcp
+	url = https://github.com/hellolucky/v0-mcp.git
+[submodule "plugins/marketplaces/anthropic-agent-skills"]
+	path = plugins/marketplaces/anthropic-agent-skills
+	url = https://github.com/anthropics/skills.git
+[submodule "plugins/marketplaces/claude-mem-marketplace"]
+	path = plugins/marketplaces/claude-mem-marketplace
+	url = https://github.com/thedotmack/claude-mem.git
+[submodule "plugins/marketplaces/claude-plugins-official"]
+	path = plugins/marketplaces/claude-plugins-official
+	url = https://github.com/anthropics/claude-plugins-official.git
+[submodule "plugins/marketplaces/superpowers-marketplace"]
+	path = plugins/marketplaces/superpowers-marketplace
+	url = https://github.com/obra/superpowers-marketplace.git
+[submodule "skills/last30days/last30days"]
+	path = skills/last30days/last30days
+	url = https://github.com/mvanhorn/last30days-skill.git
